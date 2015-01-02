@@ -1,6 +1,6 @@
 # Anaplan Anypoint Connector
 
-[Connector description including destination service or application with]
+A Mulesoft connector to access Anaplan resources/APIs over authentication. Allows to create workspaces and models.
 
 # Mule supported versions
 Examples:
