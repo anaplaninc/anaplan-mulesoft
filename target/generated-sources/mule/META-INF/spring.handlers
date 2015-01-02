@@ -1,0 +1,1 @@
+http\://www.mulesoft.org/schema/mule/anaplan=org.mule.modules.anaplan.connector.config.AnaplanNamespaceHandler

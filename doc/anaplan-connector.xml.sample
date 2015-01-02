@@ -1,0 +1,3 @@
+<!-- BEGIN_INCLUDE(anaplan:my-processor) -->
+    <anaplan:my-processor content="#[map-payload:content]" />
+<!-- END_INCLUDE(anaplan:my-processor) -->
