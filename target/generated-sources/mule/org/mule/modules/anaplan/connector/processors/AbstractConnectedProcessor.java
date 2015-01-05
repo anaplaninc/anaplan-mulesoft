@@ -5,7 +5,7 @@ import java.lang.reflect.Type;
 import javax.annotation.Generated;
 import org.mule.devkit.processor.DevkitBasedMessageProcessor;
 
-@Generated(value = "Mule DevKit Version 3.5.2", date = "2015-01-02T02:35:36-08:00", comments = "Build UNNAMED.2039.0541b23")
+@Generated(value = "Mule DevKit Version 3.5.2", date = "2015-01-05T02:40:12-08:00", comments = "Build UNNAMED.2039.0541b23")
 public abstract class AbstractConnectedProcessor
     extends DevkitBasedMessageProcessor
     implements ConnectivityProcessor
@@ -17,10 +17,10 @@ public abstract class AbstractConnectedProcessor
     protected String _passwordType;
     protected Object url;
     protected String _urlType;
-    protected Object workspaceIdField;
-    protected String _workspaceIdFieldType;
-    protected Object modelIdField;
-    protected String _modelIdFieldType;
+    protected Object workspaceId;
+    protected String _workspaceIdType;
+    protected Object modelId;
+    protected String _modelIdType;
     protected Object proxyHost;
     protected String _proxyHostType;
     protected Object proxyUser;
@@ -33,21 +33,39 @@ public abstract class AbstractConnectedProcessor
     }
 
     /**
-     * Sets modelIdField
+     * Sets modelId
      * 
      * @param value Value to set
      */
-    public void setModelIdField(Object value) {
-        this.modelIdField = value;
+    public void setModelId(Object value) {
+        this.modelId = value;
     }
 
     /**
-     * Retrieves modelIdField
+     * Retrieves modelId
      * 
      */
     @Override
-    public Object getModelIdField() {
-        return this.modelIdField;
+    public Object getModelId() {
+        return this.modelId;
+    }
+
+    /**
+     * Sets workspaceId
+     * 
+     * @param value Value to set
+     */
+    public void setWorkspaceId(Object value) {
+        this.workspaceId = value;
+    }
+
+    /**
+     * Retrieves workspaceId
+     * 
+     */
+    @Override
+    public Object getWorkspaceId() {
+        return this.workspaceId;
     }
 
     /**
@@ -102,24 +120,6 @@ public abstract class AbstractConnectedProcessor
     @Override
     public Object getProxyHost() {
         return this.proxyHost;
-    }
-
-    /**
-     * Sets workspaceIdField
-     * 
-     * @param value Value to set
-     */
-    public void setWorkspaceIdField(Object value) {
-        this.workspaceIdField = value;
-    }
-
-    /**
-     * Retrieves workspaceIdField
-     * 
-     */
-    @Override
-    public Object getWorkspaceIdField() {
-        return this.workspaceIdField;
     }
 
     /**

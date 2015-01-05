@@ -8,7 +8,7 @@ import javax.annotation.Generated;
  * A tuple of connection parameters
  * 
  */
-@Generated(value = "Mule DevKit Version 3.5.2", date = "2015-01-02T02:35:36-08:00", comments = "Build UNNAMED.2039.0541b23")
+@Generated(value = "Mule DevKit Version 3.5.2", date = "2015-01-05T02:40:12-08:00", comments = "Build UNNAMED.2039.0541b23")
 public class AnaplanConnectorConnectionKey {
 
     /**
@@ -26,11 +26,11 @@ public class AnaplanConnectorConnectionKey {
     /**
      * 
      */
-    private String workspaceIdField;
+    private String workspaceId;
     /**
      * 
      */
-    private String modelIdField;
+    private String modelId;
     /**
      * 
      */
@@ -44,32 +44,49 @@ public class AnaplanConnectorConnectionKey {
      */
     private String proxyPass;
 
-    public AnaplanConnectorConnectionKey(String username, String password, String url, String workspaceIdField, String modelIdField, String proxyHost, String proxyUser, String proxyPass) {
+    public AnaplanConnectorConnectionKey(String username, String password, String url, String workspaceId, String modelId, String proxyHost, String proxyUser, String proxyPass) {
         this.username = username;
         this.password = password;
         this.url = url;
-        this.workspaceIdField = workspaceIdField;
-        this.modelIdField = modelIdField;
+        this.workspaceId = workspaceId;
+        this.modelId = modelId;
         this.proxyHost = proxyHost;
         this.proxyUser = proxyUser;
         this.proxyPass = proxyPass;
     }
 
     /**
-     * Sets modelIdField
+     * Sets modelId
      * 
      * @param value Value to set
      */
-    public void setModelIdField(String value) {
-        this.modelIdField = value;
+    public void setModelId(String value) {
+        this.modelId = value;
     }
 
     /**
-     * Retrieves modelIdField
+     * Retrieves modelId
      * 
      */
-    public String getModelIdField() {
-        return this.modelIdField;
+    public String getModelId() {
+        return this.modelId;
+    }
+
+    /**
+     * Sets workspaceId
+     * 
+     * @param value Value to set
+     */
+    public void setWorkspaceId(String value) {
+        this.workspaceId = value;
+    }
+
+    /**
+     * Retrieves workspaceId
+     * 
+     */
+    public String getWorkspaceId() {
+        return this.workspaceId;
     }
 
     /**
@@ -121,23 +138,6 @@ public class AnaplanConnectorConnectionKey {
      */
     public String getProxyHost() {
         return this.proxyHost;
-    }
-
-    /**
-     * Sets workspaceIdField
-     * 
-     * @param value Value to set
-     */
-    public void setWorkspaceIdField(String value) {
-        this.workspaceIdField = value;
-    }
-
-    /**
-     * Retrieves workspaceIdField
-     * 
-     */
-    public String getWorkspaceIdField() {
-        return this.workspaceIdField;
     }
 
     /**

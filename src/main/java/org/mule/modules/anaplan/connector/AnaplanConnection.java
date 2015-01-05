@@ -61,8 +61,7 @@ public class AnaplanConnection {
 	}
 
 	public String getConnectionId() {
-		// TODO Auto-generated method stub
-		return null;
+		return this.toString();
 	}
 	
 	/**
@@ -86,6 +85,7 @@ public class AnaplanConnection {
 
 		final String apiUrl = connectionConfig.getStringProperty(URL_FIELD);
 		Service service = null;
+		LogUtil.warning(getLogContext(), "API Url: " + apiUrl);
 		try {
 			service = new Service(new URI(apiUrl));
 		} catch (URISyntaxException e) {

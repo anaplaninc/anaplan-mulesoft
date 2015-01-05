@@ -38,6 +38,7 @@ import org.mule.common.metadata.datatype.DataType;
 
 import org.mule.modules.anaplan.connector.AnaplanConnection;
 import org.mule.modules.anaplan.exceptions.AnaplanConnectionException;
+import org.mule.modules.anaplan.utils.LogUtil;
 //import org.mule.modules.anaplan.utils.LogUtil;
 
 /**
@@ -111,7 +112,9 @@ public class AnaplanConnector {
      * Create a record
      * @return
      */
+    @Processor
     public boolean create() {
+    	LOGGER.info("Hi there!!!!!!!!!!!!");
     	return false;
     }
     
@@ -119,6 +122,7 @@ public class AnaplanConnector {
      * Reads from a record
      * @return
      */
+    @Processor
     public boolean read() {
 		return false;
 	}
@@ -127,6 +131,7 @@ public class AnaplanConnector {
      * Updates a record
      * @return
      */
+    @Processor
     public boolean update() {
     	return false;
     }
@@ -135,6 +140,7 @@ public class AnaplanConnector {
      * Deletes a record
      * @return
      */
+    @Processor
     public boolean delete() {
 		return false;
 	}
@@ -149,18 +155,18 @@ public class AnaplanConnector {
     @Connect
     public synchronized void connect(@ConnectionKey String username, 
     								 @Password String password,
-    								 @Optional @Default("https://192.168.115.10/") String url,
-    								 @Optional @Default("") String workspaceIdField,
-    								 @Optional @Default("") String modelIdField,
+    								 @Optional @Default("https://api.anaplan.com/1/3/") String url,
+    								 @Optional @Default("") String workspaceId,
+    								 @Optional @Default("") String modelId,
     								 @Optional @Default("") String proxyHost,
     								 @Optional @Default("") String proxyUser,
     								 @Optional @Default("") String proxyPass)
         throws org.mule.api.ConnectionException {
-        
+        LogUtil.status("notice", "Initiating connection...");
     	if (api_conn == null) {
     		api_conn = new AnaplanConnection(username, password, url,
-    										 workspaceIdField, modelIdField,
-    										 proxyHost, proxyUser, proxyPass);
+    										 workspaceId, modelId, proxyHost, 
+    										 proxyUser, proxyPass);
     		try {
         		api_conn.openConnection();
         	} catch (AnaplanConnectionException e) {
@@ -168,7 +174,8 @@ public class AnaplanConnector {
         				ConnectionExceptionCode.INCORRECT_CREDENTIALS, null, 
         				e.getMessage(), e);
         	}
-    		LOGGER.info("Successfully connected to Anaplan API!");
+    		LogUtil.status(getClass().toString(), 
+    				"Successfully connected to Anaplan API!");
     	}
     }
 
@@ -180,7 +187,7 @@ public class AnaplanConnector {
         if (api_conn != null) {
         	api_conn.closeConnection();
         } else {
-        	LOGGER.error("No connection to disconnect!");
+        	LogUtil.error(getClass().toString(), "No connection to disconnect!");
         }
     }
 

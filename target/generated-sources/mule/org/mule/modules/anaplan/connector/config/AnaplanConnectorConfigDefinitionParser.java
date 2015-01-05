@@ -17,7 +17,7 @@ import org.springframework.beans.factory.xml.ParserContext;
 import org.springframework.util.xml.DomUtils;
 import org.w3c.dom.Element;
 
-@Generated(value = "Mule DevKit Version 3.5.2", date = "2015-01-02T02:35:36-08:00", comments = "Build UNNAMED.2039.0541b23")
+@Generated(value = "Mule DevKit Version 3.5.2", date = "2015-01-05T02:40:12-08:00", comments = "Build UNNAMED.2039.0541b23")
 public class AnaplanConnectorConfigDefinitionParser
     extends AbstractDevkitBasedDefinitionParser
 {
@@ -33,8 +33,8 @@ public class AnaplanConnectorConfigDefinitionParser
         parseProperty(builder, element, "username", "username");
         parseProperty(builder, element, "password", "password");
         parseProperty(builder, element, "url", "url");
-        parseProperty(builder, element, "workspaceIdField", "workspaceIdField");
-        parseProperty(builder, element, "modelIdField", "modelIdField");
+        parseProperty(builder, element, "workspaceId", "workspaceId");
+        parseProperty(builder, element, "modelId", "modelId");
         parseProperty(builder, element, "proxyHost", "proxyHost");
         parseProperty(builder, element, "proxyUser", "proxyUser");
         parseProperty(builder, element, "proxyPass", "proxyPass");

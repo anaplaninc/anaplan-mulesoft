@@ -13,7 +13,7 @@ import org.springframework.beans.factory.xml.NamespaceHandlerSupport;
  * Registers bean definitions parsers for handling elements in <code>http://www.mulesoft.org/schema/mule/anaplan</code>.
  * 
  */
-@Generated(value = "Mule DevKit Version 3.5.2", date = "2015-01-02T02:35:36-08:00", comments = "Build UNNAMED.2039.0541b23")
+@Generated(value = "Mule DevKit Version 3.5.2", date = "2015-01-05T02:40:12-08:00", comments = "Build UNNAMED.2039.0541b23")
 public class AnaplanNamespaceHandler
     extends NamespaceHandlerSupport
 {
@@ -41,6 +41,26 @@ public class AnaplanNamespaceHandler
             this.registerBeanDefinitionParser("config", new AnaplanConnectorConfigDefinitionParser());
         } catch (NoClassDefFoundError ex) {
             handleException("config", "@Config", ex);
+        }
+        try {
+            this.registerBeanDefinitionParser("create", new CreateDefinitionParser());
+        } catch (NoClassDefFoundError ex) {
+            handleException("create", "@Processor", ex);
+        }
+        try {
+            this.registerBeanDefinitionParser("read", new ReadDefinitionParser());
+        } catch (NoClassDefFoundError ex) {
+            handleException("read", "@Processor", ex);
+        }
+        try {
+            this.registerBeanDefinitionParser("update", new UpdateDefinitionParser());
+        } catch (NoClassDefFoundError ex) {
+            handleException("update", "@Processor", ex);
+        }
+        try {
+            this.registerBeanDefinitionParser("delete", new DeleteDefinitionParser());
+        } catch (NoClassDefFoundError ex) {
+            handleException("delete", "@Processor", ex);
         }
         try {
             this.registerBeanDefinitionParser("my-processor", new MyProcessorDefinitionParser());
