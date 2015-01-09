@@ -1,11 +1,18 @@
-package org.mule.modules.anaplan.utils;
+package com.anaplan.connector.utils;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
+//import java.util.logging.Level;
+//import java.util.logging.Logger;
 
-//import com.boomi.anaplan.connector.AnaplanConnection;
-//import com.boomi.connector.api.OperationResponse;
-//import com.boomi.connector.api.TrackedData;
+//import java.io.FileInputStream;
+//import java.io.FileNotFoundException;
+//import java.io.IOException;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.Level;
+//import org.apache.logging.log4j.core.config.ConfigurationSource;
+//import org.apache.logging.log4j.core.config.Configurator;
+
 
 /**
  * Log output to Boomi has 3 main routes:
@@ -29,8 +36,25 @@ import java.util.logging.Logger;
  * which is not displayed by default.
  */
 public final class LogUtil {
-	private LogUtil() {
-		// static-only
+	
+//	private static final String logConfigFileLocation = "/etc/logger/conf/log4j2.xml";
+	
+//	private static ConfigurationSource source;
+	
+	private LogUtil() {  // static-only
+		
+//		try {
+//			source = new ConfigurationSource(new FileInputStream(
+//					logConfigFileLocation));
+//		} catch (FileNotFoundException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		} catch (IOException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//		
+//		Configurator.initialize(null, source);
 	}
 
 	/**
@@ -43,18 +67,18 @@ public final class LogUtil {
 	 * User-presentable log message about problems encountered by an operation
 	 * which can be handled.
 	 */
-	public static final Level USER_WARNING = Level.WARNING;
+	public static final Level USER_WARNING = Level.WARN;
 
 	/**
 	 * User-presentable log message about an error that is preventing completion
 	 * of the operation.
 	 */
-	public static final Level USER_ERROR = Level.SEVERE;
+	public static final Level USER_ERROR = Level.FATAL;
 
 	/**
 	 * Internal message with debug info.
 	 */
-	public static final Level INTERNAL_DEBUG = Level.FINE;
+	public static final Level INTERNAL_DEBUG = Level.DEBUG;
 
 	/**
 	 * Internal message tracing detailed operation execution.
@@ -62,24 +86,19 @@ public final class LogUtil {
 	 * Matches level used by {@link Logger#entering(String, String)} and
 	 * {@link Logger#exiting(String, String)};
 	 */
-	public static final Level INTERNAL_TRACE = Level.FINER;
+	public static final Level INTERNAL_TRACE = Level.TRACE;
 
 	/**
 	 * Logger which writes to the Atom server container log.
 	 */
-	private static final Logger serverLog = Logger.getGlobal();
-	static {
-		serverLog.setLevel(INTERNAL_DEBUG);
-	}
+	private static final Logger serverLog = LogManager.getLogger();
 
 	public static void debug(String logContext, String msg) {
 		serverLog.log(INTERNAL_DEBUG, logContext + " " + msg);
 	}
 
 	public static void trace(String logContext, String msg) {
-		if (serverLog.isLoggable(INTERNAL_TRACE)) {
-			serverLog.log(INTERNAL_TRACE, logContext + " " + msg);
-		}
+		serverLog.log(INTERNAL_TRACE, logContext + " " + msg);
 	}
 
 	public static void status(String logContext, String msg) {

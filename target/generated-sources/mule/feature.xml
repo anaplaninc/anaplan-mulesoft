@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?><feature id="org.mule.tooling.ui.extension.anaplan-connector.3.5.0" label="Anaplan Connector (Mule 3.5.0+)" provider-name="Mulesoft, Inc." version="1.0.0.201501051440"><license>Common Public Attribution License Version 1.0 (CPAL)
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><feature id="org.mule.tooling.ui.extension.anaplan-connector.3.5.0" label="Anaplan Connector (Mule 3.5.0+)" provider-name="Mulesoft, Inc." version="1.0.0.201501081450"><license>Common Public Attribution License Version 1.0 (CPAL)
 ====================================================
 
 
@@ -485,4 +485,4 @@ Covered Code. :
 Display of Attribution Information is required in Larger Works which are defined
 in the CPAL as a work which combines Covered Code or portions thereof with code
 not governed by the terms of the CPAL.
-</license><plugin download-size="0" id="org.mule.tooling.ui.contribution.anaplan.3.5.0" install-size="0" unpack="true" version="1.0.0.201501051440"/></feature>
+</license><plugin download-size="0" id="org.mule.tooling.ui.contribution.anaplan.3.5.0" install-size="0" unpack="true" version="1.0.0.201501081450"/></feature>

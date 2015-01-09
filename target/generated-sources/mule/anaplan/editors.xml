@@ -40,7 +40,7 @@
       <group id="connection" caption="Connection">
         <string name="username" caption="Username" description="A username." required="false" javaType="java.lang.String" requiredForDataSense="true"></string>
         <password name="password" caption="Password" description="A password." required="false" javaType="java.lang.String" requiredForDataSense="true"></password>
-        <string defaultValue="https://api.anaplan.com/1/3/" name="url" caption="Url" description="" required="false" javaType="java.lang.String"></string>
+        <string defaultValue="https://api.anaplan.com" name="url" caption="Url" description="" required="false" javaType="java.lang.String"></string>
         <string defaultValue="" name="workspaceId" caption="Workspace Id" description="" required="false" javaType="java.lang.String"></string>
         <string defaultValue="" name="modelId" caption="Model Id" description="" required="false" javaType="java.lang.String"></string>
         <string defaultValue="" name="proxyHost" caption="Proxy Host" description="" required="false" javaType="java.lang.String"></string>
@@ -90,7 +90,7 @@
       <group id="connector Configuration Overrides" caption="Connector Configuration Overrides">
         <string name="username" caption="Username" description="A username." required="false" javaType="java.lang.String"></string>
         <password name="password" caption="Password" description="A password." required="false" javaType="java.lang.String"></password>
-        <string defaultValue="https://api.anaplan.com/1/3/" name="url" caption="Url" description="" required="false" javaType="java.lang.String"></string>
+        <string defaultValue="https://api.anaplan.com" name="url" caption="Url" description="" required="false" javaType="java.lang.String"></string>
         <string defaultValue="" name="workspaceId" caption="Workspace Id" description="" required="false" javaType="java.lang.String"></string>
         <string defaultValue="" name="modelId" caption="Model Id" description="" required="false" javaType="java.lang.String"></string>
         <string defaultValue="" name="proxyHost" caption="Proxy Host" description="" required="false" javaType="java.lang.String"></string>
@@ -105,7 +105,7 @@
       <group id="connector Configuration Overrides" caption="Connector Configuration Overrides">
         <string name="username" caption="Username" description="A username." required="false" javaType="java.lang.String"></string>
         <password name="password" caption="Password" description="A password." required="false" javaType="java.lang.String"></password>
-        <string defaultValue="https://api.anaplan.com/1/3/" name="url" caption="Url" description="" required="false" javaType="java.lang.String"></string>
+        <string defaultValue="https://api.anaplan.com" name="url" caption="Url" description="" required="false" javaType="java.lang.String"></string>
         <string defaultValue="" name="workspaceId" caption="Workspace Id" description="" required="false" javaType="java.lang.String"></string>
         <string defaultValue="" name="modelId" caption="Model Id" description="" required="false" javaType="java.lang.String"></string>
         <string defaultValue="" name="proxyHost" caption="Proxy Host" description="" required="false" javaType="java.lang.String"></string>
@@ -124,7 +124,7 @@
       <group id="connector Configuration Overrides" caption="Connector Configuration Overrides">
         <string name="username" caption="Username" description="A username." required="false" javaType="java.lang.String"></string>
         <password name="password" caption="Password" description="A password." required="false" javaType="java.lang.String"></password>
-        <string defaultValue="https://api.anaplan.com/1/3/" name="url" caption="Url" description="" required="false" javaType="java.lang.String"></string>
+        <string defaultValue="https://api.anaplan.com" name="url" caption="Url" description="" required="false" javaType="java.lang.String"></string>
         <string defaultValue="" name="workspaceId" caption="Workspace Id" description="" required="false" javaType="java.lang.String"></string>
         <string defaultValue="" name="modelId" caption="Model Id" description="" required="false" javaType="java.lang.String"></string>
         <string defaultValue="" name="proxyHost" caption="Proxy Host" description="" required="false" javaType="java.lang.String"></string>
@@ -139,7 +139,7 @@
       <group id="connector Configuration Overrides" caption="Connector Configuration Overrides">
         <string name="username" caption="Username" description="A username." required="false" javaType="java.lang.String"></string>
         <password name="password" caption="Password" description="A password." required="false" javaType="java.lang.String"></password>
-        <string defaultValue="https://api.anaplan.com/1/3/" name="url" caption="Url" description="" required="false" javaType="java.lang.String"></string>
+        <string defaultValue="https://api.anaplan.com" name="url" caption="Url" description="" required="false" javaType="java.lang.String"></string>
         <string defaultValue="" name="workspaceId" caption="Workspace Id" description="" required="false" javaType="java.lang.String"></string>
         <string defaultValue="" name="modelId" caption="Model Id" description="" required="false" javaType="java.lang.String"></string>
         <string defaultValue="" name="proxyHost" caption="Proxy Host" description="" required="false" javaType="java.lang.String"></string>
@@ -154,7 +154,7 @@
       <group id="connector Configuration Overrides" caption="Connector Configuration Overrides">
         <string name="username" caption="Username" description="A username." required="false" javaType="java.lang.String"></string>
         <password name="password" caption="Password" description="A password." required="false" javaType="java.lang.String"></password>
-        <string defaultValue="https://api.anaplan.com/1/3/" name="url" caption="Url" description="" required="false" javaType="java.lang.String"></string>
+        <string defaultValue="https://api.anaplan.com" name="url" caption="Url" description="" required="false" javaType="java.lang.String"></string>
         <string defaultValue="" name="workspaceId" caption="Workspace Id" description="" required="false" javaType="java.lang.String"></string>
         <string defaultValue="" name="modelId" caption="Model Id" description="" required="false" javaType="java.lang.String"></string>
         <string defaultValue="" name="proxyHost" caption="Proxy Host" description="" required="false" javaType="java.lang.String"></string>

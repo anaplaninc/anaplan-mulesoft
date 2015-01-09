@@ -1,4 +1,4 @@
-package org.mule.modules.anaplan.utils;
+package com.anaplan.connector.utils;
 
 public enum OperationStatus {
 	SUCCESS,

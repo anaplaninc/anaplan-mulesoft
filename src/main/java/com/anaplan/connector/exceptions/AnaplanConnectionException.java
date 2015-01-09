@@ -1,4 +1,4 @@
-package org.mule.modules.anaplan.exceptions;
+package com.anaplan.connector.exceptions;
 
 public class AnaplanConnectionException extends Exception {
 	

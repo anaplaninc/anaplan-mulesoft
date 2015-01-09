@@ -1,31 +1,25 @@
+/**
+ * Basic Anaplan Connection class that helps establish an API connection using
+ * the provided credentials from the connector.
+ * 
+ * Author: Spondon Saha
+ */
+
 package org.mule.modules.anaplan.connector;
 
-//import java.io.OutputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
-//import java.util.HashMap;
 import java.util.List;
-
-//import org.mule.modules.anaplan.connector.AnaplanConnectorConfig;
 
 import com.anaplan.client.AnaplanAPIException;
 import com.anaplan.client.Credentials;
 import com.anaplan.client.Model;
 import com.anaplan.client.Service;
 import com.anaplan.client.Workspace;
-
-//import org.apache.commons.httpclient.URIException;
-import org.mule.modules.anaplan.exceptions.AnaplanConnectionException;
-import org.mule.modules.anaplan.utils.LogUtil;
-import org.mule.modules.anaplan.utils.UserMessages;
-
-//import com.boomi.anaplan.exceptions.AnaplanConnectionException;
-//import com.boomi.anaplan.util.LogUtil;
-//import com.boomi.anaplan.util.UserMessages;
-//import com.boomi.connector.api.AtomConfig;
-//import com.boomi.connector.api.AtomContext;
-//import com.boomi.connector.api.BrowseContext;
-//import com.boomi.connector.util.BaseConnection;
+import com.anaplan.connector.exceptions.AnaplanConnectionException;
+import com.anaplan.connector.exceptions.ConnectorPropertiesException;
+import com.anaplan.connector.utils.LogUtil;
+import com.anaplan.connector.utils.UserMessages;
 
 
 /**
@@ -42,22 +36,30 @@ public class AnaplanConnection {
 	private static final String USERNAME_FIELD = "username";
 	private static final String WORKSPACEID_FIELD = "workspaceId";
 	private static final String MODELID_FIELD = "modelId";
-//	private static final String COLUMN_SEPERATOR = "columnSeparator";
-	private static final String URL_PROXY = "proxyhost";
-	private static final String URL_PROXY_USER = "proxyuser";
-	private static final String URL_PROXY_PASS = "proxy-password";
+	private static final String URL_PROXY = "proxyHost";
+	private static final String URL_PROXY_USER = "proxyUser";
+	private static final String URL_PROXY_PASS = "proxyPass";
 	
 	private final AnaplanConnectorProperties connectionConfig;
 
+//	public static final Logger LOGGER = LogManager.getLogger(AnaplanConnection.class);
+	
 	// cached Anaplan objects when a valid open connection exists, else null
 	private Service openConnection = null;
 	private Model model = null;
 
 	public AnaplanConnection(String... credentials) {
-		connectionConfig = new AnaplanConnectorProperties(credentials,
-				URL_FIELD, USERNAME_FIELD, PASSWORD_FIELD, WORKSPACEID_FIELD, 
-				MODELID_FIELD);
-		LogUtil.debug(getLogContext(), "Stored connection properties");
+		LogUtil.debug("NOTICE: ", credentials[0] + " @ " + credentials[2]);
+//		LOGGER.info("{} : {} ", credentials[0], credentials[1]);
+		connectionConfig = new AnaplanConnectorProperties();
+		try {
+			connectionConfig.setProperties(credentials, USERNAME_FIELD, 
+					PASSWORD_FIELD, URL_FIELD, WORKSPACEID_FIELD, MODELID_FIELD, 
+					URL_PROXY, URL_PROXY_USER, URL_PROXY_PASS);
+		} catch (ConnectorPropertiesException e) {
+			LogUtil.error(getLogContext(), "Could not set connector properties!");
+		}
+		LogUtil.status(getLogContext(), "Stored connection properties!");
 	}
 
 	public String getConnectionId() {

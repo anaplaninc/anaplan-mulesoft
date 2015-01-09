@@ -21,7 +21,7 @@ import org.slf4j.LoggerFactory;
  * Agent implementation to add splash screen information for DevKit extensions at application startup
  * 
  */
-@Generated(value = "Mule DevKit Version 3.5.2", date = "2015-01-05T02:40:12-08:00", comments = "Build UNNAMED.2039.0541b23")
+@Generated(value = "Mule DevKit Version 3.5.2", date = "2015-01-08T02:50:03-08:00", comments = "Build UNNAMED.2039.0541b23")
 public class DefaultSplashScreenAgent implements Agent, MuleContextAware, SplashScreenAgent
 {
 

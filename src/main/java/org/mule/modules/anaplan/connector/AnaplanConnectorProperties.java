@@ -6,8 +6,10 @@ import java.util.HashMap;
 //import java.util.HashSet;
 //import java.util.Set;
 
-import org.mule.modules.anaplan.utils.LogUtil;
 //import com.boomi.connector.api.PropertyMap;
+
+import com.anaplan.connector.exceptions.ConnectorPropertiesException;
+import com.anaplan.connector.utils.LogUtil;
 
 /**
  * Parameter caching and validation.
@@ -29,16 +31,22 @@ public class AnaplanConnectorProperties {
 	 * 			  Optionally, any fields which are mandatory, and cannot have
 	 *            null or empty-string values.
 	 */
-	public AnaplanConnectorProperties(String[] fieldValues,
-			String... requiredPropertyFields) {
-		
+	public AnaplanConnectorProperties() {
 		connectorProperties = new HashMap<String, String>();
+	}
+	
+	public void setProperties(String[] fieldValues,
+			String... requiredPropertyFields) throws ConnectorPropertiesException {
 		if (requiredPropertyFields != null) {
 			if (fieldValues.length == requiredPropertyFields.length) {
 				for (int i = 0; i < requiredPropertyFields.length; i++) {
 					connectorProperties.put(requiredPropertyFields[i],
 											fieldValues[i]);
 				}
+			} else {
+				throw new ConnectorPropertiesException("Provided field-values "
+						+ "and required property-fields are of different "
+						+ "lengths!!");
 			}
 		}
 		LogUtil.trace(getClass().getSimpleName(), 

@@ -33,7 +33,7 @@ import org.mule.security.oauth.callback.ProcessCallback;
  * MyProcessorMessageProcessor invokes the {@link org.mule.modules.anaplan.connector.AnaplanConnector#myProcessor(java.lang.String)} method in {@link AnaplanConnector }. For each argument there is a field in this processor to match it.  Before invoking the actual method the processor will evaluate and transform where possible to the expected argument type.
  * 
  */
-@Generated(value = "Mule DevKit Version 3.5.2", date = "2015-01-05T02:40:12-08:00", comments = "Build UNNAMED.2039.0541b23")
+@Generated(value = "Mule DevKit Version 3.5.2", date = "2015-01-08T02:50:03-08:00", comments = "Build UNNAMED.2039.0541b23")
 public class MyProcessorMessageProcessor
     extends AbstractConnectedProcessor
     implements MessageProcessor, OperationMetaDataEnabled

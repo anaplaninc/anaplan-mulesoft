@@ -1,4 +1,4 @@
-package org.mule.modules.anaplan.utils;
+package com.anaplan.connector.utils;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -7,16 +7,15 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+//import org.apache.logging.log4j.LogManager;
+//import org.apache.logging.log4j.Logger;
 import org.mule.modules.anaplan.connector.AnaplanConnection;
 import org.mule.modules.anaplan.connector.AnaplanResponse;
-import org.mule.modules.anaplan.exceptions.AnaplanConnectionException;
-import org.mule.modules.anaplan.utils.LogUtil.UserLog;
 
 import com.anaplan.client.Action;
 import com.anaplan.client.AnaplanAPIException;
 import com.anaplan.client.CellWriter;
+import com.anaplan.client.Export;
 //import com.anaplan.client.Export;
 import com.anaplan.client.Import;
 import com.anaplan.client.Model;
@@ -25,6 +24,8 @@ import com.anaplan.client.Task;
 import com.anaplan.client.TaskResult;
 import com.anaplan.client.TaskResultDetail;
 import com.anaplan.client.TaskStatus;
+import com.anaplan.connector.exceptions.AnaplanConnectionException;
+import com.anaplan.connector.utils.LogUtil.UserLog;
 //import com.boomi.anaplan.connector.AnaplanConnection;
 //import com.boomi.anaplan.connector.AnaplanResponse;
 //import com.boomi.anaplan.exceptions.AnaplanConnectionException;
@@ -35,43 +36,45 @@ import com.google.gson.JsonSyntaxException;
 /**
  * Utilities here handle communication with the Anaplan API
  * @author spondonsaha
- *
  */
 public class AnaplanUtil {
-	
-	public static final Logger LOGGER = LogManager.getLogger(AnaplanConnection.class);
-	
+
 	private AnaplanUtil() {
 		// static-only
 	}
 
 	protected static String[] HEADER;
 
-//	public static AnaplanResponse runExport(AnaplanConnection connection,
-//			String exportId, String logContext, UserLog userLog) {
-//		Model model = null;
-//		try {
-//			model = connection.openConnection();
-//			userLog.status(UserMessages.getMessage("modelSuccess",
-//					model.getName()));
-//		} catch (AnaplanConnectionException e) {
-//			final String msg = UserMessages.getMessage("modelAccessFail",
-//					e.getMessage());
-//			return AnaplanResponse.exportFailure(msg, null, e, logContext);
-//		}
-//
-//		try {
-//			return doExport(model, exportId, logContext, userLog);
-//
-//		} catch (AnaplanAPIException | IOException e) {
-//			final String msg = UserMessages.getMessage("apiConnectFail",
-//					e.getMessage());
-//			LOGGER.error("{} :: {} = {}", logContext, msg, e);
-//			return AnaplanResponse.exportFailure(msg, null, e, logContext);
-//		}
-//	}
+	public static AnaplanResponse runExport(AnaplanConnection apiConn,
+			String exportId, String logContext) {
+		
+		// fetch the model by opening the connection 
+		Model model = null;
+		try {
+			model = apiConn.openConnection();
+			LogUtil.status(logContext, "Fetched model: " + model.getName());
+		} catch (AnaplanConnectionException e) {
+			final String msg = UserMessages.getMessage("modelAccessFail",
+					e.getMessage());
+			return AnaplanResponse.exportFailure(msg, null, e, logContext);
+		}
+
+		// run the export
+		try {
+			return doExport(model, exportId, logContext);
+		} catch (AnaplanAPIException e) {
+			final String msg = UserMessages.getMessage("apiConnectFail",
+					e.getMessage());
+			return AnaplanResponse.exportFailure(msg, null, e, logContext);
+		} catch (IOException e) {
+			final String msg = UserMessages.getMessage("apiConnectFail",
+					e.getMessage());
+			return AnaplanResponse.exportFailure(msg, null, e, logContext);
+		}
+	}
 	
-	public static AnaplanResponse executeAction(AnaplanConnection connection, String actionId, String logContext, UserLog userLog){
+	public static AnaplanResponse executeAction(AnaplanConnection connection, 
+			String actionId, String logContext, UserLog userLog){
 	
 		Model model = null;
 		try{
@@ -79,14 +82,16 @@ public class AnaplanUtil {
 			userLog.status(UserMessages.getMessage("modelSuccess",
 					model.getName()));
 		}catch(AnaplanConnectionException e){
-			final String msg = UserMessages.getMessage("modelAccessFail",e.getMessage());
+			final String msg = UserMessages.getMessage("modelAccessFail",
+					e.getMessage());
 			return AnaplanResponse.executeActionFailure(msg, e, logContext);
 		}
 		try{
 			return executeAction(model, actionId, logContext, userLog);
 		}catch(AnaplanAPIException e){
-			final String msg = UserMessages.getMessage("apiConnectFail",e.getMessage());
-			LOGGER.error("{} :: {} = {}", logContext, msg, e);
+			final String msg = UserMessages.getMessage("apiConnectFail",
+					e.getMessage());
+//			LOGGER.error("{} :: {} = {}", logContext, msg, e);
 			return AnaplanResponse.executeActionFailure(msg, e, logContext);
 		}
 		
@@ -113,39 +118,48 @@ public class AnaplanUtil {
 			return AnaplanResponse.executeActionFailure("Execute Action Failed", null, logContext);
 		}
 	}
+	
+	/**
+	 * Performs the Model export operation.
+	 * @param model
+	 * @param exportId
+	 * @param logContext
+	 * @return <code>AnaplanResponse</code> object.
+	 * @throws IOException
+	 * @throws AnaplanAPIException
+	 */
+	private static AnaplanResponse doExport(Model model, String exportId,
+			String logContext) throws IOException,
+			AnaplanAPIException {
 
-//	private static AnaplanResponse doExport(Model model, String exportId,
-//			String logContext, UserLog userLog) throws IOException,
-//			AnaplanAPIException {
-//
-//		final Export exp = model.getExport(exportId);
-//		if (exp == null) {
-//			final String msg = UserMessages.getMessage("invalidExport",
-//					exportId);
-//			return AnaplanResponse.exportFailure(msg, null, null, logContext);
-//		}
-//
-//		final Task task = exp.createTask();
-//		final TaskStatus status = runServerTask(task,logContext);
-//
-//		if (status.getTaskState() == TaskStatus.State.COMPLETE
-//				&& status.getResult().isSuccessful()) {
-//			userLog.status("Export complete");
-//			final ServerFile serverFile = model.getServerFile(exp.getName());
-//			if (serverFile == null) {
-//				return AnaplanResponse.exportFailure(
-//						UserMessages.getMessage("exportRetrieveError",
-//								exp.getName()), exp.getExportMetadata(), null,
-//						logContext);
-//			}
-//			return AnaplanResponse.exportSuccess(status.getTaskState().name(),
-//					serverFile, exp.getExportMetadata(), logContext);
-//		} else {
-//			userLog.error("Export failed");
-//			return AnaplanResponse.exportFailure(status.getTaskState().name(),
-//					exp.getExportMetadata(), null, logContext);
-//		}
-//	}
+		final Export exp = model.getExport(exportId);
+		if (exp == null) {
+			final String msg = UserMessages.getMessage("invalidExport",
+					exportId);
+			return AnaplanResponse.exportFailure(msg, null, null, logContext);
+		}
+
+		final Task task = exp.createTask();
+		final TaskStatus status = runServerTask(task,logContext);
+
+		if (status.getTaskState() == TaskStatus.State.COMPLETE
+				&& status.getResult().isSuccessful()) {
+			LogUtil.status(logContext, "Export complete.");
+			final ServerFile serverFile = model.getServerFile(exp.getName());
+			if (serverFile == null) {
+				return AnaplanResponse.exportFailure(
+						UserMessages.getMessage("exportRetrieveError",
+								exp.getName()), exp.getExportMetadata(), null,
+						logContext);
+			}
+			return AnaplanResponse.exportSuccess(status.getTaskState().name(),
+					serverFile, exp.getExportMetadata(), logContext);
+		} else {
+			LogUtil.error(logContext, "Export failed !!!");
+			return AnaplanResponse.exportFailure(status.getTaskState().name(),
+					exp.getExportMetadata(), null, logContext);
+		}
+	}
 	
 	
 	public static AnaplanResponse runImportCsv(AnaplanConnection connection,
@@ -330,6 +344,13 @@ public class AnaplanUtil {
 		}
 	}
 
+	/**
+	 * Executes a Anaplan import or export task.
+	 * @param task
+	 * @param logContext
+	 * @return
+	 * @throws AnaplanAPIException
+	 */
 	private static TaskStatus runServerTask(Task task, String logContext)
 			throws AnaplanAPIException {
 		TaskStatus status = task.getStatus();
@@ -339,8 +360,10 @@ public class AnaplanUtil {
 			// if busy, nap and check again after
 			try {
 				Thread.sleep(1000);
-				LOGGER.debug("{} : Running task = ", logContext, task.getStatus().getProgress());
+				LogUtil.debug(logContext, "Running Task = "
+						+ task.getStatus().getProgress());
 			} catch (InterruptedException e) {
+				LogUtil.error(logContext, "Task interrupted!\n" + e.getMessage());
 			}
 			status = task.getStatus();
 		}

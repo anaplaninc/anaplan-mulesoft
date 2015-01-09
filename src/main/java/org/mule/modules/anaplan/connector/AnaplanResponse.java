@@ -2,26 +2,16 @@ package org.mule.modules.anaplan.connector;
 
 //import java.io.IOException;
 
+import java.io.Serializable;
+
 //import com.anaplan.client.AnaplanAPIException;
 //import com.anaplan.client.CellReader;
 import com.anaplan.client.ExportMetadata;
 import com.anaplan.client.ServerFile;
+import com.anaplan.connector.utils.LogUtil;
+import com.anaplan.connector.utils.OperationStatus;
 
 //import org.mule.modules.anaplan.utils.AnaplanUtil;
-import org.mule.modules.anaplan.utils.LogUtil;
-import org.mule.modules.anaplan.utils.OperationStatus;
-//import com.boomi.anaplan.util.AnaplanUtil;
-//import com.boomi.anaplan.util.LogUtil;
-//import com.boomi.anaplan.util.LogUtil.UserLog;
-//import com.boomi.anaplan.util.UserMessages;
-//import com.boomi.connector.api.OperationRequest;
-//import com.boomi.connector.api.OperationResponse;
-//import com.boomi.connector.api.OperationStatus;
-//import com.boomi.connector.api.PayloadUtil;
-//import com.boomi.connector.api.ResponseUtil;
-//import com.boomi.connector.api.TrackedData;
-//import com.boomi.connector.api.UpdateRequest;
-//import com.boomi.connector.api.DeleteRequest;
 
 /**
  * Translates anaplan task results into boomi response handling.
@@ -37,7 +27,9 @@ import org.mule.modules.anaplan.utils.OperationStatus;
  * failure this payload is displayed in the UI if running Boomi in test mode, or
  * does ???? if running in production mode.
  */
-public class AnaplanResponse {
+public class AnaplanResponse implements Serializable{
+
+	private static final long serialVersionUID = 1L;
 	private final String responseMessage;
 	private final ServerFile serverFile;
 	private final ExportMetadata exportMetadata;
@@ -45,7 +37,7 @@ public class AnaplanResponse {
 	private final String logContext;
 	private final Throwable exception;
 
-	public static AnaplanResponse exportFailurHe(String responseMessage,
+	public static AnaplanResponse exportFailure(String responseMessage,
 			ExportMetadata exportMetadata, Throwable cause, String logContext) {
 		return new AnaplanResponse(responseMessage, OperationStatus.FAILURE,
 				null, exportMetadata, cause, logContext);
@@ -62,7 +54,6 @@ public class AnaplanResponse {
 		return new AnaplanResponse(responseMessage, OperationStatus.FAILURE,
 				null, null, cause, logContext);
 	}
-
 
 	public static AnaplanResponse exportSuccess(String responseMessage,
 			ServerFile exportOutput, ExportMetadata exportMetadata,
@@ -351,27 +342,27 @@ public class AnaplanResponse {
 //			}
 //		}
 //	}
-//
-//	public void writeExportData(AnaplanConnection connection,
-//			TrackedData input, OperationResponse response, String exportId,
-//			UserLog operationLog) throws AnaplanAPIException, IOException {
-//
-//		if (getStatus() != OperationStatus.SUCCESS) {
-//			if (getException() == null) {
-//				responseFail(response, input, connection, getResponseMessage());
-//			} else {
-//				responseEpicFail(response, input, connection, getException(),
-//						getResponseMessage());
-//			}
-//			return;
-//		}
-//
-//		operationLog.status(UserMessages.getMessage("exportStartWrite",
-//				exportId));
-//
-//		responseServerFile(input, getServerFile(), response, getLogContext(),
-//				operationLog);
-//	}
+
+	public void writeExportData(AnaplanConnection connection,
+			TrackedData input, OperationResponse response, String exportId,
+			UserLog operationLog) throws AnaplanAPIException, IOException {
+
+		if (getStatus() != OperationStatus.SUCCESS) {
+			if (getException() == null) {
+				responseFail(response, input, connection, getResponseMessage());
+			} else {
+				responseEpicFail(response, input, connection, getException(),
+						getResponseMessage());
+			}
+			return;
+		}
+
+		operationLog.status(UserMessages.getMessage("exportStartWrite",
+				exportId));
+
+		responseServerFile(input, getServerFile(), response, getLogContext(),
+				operationLog);
+	}
 
 	@Override
 	public String toString() {

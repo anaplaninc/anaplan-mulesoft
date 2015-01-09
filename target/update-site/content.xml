@@ -2,19 +2,19 @@
 <?metadataRepository version='1.1.0'?>
 <repository name='anaplan-connector local Update Site' type='org.eclipse.equinox.internal.p2.metadata.repository.LocalMetadataRepository' version='1.0.0'>
   <properties size='2'>
-    <property name='p2.timestamp' value='1420497619924'/>
+    <property name='p2.timestamp' value='1420757410738'/>
     <property name='p2.compressed' value='false'/>
   </properties>
   <units size='4'>
-    <unit id='org.mule.tooling.ui.contribution.anaplan.3.5.0' version='1.0.0.201501051440'>
-      <update id='org.mule.tooling.ui.contribution.anaplan.3.5.0' range='[0.0.0,1.0.0.201501051440)' severity='0'/>
+    <unit id='org.mule.tooling.ui.contribution.anaplan.3.5.0' version='1.0.0.201501081450'>
+      <update id='org.mule.tooling.ui.contribution.anaplan.3.5.0' range='[0.0.0,1.0.0.201501081450)' severity='0'/>
       <properties size='2'>
         <property name='org.eclipse.equinox.p2.name' value='Anaplan'/>
         <property name='org.eclipse.equinox.p2.provider' value='MuleSoft, Inc.'/>
       </properties>
       <provides size='3'>
-        <provided namespace='org.eclipse.equinox.p2.iu' name='org.mule.tooling.ui.contribution.anaplan.3.5.0' version='1.0.0.201501051440'/>
-        <provided namespace='osgi.bundle' name='org.mule.tooling.ui.contribution.anaplan.3.5.0' version='1.0.0.201501051440'/>
+        <provided namespace='org.eclipse.equinox.p2.iu' name='org.mule.tooling.ui.contribution.anaplan.3.5.0' version='1.0.0.201501081450'/>
+        <provided namespace='osgi.bundle' name='org.mule.tooling.ui.contribution.anaplan.3.5.0' version='1.0.0.201501081450'/>
         <provided namespace='org.eclipse.equinox.p2.eclipse.type' name='bundle' version='1.0.0'/>
       </provides>
       <requires size='3'>
@@ -23,13 +23,13 @@
         <required namespace='osgi.bundle' name='org.mule.tooling.core' range='1.0.0'/>
       </requires>
       <artifacts size='1'>
-        <artifact classifier='osgi.bundle' id='org.mule.tooling.ui.contribution.anaplan.3.5.0' version='1.0.0.201501051440'/>
+        <artifact classifier='osgi.bundle' id='org.mule.tooling.ui.contribution.anaplan.3.5.0' version='1.0.0.201501081450'/>
       </artifacts>
       <touchpoint id='org.eclipse.equinox.p2.osgi' version='1.0.0'/>
       <touchpointData size='1'>
         <instructions size='2'>
           <instruction key='manifest'>
-            Bundle-SymbolicName: org.mule.tooling.ui.contribution.anaplan.3.5.0;singleton:=true&#xA;Bundle-Version: 1.0.0.201501051440
+            Bundle-SymbolicName: org.mule.tooling.ui.contribution.anaplan.3.5.0;singleton:=true&#xA;Bundle-Version: 1.0.0.201501081450
           </instruction>
           <instruction key='zipped'>
             true
@@ -37,21 +37,21 @@
         </instructions>
       </touchpointData>
     </unit>
-    <unit id='org.mule.tooling.ui.extension.anaplan-connector.3.5.0.feature.jar' version='1.0.0.201501051440'>
+    <unit id='org.mule.tooling.ui.extension.anaplan-connector.3.5.0.feature.jar' version='1.0.0.201501081450'>
       <properties size='2'>
         <property name='org.eclipse.equinox.p2.name' value='Anaplan Connector (Mule 3.5.0+)'/>
         <property name='org.eclipse.equinox.p2.provider' value='Mulesoft, Inc.'/>
       </properties>
       <provides size='3'>
-        <provided namespace='org.eclipse.equinox.p2.iu' name='org.mule.tooling.ui.extension.anaplan-connector.3.5.0.feature.jar' version='1.0.0.201501051440'/>
+        <provided namespace='org.eclipse.equinox.p2.iu' name='org.mule.tooling.ui.extension.anaplan-connector.3.5.0.feature.jar' version='1.0.0.201501081450'/>
         <provided namespace='org.eclipse.equinox.p2.eclipse.type' name='feature' version='1.0.0'/>
-        <provided namespace='org.eclipse.update.feature' name='org.mule.tooling.ui.extension.anaplan-connector.3.5.0' version='1.0.0.201501051440'/>
+        <provided namespace='org.eclipse.update.feature' name='org.mule.tooling.ui.extension.anaplan-connector.3.5.0' version='1.0.0.201501081450'/>
       </provides>
       <filter>
         (org.eclipse.update.install.features=true)
       </filter>
       <artifacts size='1'>
-        <artifact classifier='org.eclipse.update.feature' id='org.mule.tooling.ui.extension.anaplan-connector.3.5.0' version='1.0.0.201501051440'/>
+        <artifact classifier='org.eclipse.update.feature' id='org.mule.tooling.ui.extension.anaplan-connector.3.5.0' version='1.0.0.201501081450'/>
       </artifacts>
       <touchpoint id='org.eclipse.equinox.p2.osgi' version='1.0.0'/>
       <touchpointData size='1'>
@@ -67,19 +67,19 @@
         </license>
       </licenses>
     </unit>
-    <unit id='org.mule.tooling.ui.extension.anaplan-connector.3.5.0.feature.group' version='1.0.0.201501051440' singleton='false'>
-      <update id='org.mule.tooling.ui.extension.anaplan-connector.3.5.0.feature.group' range='[0.0.0,1.0.0.201501051440)' severity='0'/>
+    <unit id='org.mule.tooling.ui.extension.anaplan-connector.3.5.0.feature.group' version='1.0.0.201501081450' singleton='false'>
+      <update id='org.mule.tooling.ui.extension.anaplan-connector.3.5.0.feature.group' range='[0.0.0,1.0.0.201501081450)' severity='0'/>
       <properties size='3'>
         <property name='org.eclipse.equinox.p2.name' value='Anaplan Connector (Mule 3.5.0+)'/>
         <property name='org.eclipse.equinox.p2.provider' value='Mulesoft, Inc.'/>
         <property name='org.eclipse.equinox.p2.type.group' value='true'/>
       </properties>
       <provides size='1'>
-        <provided namespace='org.eclipse.equinox.p2.iu' name='org.mule.tooling.ui.extension.anaplan-connector.3.5.0.feature.group' version='1.0.0.201501051440'/>
+        <provided namespace='org.eclipse.equinox.p2.iu' name='org.mule.tooling.ui.extension.anaplan-connector.3.5.0.feature.group' version='1.0.0.201501081450'/>
       </provides>
       <requires size='2'>
-        <required namespace='org.eclipse.equinox.p2.iu' name='org.mule.tooling.ui.contribution.anaplan.3.5.0' range='[1.0.0.201501051440,1.0.0.201501051440]'/>
-        <required namespace='org.eclipse.equinox.p2.iu' name='org.mule.tooling.ui.extension.anaplan-connector.3.5.0.feature.jar' range='[1.0.0.201501051440,1.0.0.201501051440]'>
+        <required namespace='org.eclipse.equinox.p2.iu' name='org.mule.tooling.ui.contribution.anaplan.3.5.0' range='[1.0.0.201501081450,1.0.0.201501081450]'/>
+        <required namespace='org.eclipse.equinox.p2.iu' name='org.mule.tooling.ui.extension.anaplan-connector.3.5.0.feature.jar' range='[1.0.0.201501081450,1.0.0.201501081450]'>
           <filter>
             (org.eclipse.update.install.features=true)
           </filter>
@@ -92,16 +92,16 @@
         </license>
       </licenses>
     </unit>
-    <unit id='file:/Users/spondonsaha/AnypointStudio/workspace/anaplan-connector/target/classes/category.xml.org.mule.modules' version='1.0.0.2--cKMyYu7735C353C5AA3'>
+    <unit id='file:/Users/spondonsaha/AnypointStudio/workspace/anaplan-connector/target/classes/category.xml.org.mule.modules' version='1.0.0.2--cKMyYu7735C353I5AC3'>
       <properties size='2'>
         <property name='org.eclipse.equinox.p2.name' value='Community'/>
         <property name='org.eclipse.equinox.p2.type.category' value='true'/>
       </properties>
       <provides size='1'>
-        <provided namespace='org.eclipse.equinox.p2.iu' name='file:/Users/spondonsaha/AnypointStudio/workspace/anaplan-connector/target/classes/category.xml.org.mule.modules' version='1.0.0.2--cKMyYu7735C353C5AA3'/>
+        <provided namespace='org.eclipse.equinox.p2.iu' name='file:/Users/spondonsaha/AnypointStudio/workspace/anaplan-connector/target/classes/category.xml.org.mule.modules' version='1.0.0.2--cKMyYu7735C353I5AC3'/>
       </provides>
       <requires size='1'>
-        <required namespace='org.eclipse.equinox.p2.iu' name='org.mule.tooling.ui.extension.anaplan-connector.3.5.0.feature.group' range='[1.0.0.201501051440,1.0.0.201501051440]'/>
+        <required namespace='org.eclipse.equinox.p2.iu' name='org.mule.tooling.ui.extension.anaplan-connector.3.5.0.feature.group' range='[1.0.0.201501081450,1.0.0.201501081450]'/>
       </requires>
       <touchpoint id='null' version='0.0.0'/>
     </unit>
