@@ -12,7 +12,7 @@ import org.mule.modules.anaplan.connector.adapters.AnaplanConnectorConnectionIde
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@Generated(value = "Mule DevKit Version 3.5.2", date = "2015-01-08T02:50:03-08:00", comments = "Build UNNAMED.2039.0541b23")
+@Generated(value = "Mule DevKit Version 3.5.2", date = "2015-01-12T11:10:00-08:00", comments = "Build UNNAMED.2039.0541b23")
 public class AnaplanConnectorConnectionFactory implements KeyedPoolableObjectFactory
 {
 
@@ -45,7 +45,7 @@ public class AnaplanConnectorConnectionFactory implements KeyedPoolableObjectFac
             ((Startable) connector).start();
         }
         if (!connector.isConnected()) {
-            connector.connect(((AnaplanConnectorConnectionKey) key).getUsername(), ((AnaplanConnectorConnectionKey) key).getPassword(), ((AnaplanConnectorConnectionKey) key).getUrl(), ((AnaplanConnectorConnectionKey) key).getWorkspaceId(), ((AnaplanConnectorConnectionKey) key).getModelId(), ((AnaplanConnectorConnectionKey) key).getProxyHost(), ((AnaplanConnectorConnectionKey) key).getProxyUser(), ((AnaplanConnectorConnectionKey) key).getProxyPass());
+            connector.connect(((AnaplanConnectorConnectionKey) key).getUsername(), ((AnaplanConnectorConnectionKey) key).getPassword(), ((AnaplanConnectorConnectionKey) key).getUrl(), ((AnaplanConnectorConnectionKey) key).getProxyHost(), ((AnaplanConnectorConnectionKey) key).getProxyUser(), ((AnaplanConnectorConnectionKey) key).getProxyPass());
         }
         return connector;
     }
@@ -111,7 +111,7 @@ public class AnaplanConnectorConnectionFactory implements KeyedPoolableObjectFac
         }
         try {
             if (!((AnaplanConnectorConnectionIdentifierAdapter) obj).isConnected()) {
-                ((AnaplanConnectorConnectionIdentifierAdapter) obj).connect(((AnaplanConnectorConnectionKey) key).getUsername(), ((AnaplanConnectorConnectionKey) key).getPassword(), ((AnaplanConnectorConnectionKey) key).getUrl(), ((AnaplanConnectorConnectionKey) key).getWorkspaceId(), ((AnaplanConnectorConnectionKey) key).getModelId(), ((AnaplanConnectorConnectionKey) key).getProxyHost(), ((AnaplanConnectorConnectionKey) key).getProxyUser(), ((AnaplanConnectorConnectionKey) key).getProxyPass());
+                ((AnaplanConnectorConnectionIdentifierAdapter) obj).connect(((AnaplanConnectorConnectionKey) key).getUsername(), ((AnaplanConnectorConnectionKey) key).getPassword(), ((AnaplanConnectorConnectionKey) key).getUrl(), ((AnaplanConnectorConnectionKey) key).getProxyHost(), ((AnaplanConnectorConnectionKey) key).getProxyUser(), ((AnaplanConnectorConnectionKey) key).getProxyPass());
             }
         } catch (Exception e) {
             throw e;

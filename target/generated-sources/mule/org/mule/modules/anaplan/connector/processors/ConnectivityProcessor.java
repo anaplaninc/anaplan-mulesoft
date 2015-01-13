@@ -9,7 +9,7 @@ import javax.annotation.Generated;
  * Interface used to unify all message processors (those which use (or not) pagination) from the ManagedConnectionProcessInterceptor
  * 
  */
-@Generated(value = "Mule DevKit Version 3.5.2", date = "2015-01-08T02:50:03-08:00", comments = "Build UNNAMED.2039.0541b23")
+@Generated(value = "Mule DevKit Version 3.5.2", date = "2015-01-12T11:10:00-08:00", comments = "Build UNNAMED.2039.0541b23")
 public interface ConnectivityProcessor {
 
 
@@ -18,10 +18,6 @@ public interface ConnectivityProcessor {
     public Object getPassword();
 
     public Object getUrl();
-
-    public Object getWorkspaceId();
-
-    public Object getModelId();
 
     public Object getProxyHost();
 

@@ -6,9 +6,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
-public class ReadTestCases
-    extends anaplanTestParent
-{
+public class ReadTestCases extends anaplanTestParent {
 
 
     @Before
@@ -27,9 +25,7 @@ public class ReadTestCases
         SmokeTests.class
     })
     @Test
-    public void testRead()
-        throws Exception
-    {
+    public void testRead() throws Exception {
         Object result = runFlowAndGetPayload("read");
         throw new RuntimeException("NOT IMPLEMENTED METHOD");
     }

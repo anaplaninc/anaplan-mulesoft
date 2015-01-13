@@ -30,17 +30,17 @@ import org.mule.security.oauth.callback.ProcessCallback;
 
 
 /**
- * ReadMessageProcessor invokes the {@link org.mule.modules.anaplan.connector.AnaplanConnector#read()} method in {@link AnaplanConnector }. For each argument there is a field in this processor to match it.  Before invoking the actual method the processor will evaluate and transform where possible to the expected argument type.
+ * ImportModelMessageProcessor invokes the {@link org.mule.modules.anaplan.connector.AnaplanConnector#importModel()} method in {@link AnaplanConnector }. For each argument there is a field in this processor to match it.  Before invoking the actual method the processor will evaluate and transform where possible to the expected argument type.
  * 
  */
-@Generated(value = "Mule DevKit Version 3.5.2", date = "2015-01-08T02:50:03-08:00", comments = "Build UNNAMED.2039.0541b23")
-public class ReadMessageProcessor
+@Generated(value = "Mule DevKit Version 3.5.2", date = "2015-01-12T11:10:00-08:00", comments = "Build UNNAMED.2039.0541b23")
+public class ImportModelMessageProcessor
     extends AbstractConnectedProcessor
     implements MessageProcessor, OperationMetaDataEnabled
 {
 
 
-    public ReadMessageProcessor(String operationName) {
+    public ImportModelMessageProcessor(String operationName) {
         super(operationName);
     }
 
@@ -101,7 +101,7 @@ public class ReadMessageProcessor
                 public Object process(Object object)
                     throws Exception
                 {
-                    return ((AnaplanConnector) object).read();
+                    return ((AnaplanConnector) object).importModel();
                 }
 
             }
@@ -142,7 +142,7 @@ public class ReadMessageProcessor
                     return metadata;
                 }
                 if (metadata.get() == null) {
-                    return new DefaultResult<MetaData>(null, (Result.Status.FAILURE), "There was an error processing metadata at AnaplanConnector at read retrieving was successful but result is null");
+                    return new DefaultResult<MetaData>(null, (Result.Status.FAILURE), "There was an error processing metadata at AnaplanConnector at importModel retrieving was successful but result is null");
                 }
                 return metadata;
             } catch (Exception e) {

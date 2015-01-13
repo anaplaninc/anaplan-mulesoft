@@ -3,13 +3,14 @@ package org.mule.modules.anaplan.connector;
 
 //import java.util.Collections;
 import java.util.HashMap;
+
+import org.mule.modules.anaplan.connector.exceptions.ConnectorPropertiesException;
+import org.mule.modules.anaplan.connector.utils.LogUtil;
 //import java.util.HashSet;
 //import java.util.Set;
 
 //import com.boomi.connector.api.PropertyMap;
 
-import com.anaplan.connector.exceptions.ConnectorPropertiesException;
-import com.anaplan.connector.utils.LogUtil;
 
 /**
  * Parameter caching and validation.

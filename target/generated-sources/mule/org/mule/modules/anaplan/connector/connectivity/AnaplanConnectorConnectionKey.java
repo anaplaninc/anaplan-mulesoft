@@ -8,7 +8,7 @@ import javax.annotation.Generated;
  * A tuple of connection parameters
  * 
  */
-@Generated(value = "Mule DevKit Version 3.5.2", date = "2015-01-08T02:50:03-08:00", comments = "Build UNNAMED.2039.0541b23")
+@Generated(value = "Mule DevKit Version 3.5.2", date = "2015-01-12T11:10:00-08:00", comments = "Build UNNAMED.2039.0541b23")
 public class AnaplanConnectorConnectionKey {
 
     /**
@@ -26,14 +26,6 @@ public class AnaplanConnectorConnectionKey {
     /**
      * 
      */
-    private String workspaceId;
-    /**
-     * 
-     */
-    private String modelId;
-    /**
-     * 
-     */
     private String proxyHost;
     /**
      * 
@@ -44,49 +36,13 @@ public class AnaplanConnectorConnectionKey {
      */
     private String proxyPass;
 
-    public AnaplanConnectorConnectionKey(String username, String password, String url, String workspaceId, String modelId, String proxyHost, String proxyUser, String proxyPass) {
+    public AnaplanConnectorConnectionKey(String username, String password, String url, String proxyHost, String proxyUser, String proxyPass) {
         this.username = username;
         this.password = password;
         this.url = url;
-        this.workspaceId = workspaceId;
-        this.modelId = modelId;
         this.proxyHost = proxyHost;
         this.proxyUser = proxyUser;
         this.proxyPass = proxyPass;
-    }
-
-    /**
-     * Sets modelId
-     * 
-     * @param value Value to set
-     */
-    public void setModelId(String value) {
-        this.modelId = value;
-    }
-
-    /**
-     * Retrieves modelId
-     * 
-     */
-    public String getModelId() {
-        return this.modelId;
-    }
-
-    /**
-     * Sets workspaceId
-     * 
-     * @param value Value to set
-     */
-    public void setWorkspaceId(String value) {
-        this.workspaceId = value;
-    }
-
-    /**
-     * Retrieves workspaceId
-     * 
-     */
-    public String getWorkspaceId() {
-        return this.workspaceId;
     }
 
     /**

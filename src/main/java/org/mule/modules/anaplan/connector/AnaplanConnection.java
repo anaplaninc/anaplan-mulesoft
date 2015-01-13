@@ -1,7 +1,7 @@
 /**
  * Basic Anaplan Connection class that helps establish an API connection using
  * the provided credentials from the connector.
- * 
+ *
  * Author: Spondon Saha
  */
 
@@ -11,53 +11,53 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 
+import org.mule.modules.anaplan.connector.exceptions.AnaplanConnectionException;
+import org.mule.modules.anaplan.connector.exceptions.ConnectorPropertiesException;
+import org.mule.modules.anaplan.connector.utils.LogUtil;
+import org.mule.modules.anaplan.connector.utils.UserMessages;
+
 import com.anaplan.client.AnaplanAPIException;
 import com.anaplan.client.Credentials;
-import com.anaplan.client.Model;
 import com.anaplan.client.Service;
 import com.anaplan.client.Workspace;
-import com.anaplan.connector.exceptions.AnaplanConnectionException;
-import com.anaplan.connector.exceptions.ConnectorPropertiesException;
-import com.anaplan.connector.utils.LogUtil;
-import com.anaplan.connector.utils.UserMessages;
-
 
 /**
  * Validation and communication with the Anaplan model.
- * 
+ *
  * This component has no individual access to the user-facing boomi logs: errors
  * reported here should be handled by the enclosing operation with the supplied
  * context from {@link #getLogContext()}.
  */
 public class AnaplanConnection {
-	
+
 	private static final String URL_FIELD = "url";
 	private static final String PASSWORD_FIELD = "password";
 	private static final String USERNAME_FIELD = "username";
-	private static final String WORKSPACEID_FIELD = "workspaceId";
-	private static final String MODELID_FIELD = "modelId";
+	// private static final String WORKSPACEID_FIELD = "workspaceId";
+	// private static final String MODELID_FIELD = "modelId";
 	private static final String URL_PROXY = "proxyHost";
 	private static final String URL_PROXY_USER = "proxyUser";
 	private static final String URL_PROXY_PASS = "proxyPass";
-	
+
 	private final AnaplanConnectorProperties connectionConfig;
 
-//	public static final Logger LOGGER = LogManager.getLogger(AnaplanConnection.class);
-	
 	// cached Anaplan objects when a valid open connection exists, else null
 	private Service openConnection = null;
-	private Model model = null;
+
+	// private Model model = null;
 
 	public AnaplanConnection(String... credentials) {
 		LogUtil.debug("NOTICE: ", credentials[0] + " @ " + credentials[2]);
-//		LOGGER.info("{} : {} ", credentials[0], credentials[1]);
+		// LOGGER.info("{} : {} ", credentials[0], credentials[1]);
 		connectionConfig = new AnaplanConnectorProperties();
 		try {
-			connectionConfig.setProperties(credentials, USERNAME_FIELD, 
-					PASSWORD_FIELD, URL_FIELD, WORKSPACEID_FIELD, MODELID_FIELD, 
-					URL_PROXY, URL_PROXY_USER, URL_PROXY_PASS);
+			connectionConfig.setProperties(credentials, USERNAME_FIELD,
+					PASSWORD_FIELD, URL_FIELD, URL_PROXY, URL_PROXY_USER,
+					URL_PROXY_PASS);
 		} catch (ConnectorPropertiesException e) {
-			LogUtil.error(getLogContext(), "Could not set connector properties!");
+			LogUtil.error(getLogContext(),
+					"Could not set connector properties!"
+							+ e.getStackTrace().toString());
 		}
 		LogUtil.status(getLogContext(), "Stored connection properties!");
 	}
@@ -65,25 +65,28 @@ public class AnaplanConnection {
 	public String getConnectionId() {
 		return this.toString();
 	}
-	
+
 	/**
 	 * Opens a service for accessing anaplan workspaces with this connection's
 	 * API endpoint and credentials.
-	 * 
+	 *
+	 * @return The service object that contains workspace/model details for the
+	 *         authenticated user.
+	 *
 	 * @throws AnaplanConnectionException
 	 *             If there was an error with the service or any or the required
 	 *             properties.
 	 */
-	private void cacheService() throws AnaplanConnectionException {
-		LogUtil.debug(getLogContext(), "trying Anaplan service connection.");
-//		try {
-//			connectionConfig.hasAllRequiredProperties(true);
-//		} catch (IllegalStateException e) {
-//			closeConnection();
-//
-//			LogUtil.error(getLogContext(), e.getMessage(), e);
-//			throw new AnaplanConnectionException(e.getMessage(), e);
-//		}
+	private Service cacheService() throws AnaplanConnectionException {
+		LogUtil.debug(getLogContext(), "trying Anaplan service connection...");
+		// try {
+		// connectionConfig.hasAllRequiredProperties(true);
+		// } catch (IllegalStateException e) {
+		// closeConnection();
+		//
+		// LogUtil.error(getLogContext(), e.getMessage(), e);
+		// throw new AnaplanConnectionException(e.getMessage(), e);
+		// }
 
 		final String apiUrl = connectionConfig.getStringProperty(URL_FIELD);
 		Service service = null;
@@ -98,11 +101,15 @@ public class AnaplanConnection {
 			throw new AnaplanConnectionException(msg, e);
 		}
 
-		final String username = connectionConfig.getStringProperty(USERNAME_FIELD);
-		final String password = connectionConfig.getStringProperty(PASSWORD_FIELD);
+		final String username = connectionConfig
+				.getStringProperty(USERNAME_FIELD);
+		final String password = connectionConfig
+				.getStringProperty(PASSWORD_FIELD);
 		final String proxyHost = connectionConfig.getStringProperty(URL_PROXY);
-		final String proxyUser = connectionConfig.getStringProperty(URL_PROXY_USER);
-		final String proxyPass = connectionConfig.getStringProperty(URL_PROXY_PASS);
+		final String proxyUser = connectionConfig
+				.getStringProperty(URL_PROXY_USER);
+		final String proxyPass = connectionConfig
+				.getStringProperty(URL_PROXY_PASS);
 
 		try {
 			service.setServiceCredentials(new Credentials(username, password,
@@ -139,7 +146,7 @@ public class AnaplanConnection {
 		LogUtil.debug(getLogContext(),
 				"Anaplan service connection information cached");
 
-		// validate username/password credentials
+		// validate username/password credentials by pulling workspaces for user
 		List<Workspace> availableWorkspaces = null;
 		try {
 			availableWorkspaces = service.getWorkspaces();
@@ -173,89 +180,42 @@ public class AnaplanConnection {
 				"Anaplan service connection validated successfully");
 
 		openConnection = service;
-	}
 
-	/**
-	 * Check whether workspace and model are valid, and cahe if they are.
-	 * Requires a valid openConnection, i.e. cumulative with
-	 * {@link #cacheService()}.
-	 * 
-	 * @throws AnaplanConnectionException
-	 *             With user-friendly error message if validation failed
-	 * @throws IllegalStateException
-	 *             if no open connection available
-	 */
-	private void cacheWorkspaceAndModel() throws AnaplanConnectionException {
-		LogUtil.debug(getLogContext(), "validating workspace and model");
-
-		if (openConnection == null) {
-			throw new IllegalStateException(
-					"Can't retrieve workspace or model: Anaplan service has not been initialised");
-		}
-
-		final String workspaceId = connectionConfig.getStringProperty(
-				WORKSPACEID_FIELD);
-		final String modelId = connectionConfig.getStringProperty(
-				MODELID_FIELD);
-		try {
-			final Workspace workspace = openConnection
-					.getWorkspace(workspaceId);
-
-			if (workspace == null) {
-				throw new AnaplanConnectionException(UserMessages.getMessage(
-						"invalidWorkspace", workspaceId));
-			} else {
-				LogUtil.debug(getLogContext(),
-						"successfully retrieved workspace");
-			}
-
-			final Model model = workspace.getModel(modelId);
-			if (model == null) {
-				throw new AnaplanConnectionException(UserMessages.getMessage(
-						"invalidModel", modelId));
-			} else {
-				LogUtil.debug(getLogContext(), "successfully retrieved model");
-				this.model = model;
-			}
-
-		} catch (AnaplanAPIException e) {
-			closeConnection();
-
-			final String msg = "Error retrieving Anaplan model or workspace: "
-					+ e.getMessage();
-			LogUtil.error(getLogContext(), msg, e);
-
-			throw new AnaplanConnectionException(msg, e);
-		}
-
-		LogUtil.debug(getLogContext(),
-				"workspace and model validated successfully");
+		return service;
 	}
 
 	/**
 	 * Note that model's associated service object is left open for model
 	 * access. Service should be closed by caller when access complete using
 	 * {@link #closeConnection()}.
-	 * 
+	 *
 	 * If any open connection already exists it will be closed.
-	 * 
+	 *
 	 * @return null if workspace or model is not valid, else anaplan model
 	 *         object
 	 * @throws AnaplanConnectionException
 	 *             With user-friendly message if the model cannot be opened.
 	 */
-	public Model openConnection() throws AnaplanConnectionException {
-		LogUtil.debug(getLogContext(), "openConnection()");
-		if (openConnection != null) {
-			LogUtil.warning(getLogContext(),
-					"openConnection() request found existing open connection: closing.");
-			closeConnection();
+	public Service openConnection() throws AnaplanConnectionException {
+		LogUtil.status(getLogContext(), "Establishing connection....");
+		if (openConnection == null) {
+			LogUtil.status(getLogContext(), "No new connection found, "
+					+ "establishing new connection!");
+			return cacheService();
+		} else {
+			LogUtil.status(getLogContext(), "Connection exists, returning "
+					+ "cached connection!");
+			return this.openConnection;
 		}
+	}
 
-		cacheService();
-		cacheWorkspaceAndModel();
-
-		return model;
+	/**
+	 * Getter for retrieving the open-connection, which is the service object
+	 * to use for querying workspace and model details.
+	 * @return
+	 */
+	public Service getConnection() {
+		return this.openConnection;
 	}
 
 	/**
@@ -265,32 +225,25 @@ public class AnaplanConnection {
 		if (openConnection != null) {
 			openConnection.close();
 		}
-
 		openConnection = null;
-		model = null;
+		LogUtil.status(getLogContext(), "Connection closed.");
 	}
 
-//	public String getOperationType() {
-//		return getContext().getOperationType().toString();
-//	}
+	// public String getOperationType() {
+	// return getContext().getOperationType().toString();
+	// }
 
 	/**
-	 * Get a log prefix of the form: [api url] [workspace] [model] [username].
-	 * 
+	 * Get a log prefix of the form: [api url] [username].
+	 *
 	 * @return
 	 */
 	public String getLogContext() {
-		final String apiUrl = connectionConfig
-				.getStringProperty(URL_FIELD);
-		final String workspaceId = connectionConfig
-				.getStringProperty(WORKSPACEID_FIELD);
-		final String modelId = connectionConfig
-				.getStringProperty(MODELID_FIELD);
+		final String apiUrl = connectionConfig.getStringProperty(URL_FIELD);
 		final String username = connectionConfig
 				.getStringProperty(USERNAME_FIELD);
 
-		return wrap(apiUrl) + " " + wrap(workspaceId) + " " + wrap(modelId)
-				+ " " + wrap(username);
+		return wrap(apiUrl) + " " + wrap(username);
 	}
 
 	private String wrap(String s) {

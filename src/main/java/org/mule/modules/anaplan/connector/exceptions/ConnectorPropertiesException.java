@@ -1,12 +1,12 @@
-package com.anaplan.connector.exceptions;
+package org.mule.modules.anaplan.connector.exceptions;
 
-public class AnaplanConnectionException extends Exception {
+public class ConnectorPropertiesException extends Exception {
 	
 	/**
 	 * Creates an exception with the specified messsage
 	 * @param message
 	 */
-	public AnaplanConnectionException(String message) {
+	public ConnectorPropertiesException(String message) {
 		super(message);
 	}
 	
@@ -15,7 +15,7 @@ public class AnaplanConnectionException extends Exception {
 	 * @param message
 	 * @param cause
 	 */
-	public AnaplanConnectionException(String message, Throwable cause) {
+	public ConnectorPropertiesException(String message, Throwable cause) {
 		super(message, cause);
 	}
 }

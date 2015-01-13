@@ -42,7 +42,7 @@ import org.mule.modules.anaplan.connector.pooling.DevkitGenericKeyedObjectPool;
  * A {@code AnaplanConnectorConnectionManager} is a wrapper around {@link AnaplanConnector } that adds connection management capabilities to the pojo.
  * 
  */
-@Generated(value = "Mule DevKit Version 3.5.2", date = "2015-01-08T02:50:03-08:00", comments = "Build UNNAMED.2039.0541b23")
+@Generated(value = "Mule DevKit Version 3.5.2", date = "2015-01-12T11:10:00-08:00", comments = "Build UNNAMED.2039.0541b23")
 public class AnaplanConnectorConnectionManager
     extends ExpressionEvaluatorSupport
     implements MetadataAware, MuleContextAware, ProcessAdapter<AnaplanConnectorConnectionIdentifierAdapter> , Capabilities, Disposable, Initialisable, Testable, ConnectorMetaDataEnabled, ConnectionManager<AnaplanConnectorConnectionKey, AnaplanConnectorConnectionIdentifierAdapter>
@@ -60,14 +60,6 @@ public class AnaplanConnectorConnectionManager
      * 
      */
     private String url;
-    /**
-     * 
-     */
-    private String workspaceId;
-    /**
-     * 
-     */
-    private String modelId;
     /**
      * 
      */
@@ -169,40 +161,6 @@ public class AnaplanConnectorConnectionManager
      */
     public RetryPolicyTemplate getRetryPolicyTemplate() {
         return this.retryPolicyTemplate;
-    }
-
-    /**
-     * Sets modelId
-     * 
-     * @param value Value to set
-     */
-    public void setModelId(String value) {
-        this.modelId = value;
-    }
-
-    /**
-     * Retrieves modelId
-     * 
-     */
-    public String getModelId() {
-        return this.modelId;
-    }
-
-    /**
-     * Sets workspaceId
-     * 
-     * @param value Value to set
-     */
-    public void setWorkspaceId(String value) {
-        this.workspaceId = value;
-    }
-
-    /**
-     * Retrieves workspaceId
-     * 
-     */
-    public String getWorkspaceId() {
-        return this.workspaceId;
     }
 
     /**
@@ -361,7 +319,7 @@ public class AnaplanConnectorConnectionManager
 
     @Override
     public AnaplanConnectorConnectionKey getDefaultConnectionKey() {
-        return new AnaplanConnectorConnectionKey(getUsername(), getPassword(), getUrl(), getWorkspaceId(), getModelId(), getProxyHost(), getProxyUser(), getProxyPass());
+        return new AnaplanConnectorConnectionKey(getUsername(), getPassword(), getUrl(), getProxyHost(), getProxyUser(), getProxyPass());
     }
 
     @Override
@@ -378,12 +336,10 @@ public class AnaplanConnectorConnectionManager
                 throw new UnableToAcquireConnectionException("Parameter password in method connect can't be null because is not @Optional");
             }
             final String _transformedUrl = ((String) evaluateAndTransform(muleContext, event, this.getClass().getDeclaredField("url").getGenericType(), null, getUrl()));
-            final String _transformedWorkspaceId = ((String) evaluateAndTransform(muleContext, event, this.getClass().getDeclaredField("workspaceId").getGenericType(), null, getWorkspaceId()));
-            final String _transformedModelId = ((String) evaluateAndTransform(muleContext, event, this.getClass().getDeclaredField("modelId").getGenericType(), null, getModelId()));
             final String _transformedProxyHost = ((String) evaluateAndTransform(muleContext, event, this.getClass().getDeclaredField("proxyHost").getGenericType(), null, getProxyHost()));
             final String _transformedProxyUser = ((String) evaluateAndTransform(muleContext, event, this.getClass().getDeclaredField("proxyUser").getGenericType(), null, getProxyUser()));
             final String _transformedProxyPass = ((String) evaluateAndTransform(muleContext, event, this.getClass().getDeclaredField("proxyPass").getGenericType(), null, getProxyPass()));
-            return new AnaplanConnectorConnectionKey(_transformedUsername, _transformedPassword, _transformedUrl, _transformedWorkspaceId, _transformedModelId, _transformedProxyHost, _transformedProxyUser, _transformedProxyPass);
+            return new AnaplanConnectorConnectionKey(_transformedUsername, _transformedPassword, _transformedUrl, _transformedProxyHost, _transformedProxyUser, _transformedProxyPass);
         }
         return getDefaultConnectionKey();
     }

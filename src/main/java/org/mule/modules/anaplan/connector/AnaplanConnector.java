@@ -30,17 +30,16 @@ import org.mule.common.metadata.MetaDataModel;
 import org.mule.common.metadata.builder.DefaultMetaDataBuilder;
 import org.mule.common.metadata.builder.DynamicObjectBuilder;
 import org.mule.common.metadata.datatype.DataType;
+import org.mule.modules.anaplan.connector.exceptions.AnaplanConnectionException;
+import org.mule.modules.anaplan.connector.exceptions.AnaplanExportOperationException;
+import org.mule.modules.anaplan.connector.utils.AnaplanExportOperation;
+import org.mule.modules.anaplan.connector.utils.LogUtil;
 
-import com.anaplan.connector.exceptions.AnaplanConnectionException;
-import com.anaplan.connector.utils.AnaplanExportOperation;
-import com.anaplan.connector.utils.LogUtil;
-//import org.apache.logging.log4j.Logger;
-//import org.apache.logging.log4j.LogManager;
-//import org.mule.api.annotations.Configurable;
+import com.anaplan.client.Service;
 
 /**
  * Anaplan Connector built using Anypoint Studio.
- * 
+ *
  * @author MuleSoft, Inc.
  * @author Spondon Saha.
  */
@@ -64,6 +63,8 @@ public class AnaplanConnector {
 
 	private static AnaplanExportOperation exporter;
 
+	private Service service;
+
 	/**
 	 * Retrieves the list of keys
 	 */
@@ -80,7 +81,7 @@ public class AnaplanConnector {
 
 	/**
 	 * Get MetaData given the Key the user selects
-	 * 
+	 *
 	 * @param key
 	 *            The key selected from the list of valid keys
 	 * @return The MetaData model of that corresponds to the key
@@ -112,7 +113,7 @@ public class AnaplanConnector {
 
 	/**
 	 * Create a record
-	 * 
+	 *
 	 * @return
 	 */
 	@Processor(friendlyName = "Import")
@@ -122,18 +123,26 @@ public class AnaplanConnector {
 
 	/**
 	 * Run an export of an Anaplan Model specified bu model ID.
-	 * 
+	 *
 	 * @return Serializable response object.
 	 */
 	@Processor(friendlyName = "Export")
-	public AnaplanResponse exportModel(String anaplanModelId) {
+	public String exportModel(String anaplanWorkspaceId, String anaplanModelId,
+			String anaplanExportId) {
+		String data = null;
 		exporter = new AnaplanExportOperation(apiConn);
-		return exporter.runExport(anaplanModelId);
+		try {
+			data = exporter.runExport(anaplanWorkspaceId, anaplanModelId,
+					anaplanExportId);
+		} catch (AnaplanExportOperationException e) {
+			LogUtil.error(apiConn.getLogContext(), e.getMessage());
+		}
+		return data;
 	}
 
 	/**
 	 * Updates a record
-	 * 
+	 *
 	 * @return
 	 */
 	@Processor(friendlyName = "Update")
@@ -143,7 +152,7 @@ public class AnaplanConnector {
 
 	/**
 	 * Deletes a record
-	 * 
+	 *
 	 * @return
 	 */
 	@Processor(friendlyName = "Delete")
@@ -153,19 +162,15 @@ public class AnaplanConnector {
 
 	/**
 	 * Connect to the Anaplan API.
-	 * 
+	 *
 	 * @param username
-	 *            A username
 	 * @param password
-	 *            A password
 	 * @throws ConnectionException
 	 */
 	@Connect
 	public synchronized void connect(@ConnectionKey String username,
 			@Password String password,
 			@Optional @Default("https://api.anaplan.com") String url,
-			@Optional @Default("") String workspaceId,
-			@Optional @Default("") String modelId,
 			@Optional @Default("") String proxyHost,
 			@Optional @Default("") String proxyUser,
 			@Optional @Default("") String proxyPass)
@@ -174,18 +179,25 @@ public class AnaplanConnector {
 		LogUtil.status(getClass().toString(), "Initiating connection...");
 
 		if (apiConn == null) {
-			apiConn = new AnaplanConnection(username, password, url,
-					workspaceId, modelId, proxyHost, proxyUser, proxyPass);
+			apiConn = new AnaplanConnection(username, password, url, proxyHost,
+					proxyUser, proxyPass);
 			try {
-				apiConn.openConnection();
+				service = apiConn.openConnection();
 			} catch (AnaplanConnectionException e) {
 				throw new org.mule.api.ConnectionException(
 						ConnectionExceptionCode.INCORRECT_CREDENTIALS, null,
 						e.getMessage(), e);
 			}
 
-			LogUtil.status(getClass().toString(),
-					"Successfully connected to Anaplan API!");
+			if (service == null) {
+				throw new org.mule.api.ConnectionException(
+						ConnectionExceptionCode.UNKNOWN, null, "No service "
+						+ "object acquired after opening connection to Anaplan "
+						+ "API!", null);
+			} else {
+				LogUtil.status(getClass().toString(),
+						"Successfully connected to Anaplan API!");
+			}
 		}
 	}
 
@@ -225,10 +237,10 @@ public class AnaplanConnector {
 
 	/**
 	 * Custom processor
-	 * 
+	 *
 	 * {@sample.xml ../../../doc/anaplan-connector.xml.sample
 	 * anaplan:my-processor}
-	 * 
+	 *
 	 * @param content
 	 *            Content to be processed
 	 * @return Some string

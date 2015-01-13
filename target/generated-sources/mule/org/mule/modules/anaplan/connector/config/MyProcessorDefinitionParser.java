@@ -15,7 +15,7 @@ import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.xml.ParserContext;
 import org.w3c.dom.Element;
 
-@Generated(value = "Mule DevKit Version 3.5.2", date = "2015-01-08T02:50:03-08:00", comments = "Build UNNAMED.2039.0541b23")
+@Generated(value = "Mule DevKit Version 3.5.2", date = "2015-01-12T11:10:00-08:00", comments = "Build UNNAMED.2039.0541b23")
 public class MyProcessorDefinitionParser
     extends AbstractDevkitBasedDefinitionParser
 {
@@ -46,8 +46,6 @@ public class MyProcessorDefinitionParser
         parseProperty(builder, element, "username", "username");
         parseProperty(builder, element, "password", "password");
         parseProperty(builder, element, "url", "url");
-        parseProperty(builder, element, "workspaceId", "workspaceId");
-        parseProperty(builder, element, "modelId", "modelId");
         parseProperty(builder, element, "proxyHost", "proxyHost");
         parseProperty(builder, element, "proxyUser", "proxyUser");
         parseProperty(builder, element, "proxyPass", "proxyPass");

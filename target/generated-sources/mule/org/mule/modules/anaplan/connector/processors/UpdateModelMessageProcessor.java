@@ -30,17 +30,19 @@ import org.mule.security.oauth.callback.ProcessCallback;
 
 
 /**
- * UpdateMessageProcessor invokes the {@link org.mule.modules.anaplan.connector.AnaplanConnector#update()} method in {@link AnaplanConnector }. For each argument there is a field in this processor to match it.  Before invoking the actual method the processor will evaluate and transform where possible to the expected argument type.
+ * UpdateModelMessageProcessor invokes the {@link org.mule.modules.anaplan.connector.AnaplanConnector#updateModel(java.lang.String)} method in {@link AnaplanConnector }. For each argument there is a field in this processor to match it.  Before invoking the actual method the processor will evaluate and transform where possible to the expected argument type.
  * 
  */
-@Generated(value = "Mule DevKit Version 3.5.2", date = "2015-01-08T02:50:03-08:00", comments = "Build UNNAMED.2039.0541b23")
-public class UpdateMessageProcessor
+@Generated(value = "Mule DevKit Version 3.5.2", date = "2015-01-12T11:10:00-08:00", comments = "Build UNNAMED.2039.0541b23")
+public class UpdateModelMessageProcessor
     extends AbstractConnectedProcessor
     implements MessageProcessor, OperationMetaDataEnabled
 {
 
+    protected Object anaplanModelId;
+    protected String _anaplanModelIdType;
 
-    public UpdateMessageProcessor(String operationName) {
+    public UpdateModelMessageProcessor(String operationName) {
         super(operationName);
     }
 
@@ -74,6 +76,15 @@ public class UpdateMessageProcessor
     }
 
     /**
+     * Sets anaplanModelId
+     * 
+     * @param value Value to set
+     */
+    public void setAnaplanModelId(Object value) {
+        this.anaplanModelId = value;
+    }
+
+    /**
      * Invokes the MessageProcessor.
      * 
      * @param event MuleEvent to be processed
@@ -85,6 +96,7 @@ public class UpdateMessageProcessor
         Object moduleObject = null;
         try {
             moduleObject = findOrCreate(AnaplanConnectorConnectionManager.class, true, event);
+            final String _transformedAnaplanModelId = ((String) evaluateAndTransform(getMuleContext(), event, UpdateModelMessageProcessor.class.getDeclaredField("_anaplanModelIdType").getGenericType(), null, anaplanModelId));
             Object resultPayload;
             final ProcessTemplate<Object, Object> processTemplate = ((ProcessAdapter<Object> ) moduleObject).getProcessTemplate();
             resultPayload = processTemplate.execute(new ProcessCallback<Object,Object>() {
@@ -101,7 +113,7 @@ public class UpdateMessageProcessor
                 public Object process(Object object)
                     throws Exception
                 {
-                    return ((AnaplanConnector) object).update();
+                    return ((AnaplanConnector) object).updateModel(_transformedAnaplanModelId);
                 }
 
             }
@@ -142,7 +154,7 @@ public class UpdateMessageProcessor
                     return metadata;
                 }
                 if (metadata.get() == null) {
-                    return new DefaultResult<MetaData>(null, (Result.Status.FAILURE), "There was an error processing metadata at AnaplanConnector at update retrieving was successful but result is null");
+                    return new DefaultResult<MetaData>(null, (Result.Status.FAILURE), "There was an error processing metadata at AnaplanConnector at updateModel retrieving was successful but result is null");
                 }
                 return metadata;
             } catch (Exception e) {

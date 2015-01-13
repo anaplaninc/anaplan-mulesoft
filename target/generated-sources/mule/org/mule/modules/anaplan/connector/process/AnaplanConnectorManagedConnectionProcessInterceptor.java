@@ -20,7 +20,7 @@ import org.mule.security.oauth.callback.ProcessCallback;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@Generated(value = "Mule DevKit Version 3.5.2", date = "2015-01-08T02:50:03-08:00", comments = "Build UNNAMED.2039.0541b23")
+@Generated(value = "Mule DevKit Version 3.5.2", date = "2015-01-12T11:10:00-08:00", comments = "Build UNNAMED.2039.0541b23")
 public class AnaplanConnectorManagedConnectionProcessInterceptor<T >
     extends ExpressionEvaluatorSupport
     implements ProcessInterceptor<T, AnaplanConnectorConnectionIdentifierAdapter>
@@ -54,12 +54,10 @@ public class AnaplanConnectorManagedConnectionProcessInterceptor<T >
                 throw new UnableToAcquireConnectionException("Parameter password in method connect can't be null because is not @Optional");
             }
             final String _transformedUrl = ((String) evaluateAndTransform(muleContext, event, connectivityProcessor.typeFor("_urlType"), null, connectivityProcessor.getUrl()));
-            final String _transformedWorkspaceId = ((String) evaluateAndTransform(muleContext, event, connectivityProcessor.typeFor("_workspaceIdType"), null, connectivityProcessor.getWorkspaceId()));
-            final String _transformedModelId = ((String) evaluateAndTransform(muleContext, event, connectivityProcessor.typeFor("_modelIdType"), null, connectivityProcessor.getModelId()));
             final String _transformedProxyHost = ((String) evaluateAndTransform(muleContext, event, connectivityProcessor.typeFor("_proxyHostType"), null, connectivityProcessor.getProxyHost()));
             final String _transformedProxyUser = ((String) evaluateAndTransform(muleContext, event, connectivityProcessor.typeFor("_proxyUserType"), null, connectivityProcessor.getProxyUser()));
             final String _transformedProxyPass = ((String) evaluateAndTransform(muleContext, event, connectivityProcessor.typeFor("_proxyPassType"), null, connectivityProcessor.getProxyPass()));
-            key = new AnaplanConnectorConnectionKey(_transformedUsername, _transformedPassword, _transformedUrl, _transformedWorkspaceId, _transformedModelId, _transformedProxyHost, _transformedProxyUser, _transformedProxyPass);
+            key = new AnaplanConnectorConnectionKey(_transformedUsername, _transformedPassword, _transformedUrl, _transformedProxyHost, _transformedProxyUser, _transformedProxyPass);
         } else {
             key = connectionManager.getEvaluatedConnectionKey(event);
         }

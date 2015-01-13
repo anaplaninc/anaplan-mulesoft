@@ -13,7 +13,7 @@ import org.springframework.beans.factory.xml.NamespaceHandlerSupport;
  * Registers bean definitions parsers for handling elements in <code>http://www.mulesoft.org/schema/mule/anaplan</code>.
  * 
  */
-@Generated(value = "Mule DevKit Version 3.5.2", date = "2015-01-08T02:50:03-08:00", comments = "Build UNNAMED.2039.0541b23")
+@Generated(value = "Mule DevKit Version 3.5.2", date = "2015-01-12T11:10:00-08:00", comments = "Build UNNAMED.2039.0541b23")
 public class AnaplanNamespaceHandler
     extends NamespaceHandlerSupport
 {
@@ -43,24 +43,24 @@ public class AnaplanNamespaceHandler
             handleException("config", "@Config", ex);
         }
         try {
-            this.registerBeanDefinitionParser("create", new CreateDefinitionParser());
+            this.registerBeanDefinitionParser("import-model", new ImportModelDefinitionParser());
         } catch (NoClassDefFoundError ex) {
-            handleException("create", "@Processor", ex);
+            handleException("import-model", "@Processor", ex);
         }
         try {
-            this.registerBeanDefinitionParser("read", new ReadDefinitionParser());
+            this.registerBeanDefinitionParser("export-model", new ExportModelDefinitionParser());
         } catch (NoClassDefFoundError ex) {
-            handleException("read", "@Processor", ex);
+            handleException("export-model", "@Processor", ex);
         }
         try {
-            this.registerBeanDefinitionParser("update", new UpdateDefinitionParser());
+            this.registerBeanDefinitionParser("update-model", new UpdateModelDefinitionParser());
         } catch (NoClassDefFoundError ex) {
-            handleException("update", "@Processor", ex);
+            handleException("update-model", "@Processor", ex);
         }
         try {
-            this.registerBeanDefinitionParser("delete", new DeleteDefinitionParser());
+            this.registerBeanDefinitionParser("delete-model", new DeleteModelDefinitionParser());
         } catch (NoClassDefFoundError ex) {
-            handleException("delete", "@Processor", ex);
+            handleException("delete-model", "@Processor", ex);
         }
         try {
             this.registerBeanDefinitionParser("my-processor", new MyProcessorDefinitionParser());

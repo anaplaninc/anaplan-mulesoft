@@ -30,17 +30,23 @@ import org.mule.security.oauth.callback.ProcessCallback;
 
 
 /**
- * DeleteMessageProcessor invokes the {@link org.mule.modules.anaplan.connector.AnaplanConnector#delete()} method in {@link AnaplanConnector }. For each argument there is a field in this processor to match it.  Before invoking the actual method the processor will evaluate and transform where possible to the expected argument type.
+ * ExportModelMessageProcessor invokes the {@link org.mule.modules.anaplan.connector.AnaplanConnector#exportModel(java.lang.String, java.lang.String, java.lang.String)} method in {@link AnaplanConnector }. For each argument there is a field in this processor to match it.  Before invoking the actual method the processor will evaluate and transform where possible to the expected argument type.
  * 
  */
-@Generated(value = "Mule DevKit Version 3.5.2", date = "2015-01-08T02:50:03-08:00", comments = "Build UNNAMED.2039.0541b23")
-public class DeleteMessageProcessor
+@Generated(value = "Mule DevKit Version 3.5.2", date = "2015-01-12T11:10:00-08:00", comments = "Build UNNAMED.2039.0541b23")
+public class ExportModelMessageProcessor
     extends AbstractConnectedProcessor
     implements MessageProcessor, OperationMetaDataEnabled
 {
 
+    protected Object anaplanWorkspaceId;
+    protected String _anaplanWorkspaceIdType;
+    protected Object anaplanModelId;
+    protected String _anaplanModelIdType;
+    protected Object anaplanExportId;
+    protected String _anaplanExportIdType;
 
-    public DeleteMessageProcessor(String operationName) {
+    public ExportModelMessageProcessor(String operationName) {
         super(operationName);
     }
 
@@ -74,6 +80,33 @@ public class DeleteMessageProcessor
     }
 
     /**
+     * Sets anaplanExportId
+     * 
+     * @param value Value to set
+     */
+    public void setAnaplanExportId(Object value) {
+        this.anaplanExportId = value;
+    }
+
+    /**
+     * Sets anaplanWorkspaceId
+     * 
+     * @param value Value to set
+     */
+    public void setAnaplanWorkspaceId(Object value) {
+        this.anaplanWorkspaceId = value;
+    }
+
+    /**
+     * Sets anaplanModelId
+     * 
+     * @param value Value to set
+     */
+    public void setAnaplanModelId(Object value) {
+        this.anaplanModelId = value;
+    }
+
+    /**
      * Invokes the MessageProcessor.
      * 
      * @param event MuleEvent to be processed
@@ -85,6 +118,9 @@ public class DeleteMessageProcessor
         Object moduleObject = null;
         try {
             moduleObject = findOrCreate(AnaplanConnectorConnectionManager.class, true, event);
+            final String _transformedAnaplanWorkspaceId = ((String) evaluateAndTransform(getMuleContext(), event, ExportModelMessageProcessor.class.getDeclaredField("_anaplanWorkspaceIdType").getGenericType(), null, anaplanWorkspaceId));
+            final String _transformedAnaplanModelId = ((String) evaluateAndTransform(getMuleContext(), event, ExportModelMessageProcessor.class.getDeclaredField("_anaplanModelIdType").getGenericType(), null, anaplanModelId));
+            final String _transformedAnaplanExportId = ((String) evaluateAndTransform(getMuleContext(), event, ExportModelMessageProcessor.class.getDeclaredField("_anaplanExportIdType").getGenericType(), null, anaplanExportId));
             Object resultPayload;
             final ProcessTemplate<Object, Object> processTemplate = ((ProcessAdapter<Object> ) moduleObject).getProcessTemplate();
             resultPayload = processTemplate.execute(new ProcessCallback<Object,Object>() {
@@ -101,7 +137,7 @@ public class DeleteMessageProcessor
                 public Object process(Object object)
                     throws Exception
                 {
-                    return ((AnaplanConnector) object).delete();
+                    return ((AnaplanConnector) object).exportModel(_transformedAnaplanWorkspaceId, _transformedAnaplanModelId, _transformedAnaplanExportId);
                 }
 
             }
@@ -120,7 +156,7 @@ public class DeleteMessageProcessor
 
     @Override
     public Result<MetaData> getOutputMetaData(MetaData inputMetadata) {
-        return new DefaultResult<MetaData>(new DefaultMetaData(getPojoOrSimpleModel(boolean.class)));
+        return new DefaultResult<MetaData>(new DefaultMetaData(getPojoOrSimpleModel(String.class)));
     }
 
     private MetaDataModel getPojoOrSimpleModel(Class clazz) {
@@ -142,7 +178,7 @@ public class DeleteMessageProcessor
                     return metadata;
                 }
                 if (metadata.get() == null) {
-                    return new DefaultResult<MetaData>(null, (Result.Status.FAILURE), "There was an error processing metadata at AnaplanConnector at delete retrieving was successful but result is null");
+                    return new DefaultResult<MetaData>(null, (Result.Status.FAILURE), "There was an error processing metadata at AnaplanConnector at exportModel retrieving was successful but result is null");
                 }
                 return metadata;
             } catch (Exception e) {

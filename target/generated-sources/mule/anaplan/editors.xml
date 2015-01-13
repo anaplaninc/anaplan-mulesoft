@@ -38,11 +38,9 @@
         <name name="name" caption="Name" description="Give a name to this configuration so it can be later referenced by config-ref." required="true"></name>
       </group>
       <group id="connection" caption="Connection">
-        <string name="username" caption="Username" description="A username." required="false" javaType="java.lang.String" requiredForDataSense="true"></string>
-        <password name="password" caption="Password" description="A password." required="false" javaType="java.lang.String" requiredForDataSense="true"></password>
+        <string name="username" caption="Username" description="" required="false" javaType="java.lang.String" requiredForDataSense="true"></string>
+        <password name="password" caption="Password" description="" required="false" javaType="java.lang.String" requiredForDataSense="true"></password>
         <string defaultValue="https://api.anaplan.com" name="url" caption="Url" description="" required="false" javaType="java.lang.String"></string>
-        <string defaultValue="" name="workspaceId" caption="Workspace Id" description="" required="false" javaType="java.lang.String"></string>
-        <string defaultValue="" name="modelId" caption="Model Id" description="" required="false" javaType="java.lang.String"></string>
         <string defaultValue="" name="proxyHost" caption="Proxy Host" description="" required="false" javaType="java.lang.String"></string>
         <string defaultValue="" name="proxyUser" caption="Proxy User" description="" required="false" javaType="java.lang.String"></string>
         <string defaultValue="" name="proxyPass" caption="Proxy Pass" description="" required="false" javaType="java.lang.String"></string>
@@ -75,39 +73,58 @@
       <group id="anaplanConnectorGeneric" caption="Basic Settings">
         <modeSwitch alwaysCombo="true" name="Anaplan operations to execute" caption="Operation" description="Operation.">
           <no-operation abstractElement="http://www.mulesoft.org/schema/mule/anaplan/abstractAnaplanConnectorGeneric" versions="[3.5.0,8.0.0]" connector-name="processor"></no-operation>
-          <mode modeId="http://www.mulesoft.org/schema/mule/anaplan/create" modeLabel="Create"></mode>
-          <mode modeId="http://www.mulesoft.org/schema/mule/anaplan/delete" modeLabel="Delete"></mode>
+          <mode modeId="http://www.mulesoft.org/schema/mule/anaplan/delete-model" modeLabel="Delete"></mode>
+          <mode modeId="http://www.mulesoft.org/schema/mule/anaplan/export-model" modeLabel="Export"></mode>
+          <mode modeId="http://www.mulesoft.org/schema/mule/anaplan/import-model" modeLabel="Import"></mode>
           <mode modeId="http://www.mulesoft.org/schema/mule/anaplan/my-processor" modeLabel="My processor"></mode>
-          <mode modeId="http://www.mulesoft.org/schema/mule/anaplan/read" modeLabel="Read"></mode>
-          <mode modeId="http://www.mulesoft.org/schema/mule/anaplan/update" modeLabel="Update"></mode>
+          <mode modeId="http://www.mulesoft.org/schema/mule/anaplan/update-model" modeLabel="Update"></mode>
         </modeSwitch>
       </group>
     </attribute-category>
   </cloud-connector>
-  <cloud-connector returnType="boolean" caption="Create" icon="icons/small/anaplan-connector-24x16.png" localId="create" image="icons/large/anaplan-connector-48x32.png" abstract="true" extends="http://www.mulesoft.org/schema/mule/anaplan/abstractAnaplanConnectorGeneric" metaData="static">
-    <attribute-category caption="General" description="General."></attribute-category>
+  <cloud-connector returnType="boolean" caption="Delete" icon="icons/small/anaplan-connector-24x16.png" localId="delete-model" image="icons/large/anaplan-connector-48x32.png" abstract="true" extends="http://www.mulesoft.org/schema/mule/anaplan/abstractAnaplanConnectorGeneric" metaData="static">
+    <attribute-category caption="General" description="General.">
+      <group id="general" caption="General">
+        <string name="anaplanModelId" caption="Anaplan Model Id" description="" required="true" javaType="java.lang.String"></string>
+      </group>
+    </attribute-category>
     <attribute-category caption="Advanced" description="Advanced.">
       <group id="connector Configuration Overrides" caption="Connector Configuration Overrides">
-        <string name="username" caption="Username" description="A username." required="false" javaType="java.lang.String"></string>
-        <password name="password" caption="Password" description="A password." required="false" javaType="java.lang.String"></password>
+        <string name="username" caption="Username" description="" required="false" javaType="java.lang.String"></string>
+        <password name="password" caption="Password" description="" required="false" javaType="java.lang.String"></password>
         <string defaultValue="https://api.anaplan.com" name="url" caption="Url" description="" required="false" javaType="java.lang.String"></string>
-        <string defaultValue="" name="workspaceId" caption="Workspace Id" description="" required="false" javaType="java.lang.String"></string>
-        <string defaultValue="" name="modelId" caption="Model Id" description="" required="false" javaType="java.lang.String"></string>
         <string defaultValue="" name="proxyHost" caption="Proxy Host" description="" required="false" javaType="java.lang.String"></string>
         <string defaultValue="" name="proxyUser" caption="Proxy User" description="" required="false" javaType="java.lang.String"></string>
         <string defaultValue="" name="proxyPass" caption="Proxy Pass" description="" required="false" javaType="java.lang.String"></string>
       </group>
     </attribute-category>
   </cloud-connector>
-  <cloud-connector returnType="boolean" caption="Delete" icon="icons/small/anaplan-connector-24x16.png" localId="delete" image="icons/large/anaplan-connector-48x32.png" abstract="true" extends="http://www.mulesoft.org/schema/mule/anaplan/abstractAnaplanConnectorGeneric" metaData="static">
+  <cloud-connector returnType="java.lang.String" caption="Export" icon="icons/small/anaplan-connector-24x16.png" localId="export-model" image="icons/large/anaplan-connector-48x32.png" abstract="true" extends="http://www.mulesoft.org/schema/mule/anaplan/abstractAnaplanConnectorGeneric" metaData="static">
+    <attribute-category caption="General" description="General.">
+      <group id="general" caption="General">
+        <string name="anaplanExportId" caption="Anaplan Export Id" description="" required="true" javaType="java.lang.String"></string>
+        <string name="anaplanModelId" caption="Anaplan Model Id" description="" required="true" javaType="java.lang.String"></string>
+        <string name="anaplanWorkspaceId" caption="Anaplan Workspace Id" description="" required="true" javaType="java.lang.String"></string>
+      </group>
+    </attribute-category>
+    <attribute-category caption="Advanced" description="Advanced.">
+      <group id="connector Configuration Overrides" caption="Connector Configuration Overrides">
+        <string name="username" caption="Username" description="" required="false" javaType="java.lang.String"></string>
+        <password name="password" caption="Password" description="" required="false" javaType="java.lang.String"></password>
+        <string defaultValue="https://api.anaplan.com" name="url" caption="Url" description="" required="false" javaType="java.lang.String"></string>
+        <string defaultValue="" name="proxyHost" caption="Proxy Host" description="" required="false" javaType="java.lang.String"></string>
+        <string defaultValue="" name="proxyUser" caption="Proxy User" description="" required="false" javaType="java.lang.String"></string>
+        <string defaultValue="" name="proxyPass" caption="Proxy Pass" description="" required="false" javaType="java.lang.String"></string>
+      </group>
+    </attribute-category>
+  </cloud-connector>
+  <cloud-connector returnType="boolean" caption="Import" icon="icons/small/anaplan-connector-24x16.png" localId="import-model" image="icons/large/anaplan-connector-48x32.png" abstract="true" extends="http://www.mulesoft.org/schema/mule/anaplan/abstractAnaplanConnectorGeneric" metaData="static">
     <attribute-category caption="General" description="General."></attribute-category>
     <attribute-category caption="Advanced" description="Advanced.">
       <group id="connector Configuration Overrides" caption="Connector Configuration Overrides">
-        <string name="username" caption="Username" description="A username." required="false" javaType="java.lang.String"></string>
-        <password name="password" caption="Password" description="A password." required="false" javaType="java.lang.String"></password>
+        <string name="username" caption="Username" description="" required="false" javaType="java.lang.String"></string>
+        <password name="password" caption="Password" description="" required="false" javaType="java.lang.String"></password>
         <string defaultValue="https://api.anaplan.com" name="url" caption="Url" description="" required="false" javaType="java.lang.String"></string>
-        <string defaultValue="" name="workspaceId" caption="Workspace Id" description="" required="false" javaType="java.lang.String"></string>
-        <string defaultValue="" name="modelId" caption="Model Id" description="" required="false" javaType="java.lang.String"></string>
         <string defaultValue="" name="proxyHost" caption="Proxy Host" description="" required="false" javaType="java.lang.String"></string>
         <string defaultValue="" name="proxyUser" caption="Proxy User" description="" required="false" javaType="java.lang.String"></string>
         <string defaultValue="" name="proxyPass" caption="Proxy Pass" description="" required="false" javaType="java.lang.String"></string>
@@ -122,41 +139,26 @@
     </attribute-category>
     <attribute-category caption="Advanced" description="Advanced.">
       <group id="connector Configuration Overrides" caption="Connector Configuration Overrides">
-        <string name="username" caption="Username" description="A username." required="false" javaType="java.lang.String"></string>
-        <password name="password" caption="Password" description="A password." required="false" javaType="java.lang.String"></password>
+        <string name="username" caption="Username" description="" required="false" javaType="java.lang.String"></string>
+        <password name="password" caption="Password" description="" required="false" javaType="java.lang.String"></password>
         <string defaultValue="https://api.anaplan.com" name="url" caption="Url" description="" required="false" javaType="java.lang.String"></string>
-        <string defaultValue="" name="workspaceId" caption="Workspace Id" description="" required="false" javaType="java.lang.String"></string>
-        <string defaultValue="" name="modelId" caption="Model Id" description="" required="false" javaType="java.lang.String"></string>
         <string defaultValue="" name="proxyHost" caption="Proxy Host" description="" required="false" javaType="java.lang.String"></string>
         <string defaultValue="" name="proxyUser" caption="Proxy User" description="" required="false" javaType="java.lang.String"></string>
         <string defaultValue="" name="proxyPass" caption="Proxy Pass" description="" required="false" javaType="java.lang.String"></string>
       </group>
     </attribute-category>
   </cloud-connector>
-  <cloud-connector returnType="boolean" caption="Read" icon="icons/small/anaplan-connector-24x16.png" localId="read" image="icons/large/anaplan-connector-48x32.png" abstract="true" extends="http://www.mulesoft.org/schema/mule/anaplan/abstractAnaplanConnectorGeneric" metaData="static">
-    <attribute-category caption="General" description="General."></attribute-category>
-    <attribute-category caption="Advanced" description="Advanced.">
-      <group id="connector Configuration Overrides" caption="Connector Configuration Overrides">
-        <string name="username" caption="Username" description="A username." required="false" javaType="java.lang.String"></string>
-        <password name="password" caption="Password" description="A password." required="false" javaType="java.lang.String"></password>
-        <string defaultValue="https://api.anaplan.com" name="url" caption="Url" description="" required="false" javaType="java.lang.String"></string>
-        <string defaultValue="" name="workspaceId" caption="Workspace Id" description="" required="false" javaType="java.lang.String"></string>
-        <string defaultValue="" name="modelId" caption="Model Id" description="" required="false" javaType="java.lang.String"></string>
-        <string defaultValue="" name="proxyHost" caption="Proxy Host" description="" required="false" javaType="java.lang.String"></string>
-        <string defaultValue="" name="proxyUser" caption="Proxy User" description="" required="false" javaType="java.lang.String"></string>
-        <string defaultValue="" name="proxyPass" caption="Proxy Pass" description="" required="false" javaType="java.lang.String"></string>
+  <cloud-connector returnType="boolean" caption="Update" icon="icons/small/anaplan-connector-24x16.png" localId="update-model" image="icons/large/anaplan-connector-48x32.png" abstract="true" extends="http://www.mulesoft.org/schema/mule/anaplan/abstractAnaplanConnectorGeneric" metaData="static">
+    <attribute-category caption="General" description="General.">
+      <group id="general" caption="General">
+        <string name="anaplanModelId" caption="Anaplan Model Id" description="" required="true" javaType="java.lang.String"></string>
       </group>
     </attribute-category>
-  </cloud-connector>
-  <cloud-connector returnType="boolean" caption="Update" icon="icons/small/anaplan-connector-24x16.png" localId="update" image="icons/large/anaplan-connector-48x32.png" abstract="true" extends="http://www.mulesoft.org/schema/mule/anaplan/abstractAnaplanConnectorGeneric" metaData="static">
-    <attribute-category caption="General" description="General."></attribute-category>
     <attribute-category caption="Advanced" description="Advanced.">
       <group id="connector Configuration Overrides" caption="Connector Configuration Overrides">
-        <string name="username" caption="Username" description="A username." required="false" javaType="java.lang.String"></string>
-        <password name="password" caption="Password" description="A password." required="false" javaType="java.lang.String"></password>
+        <string name="username" caption="Username" description="" required="false" javaType="java.lang.String"></string>
+        <password name="password" caption="Password" description="" required="false" javaType="java.lang.String"></password>
         <string defaultValue="https://api.anaplan.com" name="url" caption="Url" description="" required="false" javaType="java.lang.String"></string>
-        <string defaultValue="" name="workspaceId" caption="Workspace Id" description="" required="false" javaType="java.lang.String"></string>
-        <string defaultValue="" name="modelId" caption="Model Id" description="" required="false" javaType="java.lang.String"></string>
         <string defaultValue="" name="proxyHost" caption="Proxy Host" description="" required="false" javaType="java.lang.String"></string>
         <string defaultValue="" name="proxyUser" caption="Proxy User" description="" required="false" javaType="java.lang.String"></string>
         <string defaultValue="" name="proxyPass" caption="Proxy Pass" description="" required="false" javaType="java.lang.String"></string>
