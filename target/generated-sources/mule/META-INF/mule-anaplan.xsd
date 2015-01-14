@@ -271,57 +271,6 @@
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
-  <xs:element xmlns="http://www.mulesoft.org/schema/mule/anaplan" xmlns:mule="http://www.mulesoft.org/schema/mule/core" type="MyProcessorType" substitutionGroup="mule:abstract-message-processor" name="my-processor">
-    <xs:annotation>
-      <xs:documentation>Custom processor</xs:documentation>
-    </xs:annotation>
-  </xs:element>
-  <xs:complexType name="MyProcessorType">
-    <xs:complexContent>
-      <xs:extension xmlns:mule="http://www.mulesoft.org/schema/mule/core" base="mule:abstractMessageProcessorType">
-        <xs:attribute type="xs:string" use="optional" name="config-ref">
-          <xs:annotation>
-            <xs:documentation>Specify which configuration to use for this invocation.</xs:documentation>
-          </xs:annotation>
-        </xs:attribute>
-        <xs:attribute type="xs:string" use="required" name="content">
-          <xs:annotation>
-            <xs:documentation>Content to be processed</xs:documentation>
-          </xs:annotation>
-        </xs:attribute>
-        <xs:attribute type="xs:string" use="optional" name="username">
-          <xs:annotation>
-            <xs:documentation></xs:documentation>
-          </xs:annotation>
-        </xs:attribute>
-        <xs:attribute type="xs:string" use="optional" name="password">
-          <xs:annotation>
-            <xs:documentation></xs:documentation>
-          </xs:annotation>
-        </xs:attribute>
-        <xs:attribute type="xs:string" use="optional" default="https://api.anaplan.com" name="url">
-          <xs:annotation>
-            <xs:documentation></xs:documentation>
-          </xs:annotation>
-        </xs:attribute>
-        <xs:attribute type="xs:string" use="optional" default="" name="proxyHost">
-          <xs:annotation>
-            <xs:documentation></xs:documentation>
-          </xs:annotation>
-        </xs:attribute>
-        <xs:attribute type="xs:string" use="optional" default="" name="proxyUser">
-          <xs:annotation>
-            <xs:documentation></xs:documentation>
-          </xs:annotation>
-        </xs:attribute>
-        <xs:attribute type="xs:string" use="optional" default="" name="proxyPass">
-          <xs:annotation>
-            <xs:documentation></xs:documentation>
-          </xs:annotation>
-        </xs:attribute>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
   <xs:simpleType name="OnNoTokenPolicyEnumType">
     <xs:union>
       <xs:simpleType>

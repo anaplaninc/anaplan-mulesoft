@@ -122,14 +122,32 @@ public class AnaplanConnector {
 	}
 
 	/**
-	 * Run an export of an Anaplan Model specified bu model ID.
+	 * Run an export of an Anaplan Model specified by model ID. At the end of
+	 * each export, the connection is dropped, hence a check needs to be made
+	 * to verify if the current connection exists. If not, re-establish it
+	 * by calling .openConnection().
 	 *
 	 * @return Serializable response object.
+	 * @throws AnaplanConnectionException
 	 */
 	@Processor(friendlyName = "Export")
 	public String exportModel(String anaplanWorkspaceId, String anaplanModelId,
-			String anaplanExportId) {
+			String anaplanExportId) throws AnaplanConnectionException {
 		String data = null;
+
+		// validate API connection
+		if (service == null) {
+			try {
+				service = apiConn.openConnection();
+			} catch (AnaplanConnectionException e) {
+				e.printStackTrace();
+				throw e;
+			}
+		} else {
+			LogUtil.status(apiConn.getLogContext(),
+					"Connection to API exists. Proceeding with export...");
+		}
+
 		exporter = new AnaplanExportOperation(apiConn);
 		try {
 			data = exporter.runExport(anaplanWorkspaceId, anaplanModelId,
@@ -168,13 +186,14 @@ public class AnaplanConnector {
 	 * @throws ConnectionException
 	 */
 	@Connect
-	public synchronized void connect(@ConnectionKey String username,
+	public synchronized void connect(
+			@ConnectionKey String username,
 			@Password String password,
-			@Optional @Default("https://api.anaplan.com") String url,
+			@Default("https://api.anaplan.com") String url,
 			@Optional @Default("") String proxyHost,
 			@Optional @Default("") String proxyUser,
 			@Optional @Default("") String proxyPass)
-			throws org.mule.api.ConnectionException {
+					throws org.mule.api.ConnectionException {
 
 		LogUtil.status(getClass().toString(), "Initiating connection...");
 
@@ -245,11 +264,11 @@ public class AnaplanConnector {
 	 *            Content to be processed
 	 * @return Some string
 	 */
-	@Processor
-	public String myProcessor(String content) {
-		/*
-		 * MESSAGE PROCESSOR CODE GOES HERE
-		 */
-		return content;
-	}
+//	@Processor
+//	public String myProcessor(String content) {
+//		/*
+//		 * MESSAGE PROCESSOR CODE GOES HERE
+//		 */
+//		return content;
+//	}
 }

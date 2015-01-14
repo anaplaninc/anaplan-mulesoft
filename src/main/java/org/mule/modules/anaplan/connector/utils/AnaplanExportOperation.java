@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import org.mule.modules.anaplan.connector.AnaplanConnection;
 import org.mule.modules.anaplan.connector.AnaplanResponse;
+import org.mule.modules.anaplan.connector.exceptions.AnaplanConnectionException;
 import org.mule.modules.anaplan.connector.exceptions.AnaplanExportOperationException;
 
 import com.anaplan.client.AnaplanAPIException;
@@ -20,8 +21,8 @@ import com.anaplan.client.Workspace;
  */
 public class AnaplanExportOperation {
 
-	private final AnaplanConnection apiConn;
-	private final Service service;
+	private AnaplanConnection apiConn;
+	private Service service;
 	private Workspace workspace = null;
 	private Model model = null;
 
@@ -30,6 +31,15 @@ public class AnaplanExportOperation {
 	 * @param apiConn
 	 */
 	public AnaplanExportOperation(AnaplanConnection apiConn) {
+		setApiConn(apiConn);
+	}
+
+	/**
+	 * Helper method to set internal reference of API connection and service
+	 * parameters.
+	 * @param apiConn
+	 */
+	private void setApiConn(AnaplanConnection apiConn) {
 		this.apiConn = apiConn;
 		this.service = apiConn.getConnection();
 	}
@@ -122,6 +132,7 @@ public class AnaplanExportOperation {
 	 * @param modelId
 	 * @return
 	 * @throws AnaplanExportOperationException
+	 * @throws AnaplanConnectionException
 	 */
 	public String runExport(String workspaceId, String modelId, String exportId)
 			throws AnaplanExportOperationException {
@@ -155,7 +166,7 @@ public class AnaplanExportOperation {
 			apiConn.closeConnection();
 		}
 
-		LogUtil.debug(exportLogContext, "export operation " + exportId
+		LogUtil.status(exportLogContext, "export operation " + exportId
 				+ " completed");
 		return response;
 	}

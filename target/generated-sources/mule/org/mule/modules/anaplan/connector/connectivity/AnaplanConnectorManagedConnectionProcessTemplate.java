@@ -16,7 +16,7 @@ import org.mule.security.oauth.callback.ProcessCallback;
 import org.mule.security.oauth.process.ProcessCallbackProcessInterceptor;
 import org.mule.security.oauth.process.RetryProcessInterceptor;
 
-@Generated(value = "Mule DevKit Version 3.5.2", date = "2015-01-12T11:10:00-08:00", comments = "Build UNNAMED.2039.0541b23")
+@Generated(value = "Mule DevKit Version 3.5.2", date = "2015-01-14T02:48:10-08:00", comments = "Build UNNAMED.2039.0541b23")
 public class AnaplanConnectorManagedConnectionProcessTemplate<P >implements ProcessTemplate<P, AnaplanConnectorConnectionIdentifierAdapter>
 {
 

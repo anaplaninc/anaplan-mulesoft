@@ -41,6 +41,10 @@ public final class LogUtil {
 
 //	private static ConfigurationSource source;
 
+	private LogUtil() {
+		// static only
+	}
+
 	/**
 	 * User-presentable log message about the status of an operation which is
 	 * proceeding normally.
@@ -64,12 +68,7 @@ public final class LogUtil {
 	 */
 	public static final Level INTERNAL_DEBUG = Level.DEBUG;
 
-	private static Logger serverLog;
-
-	private LogUtil() {
-		// static only
-		serverLog = LogManager.getLogger();
-	}
+	private static Logger serverLog = LogManager.getLogger();
 
 	/**
 	 * Internal message tracing detailed operation execution.

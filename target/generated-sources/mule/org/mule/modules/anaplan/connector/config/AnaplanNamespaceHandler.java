@@ -13,7 +13,7 @@ import org.springframework.beans.factory.xml.NamespaceHandlerSupport;
  * Registers bean definitions parsers for handling elements in <code>http://www.mulesoft.org/schema/mule/anaplan</code>.
  * 
  */
-@Generated(value = "Mule DevKit Version 3.5.2", date = "2015-01-12T11:10:00-08:00", comments = "Build UNNAMED.2039.0541b23")
+@Generated(value = "Mule DevKit Version 3.5.2", date = "2015-01-14T02:48:10-08:00", comments = "Build UNNAMED.2039.0541b23")
 public class AnaplanNamespaceHandler
     extends NamespaceHandlerSupport
 {
@@ -61,11 +61,6 @@ public class AnaplanNamespaceHandler
             this.registerBeanDefinitionParser("delete-model", new DeleteModelDefinitionParser());
         } catch (NoClassDefFoundError ex) {
             handleException("delete-model", "@Processor", ex);
-        }
-        try {
-            this.registerBeanDefinitionParser("my-processor", new MyProcessorDefinitionParser());
-        } catch (NoClassDefFoundError ex) {
-            handleException("my-processor", "@Processor", ex);
         }
     }
 
