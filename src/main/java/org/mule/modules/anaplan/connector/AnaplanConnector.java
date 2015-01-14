@@ -122,10 +122,10 @@ public class AnaplanConnector {
 	}
 
 	/**
-	 * Run an export of an Anaplan Model specified by model ID. At the end of
-	 * each export, the connection is dropped, hence a check needs to be made
-	 * to verify if the current connection exists. If not, re-establish it
-	 * by calling .openConnection().
+	 * Run an export of an Anaplan Model specified by workspace-ID, model-ID and
+	 * the export-ID. At the end of each export, the connection is dropped,
+	 * hence a check needs to be made to verify if the current connection
+	 * exists. If not, re-establish it by calling .openConnection().
 	 *
 	 * @return Serializable response object.
 	 * @throws AnaplanConnectionException
