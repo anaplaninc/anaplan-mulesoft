@@ -115,6 +115,14 @@ public class AnaplanResponse implements Serializable {
 		return exception;
 	}
 
+	/**
+	 * @param responseMessage
+	 * @param status
+	 * @param serverFile
+	 * @param exportMetaData
+	 * @param failureCause
+	 * @param logContext
+	 */
 	private AnaplanResponse(String responseMessage, OperationStatus status,
 			ServerFile serverFile, ExportMetadata exportMetaData,
 			Throwable failureCause, String logContext) {

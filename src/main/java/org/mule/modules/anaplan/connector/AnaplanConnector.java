@@ -138,7 +138,7 @@ public class AnaplanConnector {
 			LogUtil.status(apiConn.getLogContext(),
 					"Connection to API exists. Proceeding with export...");
 		}
-
+		// start the export
 		exporter = new AnaplanExportOperation(apiConn);
 		try {
 			data = exporter.runExport(anaplanWorkspaceId, anaplanModelId,

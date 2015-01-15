@@ -58,9 +58,6 @@ public class AnaplanExportOperation {
 				throw new AnaplanExportOperationException("Could not fetch "
 						+ "workspace with provided Workspace ID: "
 						+ workspaceId);
-			} else {
-				LogUtil.status(apiConn.getLogContext(),
-						"Workspace ID is valid: " + workspaceId);
 			}
 		} catch (AnaplanAPIException e) {
 			throw new AnaplanExportOperationException("Error when fetching "
@@ -87,11 +84,7 @@ public class AnaplanExportOperation {
 			model = workspace.getModel(modelId);
 			if (model == null) {
 				throw new AnaplanExportOperationException("Could not fetch "
-						+ "model with provided model ID: "
-						+ modelId);
-			} else {
-				LogUtil.status(apiConn.getLogContext(),
-						"Model ID is valid: " + modelId);
+						+ "model with provided model ID: " + modelId);
 			}
 		} catch (AnaplanAPIException e) {
 			throw new AnaplanExportOperationException("Error when fetching "
@@ -116,6 +109,10 @@ public class AnaplanExportOperation {
 		// validate workspace and model
 		try {
 			getModel(workspaceId, modelId);
+			LogUtil.status(apiConn.getLogContext(),
+					"Workspace ID is valid: " + workspaceId);
+			LogUtil.status(apiConn.getLogContext(),
+					"Model ID is valid: " + modelId);
 		} catch (AnaplanExportOperationException e) {
 			throw new AnaplanExportOperationException("Validation of Export "
 					+ "details failed!!\n" + e.getMessage());
