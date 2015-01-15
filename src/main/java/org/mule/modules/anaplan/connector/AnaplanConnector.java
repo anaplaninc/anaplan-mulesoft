@@ -63,7 +63,7 @@ public class AnaplanConnector {
 
 	private static AnaplanExportOperation exporter;
 
-	private Service service;
+//	private Service service;
 
 	/**
 	 * Retrieves the list of keys
@@ -136,9 +136,9 @@ public class AnaplanConnector {
 		String data = null;
 
 		// validate API connection
-		if (service == null) {
+		if (apiConn.getConnection() == null) {
 			try {
-				service = apiConn.openConnection();
+				apiConn.openConnection();
 			} catch (AnaplanConnectionException e) {
 				e.printStackTrace();
 				throw e;
@@ -196,6 +196,7 @@ public class AnaplanConnector {
 					throws org.mule.api.ConnectionException {
 
 		LogUtil.status(getClass().toString(), "Initiating connection...");
+		Service service = null;
 
 		if (apiConn == null) {
 			apiConn = new AnaplanConnection(username, password, url, proxyHost,

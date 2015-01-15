@@ -10,7 +10,7 @@ import javax.annotation.Generated;
  * @param <C> Actual connector object that represents a connection
  * 
  */
-@Generated(value = "Mule DevKit Version 3.5.2", date = "2015-01-14T04:21:07-08:00", comments = "Build UNNAMED.2039.0541b23")
+@Generated(value = "Mule DevKit Version 3.5.2", date = "2015-01-14T05:17:19-08:00", comments = "Build UNNAMED.2039.0541b23")
 public interface ConnectionManager<K, C extends Connection >{
 
     /**
