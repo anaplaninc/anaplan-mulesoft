@@ -38,23 +38,14 @@ import org.mule.modules.anaplan.connector.utils.LogUtil;
 import com.anaplan.client.Service;
 
 /**
- * Anaplan Connector built using Anypoint Studio.
+ * Anaplan Connector built using Anypoint Studio to export, import, update
+ * and delete Anaplan models.
  *
  * @author MuleSoft, Inc.
  * @author Spondon Saha.
  */
 @Connector(name = "anaplan", schemaVersion = "1.0", friendlyName = "Anaplan")
 public class AnaplanConnector {
-
-	// public static final Logger LOGGER =
-	// LogManager.getLogger(AnaplanConnector.class);
-
-	/**
-	 * Configurable
-	 */
-	// @Configurable
-	// @Default("value")
-	// private String myProperty;
 
 	/**
 	 * Stores the connection to the Anaplan API
