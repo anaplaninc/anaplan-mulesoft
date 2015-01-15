@@ -4,7 +4,6 @@ import java.io.IOException;
 
 import org.mule.modules.anaplan.connector.AnaplanConnection;
 import org.mule.modules.anaplan.connector.AnaplanResponse;
-import org.mule.modules.anaplan.connector.exceptions.AnaplanConnectionException;
 import org.mule.modules.anaplan.connector.exceptions.AnaplanExportOperationException;
 
 import com.anaplan.client.AnaplanAPIException;
@@ -132,7 +131,6 @@ public class AnaplanExportOperation {
 	 * @param modelId
 	 * @return
 	 * @throws AnaplanExportOperationException
-	 * @throws AnaplanConnectionException
 	 */
 	public String runExport(String workspaceId, String modelId, String exportId)
 			throws AnaplanExportOperationException {

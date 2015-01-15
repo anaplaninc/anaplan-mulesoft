@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Anaplan
 Bundle-SymbolicName: org.mule.tooling.ui.contribution.anaplan.3.5.0;singleton:=true
-Bundle-Version: 1.0.0.201501141448
+Bundle-Version: 1.0.0.201501141621
 Bundle-Activator: org.mule.tooling.ui.contribution.AnaplanActivator
 Bundle-Vendor: MuleSoft, Inc.
 Require-Bundle: org.eclipse.ui,

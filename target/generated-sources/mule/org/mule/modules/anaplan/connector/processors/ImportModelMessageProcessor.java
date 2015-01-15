@@ -33,7 +33,7 @@ import org.mule.security.oauth.callback.ProcessCallback;
  * ImportModelMessageProcessor invokes the {@link org.mule.modules.anaplan.connector.AnaplanConnector#importModel()} method in {@link AnaplanConnector }. For each argument there is a field in this processor to match it.  Before invoking the actual method the processor will evaluate and transform where possible to the expected argument type.
  * 
  */
-@Generated(value = "Mule DevKit Version 3.5.2", date = "2015-01-14T02:48:10-08:00", comments = "Build UNNAMED.2039.0541b23")
+@Generated(value = "Mule DevKit Version 3.5.2", date = "2015-01-14T04:21:07-08:00", comments = "Build UNNAMED.2039.0541b23")
 public class ImportModelMessageProcessor
     extends AbstractConnectedProcessor
     implements MessageProcessor, OperationMetaDataEnabled

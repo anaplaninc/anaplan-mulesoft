@@ -10,7 +10,7 @@ import org.osgi.framework.BundleContext;
  * The activator class controls the plug-in life cycle
  * 
  */
-@Generated(value = "Mule DevKit Version 3.5.2", date = "2015-01-14T02:48:10-08:00", comments = "Build UNNAMED.2039.0541b23")
+@Generated(value = "Mule DevKit Version 3.5.2", date = "2015-01-14T04:21:07-08:00", comments = "Build UNNAMED.2039.0541b23")
 public class AnaplanActivator
     extends AbstractUIPlugin
 {

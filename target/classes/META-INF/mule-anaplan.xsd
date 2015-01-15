@@ -110,7 +110,10 @@
   </xs:complexType>
   <xs:element xmlns="http://www.mulesoft.org/schema/mule/anaplan" xmlns:mule="http://www.mulesoft.org/schema/mule/core" type="ExportModelType" substitutionGroup="mule:abstract-message-processor" name="export-model">
     <xs:annotation>
-      <xs:documentation>Run an export of an Anaplan Model specified bu model ID.</xs:documentation>
+      <xs:documentation>Run an export of an Anaplan Model specified by workspace-ID, model-ID and
+the export-ID. At the end of each export, the connection is dropped,
+hence a check needs to be made to verify if the current connection
+exists. If not, re-establish it by calling .openConnection().</xs:documentation>
     </xs:annotation>
   </xs:element>
   <xs:complexType name="ExportModelType">

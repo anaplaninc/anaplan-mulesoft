@@ -42,7 +42,7 @@ import org.mule.modules.anaplan.connector.pooling.DevkitGenericKeyedObjectPool;
  * A {@code AnaplanConnectorConnectionManager} is a wrapper around {@link AnaplanConnector } that adds connection management capabilities to the pojo.
  * 
  */
-@Generated(value = "Mule DevKit Version 3.5.2", date = "2015-01-14T02:48:10-08:00", comments = "Build UNNAMED.2039.0541b23")
+@Generated(value = "Mule DevKit Version 3.5.2", date = "2015-01-14T04:21:07-08:00", comments = "Build UNNAMED.2039.0541b23")
 public class AnaplanConnectorConnectionManager
     extends ExpressionEvaluatorSupport
     implements MetadataAware, MuleContextAware, ProcessAdapter<AnaplanConnectorConnectionIdentifierAdapter> , Capabilities, Disposable, Initialisable, Testable, ConnectorMetaDataEnabled, ConnectionManager<AnaplanConnectorConnectionKey, AnaplanConnectorConnectionIdentifierAdapter>
