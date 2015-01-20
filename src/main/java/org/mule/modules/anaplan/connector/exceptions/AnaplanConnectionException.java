@@ -5,6 +5,7 @@
 
 package org.mule.modules.anaplan.connector.exceptions;
 
+
 public class AnaplanConnectionException extends Exception {
 
 	private static final long serialVersionUID = 1L;

@@ -38,8 +38,6 @@ public class AnaplanConnection {
 	private static final String URL_FIELD = "url";
 	private static final String PASSWORD_FIELD = "password";
 	private static final String USERNAME_FIELD = "username";
-	// private static final String WORKSPACEID_FIELD = "workspaceId";
-	// private static final String MODELID_FIELD = "modelId";
 	private static final String URL_PROXY = "proxyHost";
 	private static final String URL_PROXY_USER = "proxyUser";
 	private static final String URL_PROXY_PASS = "proxyPass";

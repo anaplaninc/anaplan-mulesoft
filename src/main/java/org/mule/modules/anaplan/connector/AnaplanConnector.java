@@ -22,6 +22,7 @@ import org.mule.api.annotations.display.Password;
 import org.mule.api.annotations.param.ConnectionKey;
 import org.mule.api.annotations.param.Default;
 import org.mule.api.annotations.param.Optional;
+import org.mule.api.annotations.param.Payload;
 import org.mule.common.metadata.DefaultMetaData;
 import org.mule.common.metadata.DefaultMetaDataKey;
 import org.mule.common.metadata.MetaData;
@@ -31,11 +32,13 @@ import org.mule.common.metadata.builder.DefaultMetaDataBuilder;
 import org.mule.common.metadata.builder.DynamicObjectBuilder;
 import org.mule.common.metadata.datatype.DataType;
 import org.mule.modules.anaplan.connector.exceptions.AnaplanConnectionException;
-import org.mule.modules.anaplan.connector.exceptions.AnaplanExportOperationException;
+import org.mule.modules.anaplan.connector.exceptions.AnaplanOperationException;
 import org.mule.modules.anaplan.connector.utils.AnaplanExportOperation;
+import org.mule.modules.anaplan.connector.utils.AnaplanImportOperation;
 import org.mule.modules.anaplan.connector.utils.LogUtil;
 
 import com.anaplan.client.Service;
+
 
 /**
  * Anaplan Connector built using Anypoint Studio to export, import, update
@@ -47,12 +50,9 @@ import com.anaplan.client.Service;
 @Connector(name = "anaplan", schemaVersion = "1.0", friendlyName = "Anaplan")
 public class AnaplanConnector {
 
-	/**
-	 * Stores the connection to the Anaplan API
-	 */
 	private AnaplanConnection apiConn;
-
 	private static AnaplanExportOperation exporter;
+	private static AnaplanImportOperation importer;
 
 //	private Service service;
 
@@ -103,13 +103,33 @@ public class AnaplanConnector {
 	}
 
 	/**
-	 * Create a record
+	 * Reads in CSV data that represents an Anaplan model, delimited by the
+	 * provided delimiter, parses it, then loads it into an Anaplan model.
 	 *
-	 * @return
+	 * @param data
+	 * @param anaplanWorkspaceId
+	 * @param anaplanModelId
+	 * @param anaplanImportId
+	 * @param delimiter
+	 * @throws AnaplanConnectionException
+	 * @throws AnaplanOperationException
 	 */
 	@Processor(friendlyName = "Import")
-	public boolean importModel() {
-		return false;
+	public void importModel(@Payload String data,
+							String anaplanWorkspaceId,
+							String anaplanModelId,
+							String anaplanImportId,
+							@Default("\t") String delimiter)
+									throws AnaplanConnectionException,
+										   AnaplanOperationException {
+		// validate API connection, throws AnaplanConnectionException if
+		// something goes wrong
+		validateConnection();
+
+		// start the import
+		importer = new AnaplanImportOperation(apiConn);
+		importer.runImport(data, anaplanWorkspaceId, anaplanModelId,
+					anaplanImportId, delimiter);
 	}
 
 	/**
@@ -122,31 +142,20 @@ public class AnaplanConnector {
 	 * @throws AnaplanConnectionException
 	 */
 	@Processor(friendlyName = "Export")
-	public String exportModel(String anaplanWorkspaceId, String anaplanModelId,
-			String anaplanExportId) throws AnaplanConnectionException {
-		String data = null;
+	public String exportModel(String anaplanWorkspaceId,
+							  String anaplanModelId,
+							  String anaplanExportId)
+									  throws AnaplanConnectionException,
+											 AnaplanOperationException {
 
-		// validate API connection
-		if (apiConn.getConnection() == null) {
-			try {
-				apiConn.openConnection();
-			} catch (AnaplanConnectionException e) {
-				e.printStackTrace();
-				throw e;
-			}
-		} else {
-			LogUtil.status(apiConn.getLogContext(),
-					"Connection to API exists. Proceeding with export...");
-		}
+		// validate API connection, throws AnaplanConnectionException if
+		// something goes wrong
+		validateConnection();
+
 		// start the export
 		exporter = new AnaplanExportOperation(apiConn);
-		try {
-			data = exporter.runExport(anaplanWorkspaceId, anaplanModelId,
+		return exporter.runExport(anaplanWorkspaceId, anaplanModelId,
 					anaplanExportId);
-		} catch (AnaplanExportOperationException e) {
-			LogUtil.error(apiConn.getLogContext(), e.getMessage());
-		}
-		return data;
 	}
 
 	/**
@@ -170,6 +179,20 @@ public class AnaplanConnector {
 	}
 
 	/**
+	 *
+	 * @throws AnaplanConnectionException
+	 */
+	private void validateConnection() throws AnaplanConnectionException {
+		// validate API connection
+		if (apiConn.getConnection() == null) {
+			apiConn.openConnection();
+		} else {
+			LogUtil.status(apiConn.getLogContext(),
+					"Connection to API exists. Proceeding with export...");
+		}
+	}
+
+	/**
 	 * Connect to the Anaplan API.
 	 *
 	 * @param username
@@ -180,7 +203,7 @@ public class AnaplanConnector {
 	public synchronized void connect(
 			@ConnectionKey String username,
 			@Password String password,
-			@Default("https://api.anaplan.com") String url,
+			@Default("https://api.anaplan.com/") String url,
 			@Optional @Default("") String proxyHost,
 			@Optional @Default("") String proxyUser,
 			@Optional @Default("") String proxyPass)

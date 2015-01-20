@@ -12,6 +12,7 @@ import java.io.Serializable;
 
 import org.mule.modules.anaplan.connector.utils.LogUtil;
 import org.mule.modules.anaplan.connector.utils.OperationStatus;
+import org.mule.modules.anaplan.connector.utils.UserMessages;
 
 import com.anaplan.client.AnaplanAPIException;
 import com.anaplan.client.CellReader;
@@ -78,9 +79,9 @@ public class AnaplanResponse implements Serializable {
 	}
 
 	public static AnaplanResponse importSuccess(String responseMessage,
-			String logContext) {
+			String logContext, ServerFile serverFile) {
 		return new AnaplanResponse(responseMessage, OperationStatus.SUCCESS,
-				null, null, null, logContext);
+				serverFile, null, null, logContext);
 	}
 
 	public static AnaplanResponse executeActionSuccess(String responseMessage,
@@ -281,8 +282,8 @@ public class AnaplanResponse implements Serializable {
 			Throwable e, String reason) {
 		final String msg;
 		if (reason == null) {
-			msg = "Unexpected operation error: Generating OperationResponse error for "
-					+ e.getMessage();
+			msg = "Unexpected operation error: Generating OperationResponse "
+					+ "error for " + e.getMessage();
 		} else {
 			msg = reason + ": " + e.getMessage();
 		}
@@ -290,34 +291,30 @@ public class AnaplanResponse implements Serializable {
 		LogUtil.error(connection.getLogContext(), msg, e); // for stack trace
 		// ResponseUtil.addExceptionFailure(response, inputData, e);
 	}
+//
+//	 private void responseSuccess(String... messageLines) {
+//		 response.addResult(inputData, OperationStatus.SUCCESS,
+//				 this.getResponseMessage(), OperationStatus.SUCCESS.toString(),
+//				 PayloadUtil.toPayload(AnaplanUtil.squish(messageLines)));
+//	 }
 
-	// private void responseSuccess(OperationResponse response,
-	// TrackedData inputData, String... messageLines) {
-	// response.addResult(inputData, OperationStatus.SUCCESS,
-	// this.getResponseMessage(), OperationStatus.SUCCESS.toString(),
-	// PayloadUtil.toPayload(AnaplanUtil.squish(messageLines)));
-	// }
+	 public void writeImportData(AnaplanConnection connection, String importId,
+		 String logContext) throws IOException, AnaplanAPIException {
 
-	// public void writeImportData(AnaplanConnection connection,
-	// TrackedData input, OperationResponse response, String importId,
-	// UserLog operationLog) throws IOException, AnaplanAPIException {
-	//
-	// if (getServerFile() != null) {
-	// responseServerFile(input, getServerFile(), response,
-	// getLogContext(), operationLog);
-	// } else if (getStatus() == OperationStatus.SUCCESS) {
-	// responseSuccess(response, input,
-	// UserMessages.getMessage("importSuccess", importId),
-	// getResponseMessage());
-	// } else {
-	// if (getException() == null) {
-	// responseFail(response, input, connection, getResponseMessage());
-	// } else {
-	// responseEpicFail(response, input, connection, getException(),
-	// getResponseMessage());
-	// }
-	// }
-	// }
+		 if (getServerFile() != null) {
+			 responseServerFile(getServerFile(), getLogContext());
+		 } else if (getStatus() == OperationStatus.SUCCESS) {
+			 LogUtil.status(UserMessages.getMessage("importSuccess", importId),
+					 getResponseMessage());
+		 } else {
+			 if (getException() == null) {
+				 responseFail(connection, getResponseMessage());
+		 } else {
+			 responseEpicFail(connection, getException(),
+					 getResponseMessage());
+		 	}
+		 }
+	 }
 
 	// public void writeExecuteActionData(AnaplanConnection connection,
 	// TrackedData input, OperationResponse response, String actionId,
