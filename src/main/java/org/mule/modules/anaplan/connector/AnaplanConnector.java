@@ -116,12 +116,12 @@ public class AnaplanConnector {
 	 */
 	@Processor(friendlyName = "Import")
 	public void importToModel(@Payload String data,
-							String anaplanWorkspaceId,
-							String anaplanModelId,
-							String anaplanImportId,
-							@Default("\t") String delimiter)
-									throws AnaplanConnectionException,
-										   AnaplanOperationException {
+							  String anaplanWorkspaceId,
+							  String anaplanModelId,
+							  String anaplanImportId,
+							  @Default("\t") String delimiter)
+									  throws AnaplanConnectionException,
+										     AnaplanOperationException {
 		// validate API connection, throws AnaplanConnectionException if
 		// something goes wrong
 		validateConnection();
