@@ -9,12 +9,9 @@ import java.io.IOException;
 
 import org.mule.modules.anaplan.connector.AnaplanConnection;
 import org.mule.modules.anaplan.connector.AnaplanResponse;
-import org.mule.modules.anaplan.connector.exceptions.AnaplanExportOperationException;
+import org.mule.modules.anaplan.connector.exceptions.AnaplanOperationException;
 
 import com.anaplan.client.AnaplanAPIException;
-import com.anaplan.client.Model;
-import com.anaplan.client.Service;
-import com.anaplan.client.Workspace;
 
 
 /**
@@ -23,119 +20,27 @@ import com.anaplan.client.Workspace;
  *
  * @author spondonsaha
  */
-public class AnaplanExportOperation {
-
-	private AnaplanConnection apiConn;
-	private Service service;
-	private Workspace workspace = null;
-	private Model model = null;
+public class AnaplanExportOperation extends BaseAnaplanOperation {
 
 	/**
 	 * Constructor
 	 * @param apiConn
 	 */
 	public AnaplanExportOperation(AnaplanConnection apiConn) {
-		setApiConn(apiConn);
+		super(apiConn);
 	}
 
 	/**
-	 * Helper method to set internal reference of API connection and service
-	 * parameters.
-	 * @param apiConn
-	 */
-	private void setApiConn(AnaplanConnection apiConn) {
-		this.apiConn = apiConn;
-		this.service = apiConn.getConnection();
-	}
-
-	/**
-	 * Fetches the workspace using the provided workspace ID.
-	 * @param workspaceId
-	 * @return Workspace keyed by provided "workspaceId".
-	 * @throws AnaplanExportOperationException
-	 */
-	private Workspace getWorkspace(String workspaceId)
-			throws AnaplanExportOperationException {
-
-		try {
-			workspace = service.getWorkspace(workspaceId);
-			if (workspace == null) {
-				throw new AnaplanExportOperationException("Could not fetch "
-						+ "workspace with provided Workspace ID: "
-						+ workspaceId);
-			}
-		} catch (AnaplanAPIException e) {
-			throw new AnaplanExportOperationException("Error when fetching "
-					+ "workspace for Workspace ID: " + workspaceId);
-		}
-
-		return workspace;
-	}
-
-	/**
-	 * Fetches the model for the provided workspace and model IDs.
-	 * @param workspaceId
-	 * @param modelId
-	 * @return Model keyed by the model and workspace IDs.
-	 * @throws AnaplanExportOperationException
-	 */
-	private Model getModel(String workspaceId, String modelId)
-			throws AnaplanExportOperationException {
-
-		// get the workspace
-		getWorkspace(workspaceId);
-
-		try {
-			model = workspace.getModel(modelId);
-			if (model == null) {
-				throw new AnaplanExportOperationException("Could not fetch "
-						+ "model with provided model ID: " + modelId);
-			}
-		} catch (AnaplanAPIException e) {
-			throw new AnaplanExportOperationException("Error when fetching "
-					+ "model for Workspace ID: " + workspaceId + ", Model ID"
-					+ modelId);
-		}
-
-		return model;
-	}
-
-	/**
-	 * Simple validation that tries to fetch the workspace and model using
-	 * provided IDs. If any of the operation fails, then an exception is thrown.
+	 * Exports a model as a CSV using the provided workspace-ID, model-ID and
+	 * the export-ID.
 	 * @param workspaceId
 	 * @param modelId
 	 * @param exportId
-	 * @throws AnaplanExportOperationException
-	 */
-	private void validateExportDetails(String workspaceId, String modelId,
-			String exportId) throws AnaplanExportOperationException {
-
-		// validate workspace and model
-		try {
-			getModel(workspaceId, modelId);
-			LogUtil.status(apiConn.getLogContext(),
-					"Workspace ID is valid: " + workspaceId);
-			LogUtil.status(apiConn.getLogContext(),
-					"Model ID is valid: " + modelId);
-		} catch (AnaplanExportOperationException e) {
-			throw new AnaplanExportOperationException("Validation of Export "
-					+ "details failed!!\n" + e.getMessage());
-		}
-		// validate export ID
-		// TODO: Fetch JSON response for list of export-IDs, then validate
-	}
-
-	/**
-	 * Performs the export operation against the model with the provided
-	 * model-ID.
-	 *
-	 * @param modelId
 	 * @return
-	 * @throws AnaplanExportOperationException
+	 * @throws AnaplanOperationException
 	 */
 	public String runExport(String workspaceId, String modelId, String exportId)
-			throws AnaplanExportOperationException {
+			throws AnaplanOperationException {
 		final String logContext = apiConn.getLogContext();
 		final String exportLogContext = logContext + " [" + exportId + "]";
 		String response = null;
@@ -146,7 +51,7 @@ public class AnaplanExportOperation {
 		LogUtil.status(logContext, "Export-ID: " + exportId);
 
 		// validate that workspace, model and export-ID are valid.
-		validateExportDetails(workspaceId, modelId, exportId);
+		validateInput(workspaceId, modelId);
 
 		// run the export
 		try {
@@ -159,9 +64,9 @@ public class AnaplanExportOperation {
 					+ anaplanResponse.getResponseMessage());
 
 		} catch (IOException e) {
-			throw new AnaplanExportOperationException(e.getMessage(), e);
+			throw new AnaplanOperationException(e.getMessage(), e);
 		} catch (AnaplanAPIException e) {
-			throw new AnaplanExportOperationException(e.getMessage(), e);
+			throw new AnaplanOperationException(e.getMessage(), e);
 		} finally {
 			apiConn.closeConnection();
 		}

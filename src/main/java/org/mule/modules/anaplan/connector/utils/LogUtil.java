@@ -15,6 +15,7 @@ package org.mule.modules.anaplan.connector.utils;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.mule.modules.anaplan.connector.AnaplanConnection;
 //import org.apache.logging.log4j.core.config.ConfigurationSource;
 //import org.apache.logging.log4j.core.config.Configurator;
 
@@ -145,12 +146,11 @@ public final class LogUtil {
 	 * Write to the main user-facing process log regarding a particular
 	 * operation.
 	 */
-//	public static class ProcessLog extends UserLog {
-//		public ProcessLog(OperationResponse response,
-//				AnaplanConnection connection) {
-//			super(response.getLogger(), connection.getLogContext());
-//		}
-//	}
+	public static class ProcessLog extends UserLog {
+		public ProcessLog(AnaplanConnection connection) {
+			super(serverLog, connection.getLogContext());
+		}
+	}
 
 	/**
 	 * Write to the per-shape log regarding a particular data input.

@@ -6,24 +6,24 @@
 package org.mule.modules.anaplan.connector.exceptions;
 
 
-public class AnaplanConnectionException extends Exception {
+public class AnaplanOperationException extends Exception{
 
 	private static final long serialVersionUID = 1L;
 
 	/**
-	 * Creates an exception with the specified messsage
+	 * Creates an exception with the specified message.
 	 * @param message
 	 */
-	public AnaplanConnectionException(String message) {
+	public AnaplanOperationException(String message) {
 		super(message);
 	}
 
 	/**
-	 * Creates an exception with the specified message and cause
+	 * Creates an exception with the specified message and throwable to throw.
 	 * @param message
 	 * @param cause
 	 */
-	public AnaplanConnectionException(String message, Throwable cause) {
+	public AnaplanOperationException(String message, Throwable cause) {
 		super(message, cause);
 	}
 }

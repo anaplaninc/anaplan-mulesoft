@@ -6,6 +6,7 @@
 package org.mule.modules.anaplan.connector.utils;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -15,11 +16,16 @@ import java.util.List;
 import org.mule.modules.anaplan.connector.AnaplanResponse;
 
 import com.anaplan.client.AnaplanAPIException;
+import com.anaplan.client.CellWriter;
 import com.anaplan.client.Export;
+import com.anaplan.client.Import;
 import com.anaplan.client.Model;
 import com.anaplan.client.ServerFile;
 import com.anaplan.client.Task;
+import com.anaplan.client.TaskResult;
+import com.anaplan.client.TaskResultDetail;
 import com.anaplan.client.TaskStatus;
+import com.google.gson.JsonSyntaxException;
 //import com.google.gson.JsonSyntaxException;
 //import org.apache.logging.log4j.LogManager;
 //import org.apache.logging.log4j.Logger;
@@ -133,16 +139,15 @@ public class AnaplanUtil {
 
 		final Export exp = model.getExport(exportId);
 		if (exp == null) {
-			final String msg = UserMessages.getMessage("invalidExport",
-					exportId);
+			final String msg = UserMessages.getMessage("invalidExport", exportId);
 			return AnaplanResponse.exportFailure(msg, null, null, logContext);
 		}
 
 		final Task task = exp.createTask();
 		final TaskStatus status = runServerTask(task, logContext);
 
-		if (status.getTaskState() == TaskStatus.State.COMPLETE
-				&& status.getResult().isSuccessful()) {
+		if (status.getTaskState() == TaskStatus.State.COMPLETE &&
+			status.getResult().isSuccessful()) {
 			LogUtil.status(logContext, "Export complete.");
 			final ServerFile serverFile = model.getServerFile(exp.getName());
 			if (serverFile == null) {
@@ -160,105 +165,99 @@ public class AnaplanUtil {
 		}
 	}
 
-//	public static AnaplanResponse runImportCsv(AnaplanConnection connection,
-//			String importId, InputStream is, String logContext,
-//			UserLog userLog, String columnSeparator)
-//			throws AnaplanAPIException, JsonSyntaxException, IOException {
-//
-//		Model model = null;
-//		try {
-//			model = connection.openConnection();
-//			userLog.status(UserMessages.getMessage("modelSuccess",
-//					model.getName()));
-//		} catch (AnaplanConnectionException e) {
-//			final String msg = UserMessages.getMessage("modelAccessFail",
-//					e.getMessage());
-//			userLog.error(msg);
-//			return AnaplanResponse.importFailure(msg, e, logContext);
-//		}
-//
-//		final Import imp = model.getImport(importId);
-//
-//		if (imp == null) {
-//			final String msg = UserMessages.getMessage("invalidImport",
-//					importId);
-//			userLog.error(msg);
-//			return AnaplanResponse.importFailure(msg, null, logContext);
-//		}
-//
-//		final ServerFile serverFile = model
-//				.getServerFile(imp.getSourceFileId());
-//
-//		if (serverFile != null) {
-//			// serverFile.setSeparator(columnSeperator);
-//			// final String msg = UserMessages.getMessage("invalidFile",
-//			// imp.getSourceFileId());
-//			// userLog.error(msg);
-//			// return AnaplanResponse.importFailure(msg, null, logContext);
-//
-//			int row_count = 0;
-//			// List<String[]> rows = parseCsv(is,row_count);
-//			List<String[]> rows = parseImportData(is, row_count,
-//					columnSeparator);
-//
-//			/*
-//			 * final CellWriter dataWriter =
-//			 * serverFile.getUploadCellWriter(serverFile .getSeparator());
-//			 */
-//			final CellWriter dataWriter = serverFile.getUploadCellWriter();
-//			dataWriter.writeHeaderRow(HEADER);
-//			LogUtil.debug(logContext, "import header is:\n"
-//					+ debug_output(HEADER));
-//
-//			int rowsProcessed = 0;
-//			for (String[] row : rows) {
-//				dataWriter.writeDataRow(row);
-//				LogUtil.trace(logContext, rowsProcessed + "-"
-//						+ debug_output(row));
-//				++rowsProcessed;
-//			}
-//			dataWriter.close();
-//		}
-//
-//		final Task task = imp.createTask();
-//		final TaskStatus status = runServerTask(task, logContext);
-//		final TaskResult taskResult = status.getResult();
-//
-//		final StringBuilder taskDetails = new StringBuilder();
-//		// taskDetails.append("Import complete: (" + rowsProcessed
-//		// + " records processed)");
-//
-//		taskDetails.append("Import complete: Successfully");
-//		if (taskResult.getDetails() != null) {
-//			for (TaskResultDetail detail : taskResult.getDetails()) {
-//				taskDetails.append("\n" + detail.getLocalizedMessageText());
-//			}
-//			if (status.getTaskState() == TaskStatus.State.COMPLETE
-//					&& status.getResult().isSuccessful()) {
-//				userLog.status("Import complete");
-//			}
-//		}
-//		final String importDetails = taskDetails.toString();
-//		userLog.status(importDetails);
-//
-//		if (taskResult.isFailureDumpAvailable()) {
-//			userLog.status(UserMessages.getMessage("failureDump"));
-//			final ServerFile failDump = taskResult.getFailureDump();
-//
-//			return AnaplanResponse.importWithFailureDump(
-//					UserMessages.getMessage("importBadData", importId),
-//					failDump, logContext);
-//		} else {
-//			userLog.status(UserMessages.getMessage("noFailureDump"));
-//
-//			if (taskResult.isSuccessful()) {
-//				return AnaplanResponse.importSuccess(importDetails, logContext);
-//			} else {
-//				return AnaplanResponse.importFailure(importDetails, null,
-//						logContext);
-//			}
-//		}
-//	}
+	/**
+	 *
+	 * @param data
+	 * @param model
+	 * @param importId
+	 * @param delimiter
+	 * @throws AnaplanAPIException
+	 * @throws JsonSyntaxException
+	 * @throws IOException
+	 */
+	public static AnaplanResponse runImportCsv(String data, Model model,
+			String importId, String delimiter, String logContext)
+					throws AnaplanAPIException, JsonSyntaxException, IOException {
+
+		final Import imp = model.getImport(importId);
+		if (imp == null) {
+			final String msg = "Invalid import!";
+			return AnaplanResponse.importFailure(msg, null, logContext);
+		}
+
+		final ServerFile serverFile = model.getServerFile(imp.getSourceFileId());
+
+		if (serverFile != null) {
+			 serverFile.setSeparator(delimiter);
+			// final String msg = UserMessages.getMessage("invalidFile",
+			// imp.getSourceFileId());
+			// userLog.error(msg);
+			// return AnaplanResponse.importFailure(msg, null, logContext);
+
+			int row_count = 0;
+			// List<String[]> rows = parseCsv(is,row_count);
+			InputStream is = new ByteArrayInputStream(data.getBytes());
+			List<String[]> rows = parseImportData(is, row_count, delimiter);
+
+			/*
+			 * final CellWriter dataWriter =
+			 * serverFile.getUploadCellWriter(serverFile .getSeparator());
+			 */
+			final CellWriter dataWriter = serverFile.getUploadCellWriter();
+			dataWriter.writeHeaderRow(HEADER);
+			LogUtil.status(logContext, "import header is:\n"
+					+ debug_output(HEADER));
+
+			int rowsProcessed = 0;
+			for (String[] row : rows) {
+				dataWriter.writeDataRow(row);
+				LogUtil.trace(logContext, rowsProcessed + "-"
+						+ debug_output(row));
+				++rowsProcessed;
+			}
+			dataWriter.close();
+		}
+
+		final Task task = imp.createTask();
+		final TaskStatus status = runServerTask(task, logContext);
+		final TaskResult taskResult = status.getResult();
+
+		final StringBuilder taskDetails = new StringBuilder();
+		// taskDetails.append("Import complete: (" + rowsProcessed
+		// + " records processed)");
+
+		taskDetails.append("Import complete: Successfully");
+		if (taskResult.getDetails() != null) {
+			for (TaskResultDetail detail : taskResult.getDetails()) {
+				taskDetails.append("\n" + detail.getLocalizedMessageText());
+			}
+			if (status.getTaskState() == TaskStatus.State.COMPLETE
+					&& status.getResult().isSuccessful()) {
+				LogUtil.status(logContext, "Import complete");
+			}
+		}
+		final String importDetails = taskDetails.toString();
+		LogUtil.status(logContext, importDetails);
+
+		if (taskResult.isFailureDumpAvailable()) {
+			LogUtil.status(logContext, UserMessages.getMessage("failureDump"));
+			final ServerFile failDump = taskResult.getFailureDump();
+
+			return AnaplanResponse.importWithFailureDump(
+					UserMessages.getMessage("importBadData", importId),
+					failDump, logContext);
+		} else {
+			LogUtil.status(logContext, UserMessages.getMessage("noFailureDump"));
+
+			if (taskResult.isSuccessful()) {
+				return AnaplanResponse.importSuccess(importDetails, logContext,
+						serverFile);
+			} else {
+				return AnaplanResponse.importFailure(importDetails, null,
+						logContext);
+			}
+		}
+	}
 
 	/**
 	 * CSV parser extracted from runImportCSV so Unit test could be created
@@ -295,7 +294,6 @@ public class AnaplanUtil {
 	 * @return
 	 * @throws IOException
 	 */
-
 	public static List<String[]> parseImportData(InputStream is, int row_count,
 			String columnSeparator) throws IOException {
 		String line;
@@ -358,6 +356,7 @@ public class AnaplanUtil {
 	private static TaskStatus runServerTask(Task task, String logContext)
 			throws AnaplanAPIException {
 		TaskStatus status = task.getStatus();
+		LogUtil.error(logContext, "TASK STATUS: " + status.getTaskState().toString());
 		while (status.getTaskState() != TaskStatus.State.COMPLETE
 				&& status.getTaskState() != TaskStatus.State.CANCELLED) {
 
