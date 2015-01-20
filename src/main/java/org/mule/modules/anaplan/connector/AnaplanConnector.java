@@ -115,7 +115,7 @@ public class AnaplanConnector {
 	 * @throws AnaplanOperationException
 	 */
 	@Processor(friendlyName = "Import")
-	public void importModel(@Payload String data,
+	public void importToModel(@Payload String data,
 							String anaplanWorkspaceId,
 							String anaplanModelId,
 							String anaplanImportId,
@@ -142,11 +142,11 @@ public class AnaplanConnector {
 	 * @throws AnaplanConnectionException
 	 */
 	@Processor(friendlyName = "Export")
-	public String exportModel(String anaplanWorkspaceId,
-							  String anaplanModelId,
-							  String anaplanExportId)
-									  throws AnaplanConnectionException,
-											 AnaplanOperationException {
+	public String exportFromModel(String anaplanWorkspaceId,
+								  String anaplanModelId,
+								  String anaplanExportId)
+										  throws AnaplanConnectionException,
+										  		 AnaplanOperationException {
 
 		// validate API connection, throws AnaplanConnectionException if
 		// something goes wrong

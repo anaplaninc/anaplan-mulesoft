@@ -69,45 +69,4 @@ public class AnaplanImportOperation extends BaseAnaplanOperation{
 		LogUtil.debug(importLogContext, "import operation " + importId
 				+ " completed");
 	}
-
-	/**
-	 * @param request
-	 * @param response
-	 *            If validation fails, response will be populated appropriately
-	 * @param connection
-	 * @return input document to import if inputs are valid, otherwise null
-	 */
-//	private ObjectData validateInput(UpdateRequest request,
-//			OperationResponse response, AnaplanConnection connection) {
-//
-//		// exactly one input doc required: streamed inputs currently unsupported
-//		final Iterator<ObjectData> inputIterator = request.iterator();
-//		if (!inputIterator.hasNext()) {
-//			// no docs present
-//			AnaplanResponse.responseFail(response, request, connection,
-//					UserMessages.getMessage("noInput"));
-//			return null;
-//		}
-//
-//		final ObjectData expectedInput = inputIterator.next();
-//
-//		if (inputIterator.hasNext()) {
-//			// multiple docs present
-//			AnaplanResponse.responseFail(response, request, connection,
-//					UserMessages.getMessage("streamUnsupported"));
-//			return null;
-//		}
-//
-//		// check required params are present
-//		try {
-//			operationProperties.hasAllRequiredProperties(true);
-//
-//		} catch (IllegalStateException e) {
-//			AnaplanResponse.responseFail(response, request, connection,
-//					e.getMessage());
-//			return null;
-//		}
-//
-//		return expectedInput;
-//	}
 }

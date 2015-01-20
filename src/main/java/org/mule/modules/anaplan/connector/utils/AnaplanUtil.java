@@ -10,7 +10,6 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -189,7 +188,7 @@ public class AnaplanUtil {
 		final ServerFile serverFile = model.getServerFile(imp.getSourceFileId());
 
 		if (serverFile != null) {
-			// serverFile.setSeparator(columnSeperator);
+			 serverFile.setSeparator(delimiter);
 			// final String msg = UserMessages.getMessage("invalidFile",
 			// imp.getSourceFileId());
 			// userLog.error(msg);
@@ -197,8 +196,7 @@ public class AnaplanUtil {
 
 			int row_count = 0;
 			// List<String[]> rows = parseCsv(is,row_count);
-			InputStream is = new ByteArrayInputStream(
-					Charset.forName("UTF-16").encode(data).array());
+			InputStream is = new ByteArrayInputStream(data.getBytes());
 			List<String[]> rows = parseImportData(is, row_count, delimiter);
 
 			/*
