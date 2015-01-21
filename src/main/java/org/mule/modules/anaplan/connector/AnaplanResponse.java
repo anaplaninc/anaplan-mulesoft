@@ -158,6 +158,7 @@ public class AnaplanResponse implements Serializable {
 		LogUtil.debug(logContext, header);
 
 		// write response to string-buffer
+		sb.append(header);
 		String dataLine = cellReader.readWholeDataRow();
 		while (dataLine != null) {
 			dataLine += "\n";
@@ -192,11 +193,10 @@ public class AnaplanResponse implements Serializable {
 			// getStatus().name(), null);
 			throw new AnaplanAPIException("Response is empty: " + getStatus());
 		}
-
 		final CellReader cellReader = serverFile.getDownloadCellReader();
 		if (getExportMetadata() != null) {
-			LogUtil.debug(logContext, getExportMetadata()
-					.collectExportFileInfo());
+			LogUtil.debug(logContext,
+					getExportMetadata().collectExportFileInfo());
 		}
 		return writeResponse(cellReader, true, logContext);
 	}
