@@ -1,3 +1,8 @@
+/**
+ * (c) 2003-2014 MuleSoft, Inc. The software in this package is published under the terms of the CPAL v1.0 license,
+ * a copy of which has been included with this distribution in the LICENSE.md file.
+ */
+
 package org.mule.modules.anaplan.connector.utils;
 
 //import java.util.logging.Level;
@@ -41,6 +46,10 @@ public final class LogUtil {
 
 //	private static ConfigurationSource source;
 
+	private LogUtil() {
+		// static only
+	}
+
 	/**
 	 * User-presentable log message about the status of an operation which is
 	 * proceeding normally.
@@ -64,12 +73,7 @@ public final class LogUtil {
 	 */
 	public static final Level INTERNAL_DEBUG = Level.DEBUG;
 
-	private static Logger serverLog;
-
-	private LogUtil() {
-		// static only
-		serverLog = LogManager.getLogger();
-	}
+	private static Logger serverLog = LogManager.getLogger();
 
 	/**
 	 * Internal message tracing detailed operation execution.

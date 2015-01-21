@@ -38,23 +38,14 @@ import org.mule.modules.anaplan.connector.utils.LogUtil;
 import com.anaplan.client.Service;
 
 /**
- * Anaplan Connector built using Anypoint Studio.
+ * Anaplan Connector built using Anypoint Studio to export, import, update
+ * and delete Anaplan models.
  *
  * @author MuleSoft, Inc.
  * @author Spondon Saha.
  */
 @Connector(name = "anaplan", schemaVersion = "1.0", friendlyName = "Anaplan")
 public class AnaplanConnector {
-
-	// public static final Logger LOGGER =
-	// LogManager.getLogger(AnaplanConnector.class);
-
-	/**
-	 * Configurable
-	 */
-	// @Configurable
-	// @Default("value")
-	// private String myProperty;
 
 	/**
 	 * Stores the connection to the Anaplan API
@@ -63,7 +54,7 @@ public class AnaplanConnector {
 
 	private static AnaplanExportOperation exporter;
 
-	private Service service;
+//	private Service service;
 
 	/**
 	 * Retrieves the list of keys
@@ -122,14 +113,32 @@ public class AnaplanConnector {
 	}
 
 	/**
-	 * Run an export of an Anaplan Model specified bu model ID.
+	 * Run an export of an Anaplan Model specified by workspace-ID, model-ID and
+	 * the export-ID. At the end of each export, the connection is dropped,
+	 * hence a check needs to be made to verify if the current connection
+	 * exists. If not, re-establish it by calling .openConnection().
 	 *
 	 * @return Serializable response object.
+	 * @throws AnaplanConnectionException
 	 */
 	@Processor(friendlyName = "Export")
 	public String exportModel(String anaplanWorkspaceId, String anaplanModelId,
-			String anaplanExportId) {
+			String anaplanExportId) throws AnaplanConnectionException {
 		String data = null;
+
+		// validate API connection
+		if (apiConn.getConnection() == null) {
+			try {
+				apiConn.openConnection();
+			} catch (AnaplanConnectionException e) {
+				e.printStackTrace();
+				throw e;
+			}
+		} else {
+			LogUtil.status(apiConn.getLogContext(),
+					"Connection to API exists. Proceeding with export...");
+		}
+		// start the export
 		exporter = new AnaplanExportOperation(apiConn);
 		try {
 			data = exporter.runExport(anaplanWorkspaceId, anaplanModelId,
@@ -168,15 +177,17 @@ public class AnaplanConnector {
 	 * @throws ConnectionException
 	 */
 	@Connect
-	public synchronized void connect(@ConnectionKey String username,
+	public synchronized void connect(
+			@ConnectionKey String username,
 			@Password String password,
-			@Optional @Default("https://api.anaplan.com") String url,
+			@Default("https://api.anaplan.com") String url,
 			@Optional @Default("") String proxyHost,
 			@Optional @Default("") String proxyUser,
 			@Optional @Default("") String proxyPass)
-			throws org.mule.api.ConnectionException {
+					throws org.mule.api.ConnectionException {
 
 		LogUtil.status(getClass().toString(), "Initiating connection...");
+		Service service = null;
 
 		if (apiConn == null) {
 			apiConn = new AnaplanConnection(username, password, url, proxyHost,
@@ -245,11 +256,11 @@ public class AnaplanConnector {
 	 *            Content to be processed
 	 * @return Some string
 	 */
-	@Processor
-	public String myProcessor(String content) {
-		/*
-		 * MESSAGE PROCESSOR CODE GOES HERE
-		 */
-		return content;
-	}
+//	@Processor
+//	public String myProcessor(String content) {
+//		/*
+//		 * MESSAGE PROCESSOR CODE GOES HERE
+//		 */
+//		return content;
+//	}
 }

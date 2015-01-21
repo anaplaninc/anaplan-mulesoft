@@ -1,3 +1,8 @@
+/**
+ * (c) 2003-2014 MuleSoft, Inc. The software in this package is published under the terms of the CPAL v1.0 license,
+ * a copy of which has been included with this distribution in the LICENSE.md file.
+ */
+
 package org.mule.modules.anaplan.connector.utils;
 
 import java.io.IOException;
@@ -20,8 +25,8 @@ import com.anaplan.client.Workspace;
  */
 public class AnaplanExportOperation {
 
-	private final AnaplanConnection apiConn;
-	private final Service service;
+	private AnaplanConnection apiConn;
+	private Service service;
 	private Workspace workspace = null;
 	private Model model = null;
 
@@ -30,6 +35,15 @@ public class AnaplanExportOperation {
 	 * @param apiConn
 	 */
 	public AnaplanExportOperation(AnaplanConnection apiConn) {
+		setApiConn(apiConn);
+	}
+
+	/**
+	 * Helper method to set internal reference of API connection and service
+	 * parameters.
+	 * @param apiConn
+	 */
+	private void setApiConn(AnaplanConnection apiConn) {
 		this.apiConn = apiConn;
 		this.service = apiConn.getConnection();
 	}
@@ -49,9 +63,6 @@ public class AnaplanExportOperation {
 				throw new AnaplanExportOperationException("Could not fetch "
 						+ "workspace with provided Workspace ID: "
 						+ workspaceId);
-			} else {
-				LogUtil.status(apiConn.getLogContext(),
-						"Workspace ID is valid: " + workspaceId);
 			}
 		} catch (AnaplanAPIException e) {
 			throw new AnaplanExportOperationException("Error when fetching "
@@ -78,11 +89,7 @@ public class AnaplanExportOperation {
 			model = workspace.getModel(modelId);
 			if (model == null) {
 				throw new AnaplanExportOperationException("Could not fetch "
-						+ "model with provided model ID: "
-						+ modelId);
-			} else {
-				LogUtil.status(apiConn.getLogContext(),
-						"Model ID is valid: " + modelId);
+						+ "model with provided model ID: " + modelId);
 			}
 		} catch (AnaplanAPIException e) {
 			throw new AnaplanExportOperationException("Error when fetching "
@@ -107,6 +114,10 @@ public class AnaplanExportOperation {
 		// validate workspace and model
 		try {
 			getModel(workspaceId, modelId);
+			LogUtil.status(apiConn.getLogContext(),
+					"Workspace ID is valid: " + workspaceId);
+			LogUtil.status(apiConn.getLogContext(),
+					"Model ID is valid: " + modelId);
 		} catch (AnaplanExportOperationException e) {
 			throw new AnaplanExportOperationException("Validation of Export "
 					+ "details failed!!\n" + e.getMessage());
@@ -155,7 +166,7 @@ public class AnaplanExportOperation {
 			apiConn.closeConnection();
 		}
 
-		LogUtil.debug(exportLogContext, "export operation " + exportId
+		LogUtil.status(exportLogContext, "export operation " + exportId
 				+ " completed");
 		return response;
 	}

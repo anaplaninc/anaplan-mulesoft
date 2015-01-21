@@ -1,3 +1,8 @@
+/**
+ * (c) 2003-2014 MuleSoft, Inc. The software in this package is published under the terms of the CPAL v1.0 license,
+ * a copy of which has been included with this distribution in the LICENSE.md file.
+ */
+
 package org.mule.modules.anaplan.connector;
 
 //import java.io.IOException;
@@ -115,6 +120,14 @@ public class AnaplanResponse implements Serializable {
 		return exception;
 	}
 
+	/**
+	 * @param responseMessage
+	 * @param status
+	 * @param serverFile
+	 * @param exportMetaData
+	 * @param failureCause
+	 * @param logContext
+	 */
 	private AnaplanResponse(String responseMessage, OperationStatus status,
 			ServerFile serverFile, ExportMetadata exportMetaData,
 			Throwable failureCause, String logContext) {
@@ -145,6 +158,7 @@ public class AnaplanResponse implements Serializable {
 		LogUtil.debug(logContext, header);
 
 		// write response to string-buffer
+		sb.append(header);
 		String dataLine = cellReader.readWholeDataRow();
 		while (dataLine != null) {
 			dataLine += "\n";
@@ -179,11 +193,10 @@ public class AnaplanResponse implements Serializable {
 			// getStatus().name(), null);
 			throw new AnaplanAPIException("Response is empty: " + getStatus());
 		}
-
 		final CellReader cellReader = serverFile.getDownloadCellReader();
 		if (getExportMetadata() != null) {
-			LogUtil.debug(logContext, getExportMetadata()
-					.collectExportFileInfo());
+			LogUtil.debug(logContext,
+					getExportMetadata().collectExportFileInfo());
 		}
 		return writeResponse(cellReader, true, logContext);
 	}
