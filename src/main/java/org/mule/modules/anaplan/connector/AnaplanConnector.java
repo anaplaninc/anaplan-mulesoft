@@ -123,7 +123,7 @@ public class AnaplanConnector {
 	 */
 	@Processor(friendlyName = "Export")
 	public String exportModel(String anaplanWorkspaceId, String anaplanModelId,
-			String anaplanExportId) throws AnaplanConnectionException {
+			String anaplanExportIdOrName) throws AnaplanConnectionException {
 		String data = null;
 
 		// validate API connection
@@ -142,7 +142,7 @@ public class AnaplanConnector {
 		exporter = new AnaplanExportOperation(apiConn);
 		try {
 			data = exporter.runExport(anaplanWorkspaceId, anaplanModelId,
-					anaplanExportId);
+					anaplanExportIdOrName);
 		} catch (AnaplanExportOperationException e) {
 			LogUtil.error(apiConn.getLogContext(), e.getMessage());
 		}
