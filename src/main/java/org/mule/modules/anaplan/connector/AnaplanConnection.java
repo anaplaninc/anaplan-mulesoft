@@ -232,13 +232,8 @@ public class AnaplanConnection {
 		LogUtil.status(getLogContext(), "Connection closed.");
 	}
 
-	// public String getOperationType() {
-	// return getContext().getOperationType().toString();
-	// }
-
 	/**
 	 * Get a log prefix of the form: [api url] [username].
-	 *
 	 * @return
 	 */
 	public String getLogContext() {

@@ -8,14 +8,7 @@ package org.mule.modules.anaplan.connector.utils;
 import com.anaplan.client.AnaplanAPIException;
 import com.anaplan.client.Task;
 import com.anaplan.client.TaskStatus;
-//import com.google.gson.JsonSyntaxException;
-//import org.apache.logging.log4j.LogManager;
-//import org.apache.logging.log4j.Logger;
-//import com.anaplan.client.Export;
-//import com.boomi.anaplan.connector.AnaplanConnection;
-//import com.boomi.anaplan.connector.AnaplanResponse;
-//import com.boomi.anaplan.exceptions.AnaplanConnectionException;
-//import com.boomi.anaplan.util.LogUtil.UserLog;
+
 
 /**
  * Utilities here handle communication with the Anaplan API
@@ -27,55 +20,6 @@ public class AnaplanUtil {
 	private AnaplanUtil() {
 		// static-only
 	}
-
-//	public static AnaplanResponse executeAction(AnaplanConnection connection,
-//			String actionId, String logContext, UserLog userLog) {
-//
-//		Model model = null;
-//		try {
-//			model = connection.openConnection();
-//			userLog.status(UserMessages.getMessage("modelSuccess",
-//					model.getName()));
-//		} catch (AnaplanConnectionException e) {
-//			final String msg = UserMessages.getMessage("modelAccessFail",
-//					e.getMessage());
-//			return AnaplanResponse.executeActionFailure(msg, e, logContext);
-//		}
-//		try {
-//			return executeAction(model, actionId, logContext, userLog);
-//		} catch (AnaplanAPIException e) {
-//			final String msg = UserMessages.getMessage("apiConnectFail",
-//					e.getMessage());
-//			// LOGGER.error("{} :: {} = {}", logContext, msg, e);
-//			return AnaplanResponse.executeActionFailure(msg, e, logContext);
-//		}
-//
-//	}
-
-//	private static AnaplanResponse executeAction(Model model, String actionId,
-//			String logContext, UserLog userLog) throws AnaplanAPIException {
-//		final Action action = model.getAction(actionId);
-//
-//		if (action == null) {
-//			final String msg = UserMessages.getMessage("invalidAction",
-//					actionId);
-//			return AnaplanResponse.executeActionFailure(msg, null, logContext);
-//		}
-//
-//		final Task task = action.createTask();
-//		final TaskStatus status = runServerTask(task, logContext);
-//
-//		if (status.getTaskState() == TaskStatus.State.COMPLETE
-//				&& status.getResult().isSuccessful()) {
-//			userLog.status("Action executed successfully");
-//			return AnaplanResponse.executeActionSuccess(status.getTaskState()
-//					.name(), logContext);
-//		} else {
-//			return AnaplanResponse.executeActionFailure(
-//					"Execute Action Failed", null, logContext);
-//		}
-//	}
-
 
 	/**
 	 * @param lines

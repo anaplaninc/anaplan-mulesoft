@@ -54,8 +54,6 @@ public class AnaplanConnector {
 	private static AnaplanExportOperation exporter;
 	private static AnaplanImportOperation importer;
 
-//	private Service service;
-
 	/**
 	 * Retrieves the list of keys
 	 */
@@ -159,16 +157,6 @@ public class AnaplanConnector {
 	}
 
 	/**
-	 * Updates a record
-	 *
-	 * @return
-	 */
-	@Processor(friendlyName = "Update")
-	public boolean updateModel(String anaplanModelId) {
-		return false;
-	}
-
-	/**
 	 * Deletes a record
 	 *
 	 * @return
@@ -268,22 +256,4 @@ public class AnaplanConnector {
 		else
 			return "Not connected!";
 	}
-
-	/**
-	 * Custom processor
-	 *
-	 * {@sample.xml ../../../doc/anaplan-connector.xml.sample
-	 * anaplan:my-processor}
-	 *
-	 * @param content
-	 *            Content to be processed
-	 * @return Some string
-	 */
-//	@Processor
-//	public String myProcessor(String content) {
-//		/*
-//		 * MESSAGE PROCESSOR CODE GOES HERE
-//		 */
-//		return content;
-//	}
 }
