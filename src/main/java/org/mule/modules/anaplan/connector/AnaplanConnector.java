@@ -64,8 +64,7 @@ public class AnaplanConnector {
 							  @Default("\t") String delimiter)
 									  throws AnaplanConnectionException,
 										     AnaplanOperationException {
-		// validate API connection, throws AnaplanConnectionException if
-		// something goes wrong
+		// validate API connection
 		validateConnection();
 
 		// start the import
@@ -90,8 +89,7 @@ public class AnaplanConnector {
 										  throws AnaplanConnectionException,
 										  		 AnaplanOperationException {
 
-		// validate API connection, throws AnaplanConnectionException if
-		// something goes wrong
+		// validate API connection
 		validateConnection();
 
 		// start the export
