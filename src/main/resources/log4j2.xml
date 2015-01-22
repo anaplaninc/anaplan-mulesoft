@@ -9,7 +9,7 @@
         <!-- <Logger name="log4j.test.Log4jTest" level="trace">
             <AppenderRef ref="Console"/>
         </Logger> -->
-        <Root level="trace">
+        <Root level="all">
             <AppenderRef ref="Console"/>
         </Root>
     </Loggers>

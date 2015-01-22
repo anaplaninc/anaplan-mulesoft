@@ -1,4 +1,9 @@
 /**
+ * (c) 2003-2014 MuleSoft, Inc. The software in this package is published under the terms of the CPAL v1.0 license,
+ * a copy of which has been included with this distribution in the LICENSE.md file.
+ */
+
+/**
  * Basic Anaplan Connection class that helps establish an API connection using
  * the provided credentials from the connector.
  *
@@ -33,8 +38,6 @@ public class AnaplanConnection {
 	private static final String URL_FIELD = "url";
 	private static final String PASSWORD_FIELD = "password";
 	private static final String USERNAME_FIELD = "username";
-	// private static final String WORKSPACEID_FIELD = "workspaceId";
-	// private static final String MODELID_FIELD = "modelId";
 	private static final String URL_PROXY = "proxyHost";
 	private static final String URL_PROXY_USER = "proxyUser";
 	private static final String URL_PROXY_PASS = "proxyPass";
@@ -229,13 +232,8 @@ public class AnaplanConnection {
 		LogUtil.status(getLogContext(), "Connection closed.");
 	}
 
-	// public String getOperationType() {
-	// return getContext().getOperationType().toString();
-	// }
-
 	/**
 	 * Get a log prefix of the form: [api url] [username].
-	 *
 	 * @return
 	 */
 	public String getLogContext() {

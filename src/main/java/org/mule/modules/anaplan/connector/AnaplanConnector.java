@@ -22,6 +22,7 @@ import org.mule.api.annotations.display.Password;
 import org.mule.api.annotations.param.ConnectionKey;
 import org.mule.api.annotations.param.Default;
 import org.mule.api.annotations.param.Optional;
+import org.mule.api.annotations.param.Payload;
 import org.mule.common.metadata.DefaultMetaData;
 import org.mule.common.metadata.DefaultMetaDataKey;
 import org.mule.common.metadata.MetaData;
@@ -31,14 +32,17 @@ import org.mule.common.metadata.builder.DefaultMetaDataBuilder;
 import org.mule.common.metadata.builder.DynamicObjectBuilder;
 import org.mule.common.metadata.datatype.DataType;
 import org.mule.modules.anaplan.connector.exceptions.AnaplanConnectionException;
-import org.mule.modules.anaplan.connector.exceptions.AnaplanExportOperationException;
+import org.mule.modules.anaplan.connector.exceptions.AnaplanOperationException;
 import org.mule.modules.anaplan.connector.utils.AnaplanExportOperation;
+import org.mule.modules.anaplan.connector.utils.AnaplanImportOperation;
 import org.mule.modules.anaplan.connector.utils.LogUtil;
 
 import com.anaplan.client.Service;
 
+
 /**
- * Anaplan Connector built using Anypoint Studio.
+ * Anaplan Connector built using Anypoint Studio to export, import, update
+ * and delete Anaplan models.
  *
  * @author MuleSoft, Inc.
  * @author Spondon Saha.
@@ -46,24 +50,9 @@ import com.anaplan.client.Service;
 @Connector(name = "anaplan", schemaVersion = "1.0", friendlyName = "Anaplan")
 public class AnaplanConnector {
 
-	// public static final Logger LOGGER =
-	// LogManager.getLogger(AnaplanConnector.class);
-
-	/**
-	 * Configurable
-	 */
-	// @Configurable
-	// @Default("value")
-	// private String myProperty;
-
-	/**
-	 * Stores the connection to the Anaplan API
-	 */
 	private AnaplanConnection apiConn;
-
 	private static AnaplanExportOperation exporter;
-
-	private Service service;
+	private static AnaplanImportOperation importer;
 
 	/**
 	 * Retrieves the list of keys
@@ -112,42 +101,59 @@ public class AnaplanConnector {
 	}
 
 	/**
-	 * Create a record
+	 * Reads in CSV data that represents an Anaplan model, delimited by the
+	 * provided delimiter, parses it, then loads it into an Anaplan model.
 	 *
-	 * @return
+	 * @param data
+	 * @param anaplanWorkspaceId
+	 * @param anaplanModelId
+	 * @param anaplanImportId
+	 * @param delimiter
+	 * @throws AnaplanConnectionException
+	 * @throws AnaplanOperationException
 	 */
 	@Processor(friendlyName = "Import")
-	public boolean importModel() {
-		return false;
+	public void importToModel(@Payload String data,
+							  String anaplanWorkspaceNameOrId,
+							  String anaplanModelNameOrId,
+							  String anaplanImportNameOrId,
+							  @Default("\t") String delimiter)
+									  throws AnaplanConnectionException,
+										     AnaplanOperationException {
+		// validate API connection, throws AnaplanConnectionException if
+		// something goes wrong
+		validateConnection();
+
+		// start the import
+		importer = new AnaplanImportOperation(apiConn);
+		importer.runImport(data, anaplanWorkspaceNameOrId, anaplanModelNameOrId,
+				anaplanImportNameOrId, delimiter);
 	}
 
 	/**
-	 * Run an export of an Anaplan Model specified bu model ID.
+	 * Run an export of an Anaplan Model specified by workspace-ID, model-ID and
+	 * the export-ID. At the end of each export, the connection is dropped,
+	 * hence a check needs to be made to verify if the current connection
+	 * exists. If not, re-establish it by calling .openConnection().
 	 *
 	 * @return Serializable response object.
+	 * @throws AnaplanConnectionException
 	 */
 	@Processor(friendlyName = "Export")
-	public String exportModel(String anaplanWorkspaceId, String anaplanModelId,
-			String anaplanExportId) {
-		String data = null;
-		exporter = new AnaplanExportOperation(apiConn);
-		try {
-			data = exporter.runExport(anaplanWorkspaceId, anaplanModelId,
-					anaplanExportId);
-		} catch (AnaplanExportOperationException e) {
-			LogUtil.error(apiConn.getLogContext(), e.getMessage());
-		}
-		return data;
-	}
+	public String exportFromModel(String anaplanWorkspaceNameOrId,
+								  String anaplanModelNameOrId,
+								  String anaplanExportActionNameOrId)
+										  throws AnaplanConnectionException,
+										  		 AnaplanOperationException {
 
-	/**
-	 * Updates a record
-	 *
-	 * @return
-	 */
-	@Processor(friendlyName = "Update")
-	public boolean updateModel(String anaplanModelId) {
-		return false;
+		// validate API connection, throws AnaplanConnectionException if
+		// something goes wrong
+		validateConnection();
+
+		// start the export
+		exporter = new AnaplanExportOperation(apiConn);
+		return exporter.runExport(anaplanWorkspaceNameOrId, anaplanModelNameOrId,
+				anaplanExportActionNameOrId);
 	}
 
 	/**
@@ -161,6 +167,20 @@ public class AnaplanConnector {
 	}
 
 	/**
+	 *
+	 * @throws AnaplanConnectionException
+	 */
+	private void validateConnection() throws AnaplanConnectionException {
+		// validate API connection
+		if (apiConn.getConnection() == null) {
+			apiConn.openConnection();
+		} else {
+			LogUtil.status(apiConn.getLogContext(),
+					"Connection to API exists. Proceeding with export...");
+		}
+	}
+
+	/**
 	 * Connect to the Anaplan API.
 	 *
 	 * @param username
@@ -168,15 +188,17 @@ public class AnaplanConnector {
 	 * @throws ConnectionException
 	 */
 	@Connect
-	public synchronized void connect(@ConnectionKey String username,
+	public synchronized void connect(
+			@ConnectionKey String username,
 			@Password String password,
-			@Optional @Default("https://api.anaplan.com") String url,
+			@Default("https://api.anaplan.com/") String url,
 			@Optional @Default("") String proxyHost,
 			@Optional @Default("") String proxyUser,
 			@Optional @Default("") String proxyPass)
-			throws org.mule.api.ConnectionException {
+					throws org.mule.api.ConnectionException {
 
 		LogUtil.status(getClass().toString(), "Initiating connection...");
+		Service service = null;
 
 		if (apiConn == null) {
 			apiConn = new AnaplanConnection(username, password, url, proxyHost,
@@ -233,23 +255,5 @@ public class AnaplanConnector {
 			return apiConn.getConnectionId();
 		else
 			return "Not connected!";
-	}
-
-	/**
-	 * Custom processor
-	 *
-	 * {@sample.xml ../../../doc/anaplan-connector.xml.sample
-	 * anaplan:my-processor}
-	 *
-	 * @param content
-	 *            Content to be processed
-	 * @return Some string
-	 */
-	@Processor
-	public String myProcessor(String content) {
-		/*
-		 * MESSAGE PROCESSOR CODE GOES HERE
-		 */
-		return content;
 	}
 }

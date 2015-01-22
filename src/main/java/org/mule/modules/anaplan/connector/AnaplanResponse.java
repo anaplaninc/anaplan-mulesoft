@@ -1,3 +1,8 @@
+/**
+ * (c) 2003-2014 MuleSoft, Inc. The software in this package is published under the terms of the CPAL v1.0 license,
+ * a copy of which has been included with this distribution in the LICENSE.md file.
+ */
+
 package org.mule.modules.anaplan.connector;
 
 //import java.io.IOException;
@@ -7,6 +12,7 @@ import java.io.Serializable;
 
 import org.mule.modules.anaplan.connector.utils.LogUtil;
 import org.mule.modules.anaplan.connector.utils.OperationStatus;
+import org.mule.modules.anaplan.connector.utils.UserMessages;
 
 import com.anaplan.client.AnaplanAPIException;
 import com.anaplan.client.CellReader;
@@ -73,9 +79,9 @@ public class AnaplanResponse implements Serializable {
 	}
 
 	public static AnaplanResponse importSuccess(String responseMessage,
-			String logContext) {
+			String logContext, ServerFile serverFile) {
 		return new AnaplanResponse(responseMessage, OperationStatus.SUCCESS,
-				null, null, null, logContext);
+				serverFile, null, null, logContext);
 	}
 
 	public static AnaplanResponse executeActionSuccess(String responseMessage,
@@ -115,6 +121,14 @@ public class AnaplanResponse implements Serializable {
 		return exception;
 	}
 
+	/**
+	 * @param responseMessage
+	 * @param status
+	 * @param serverFile
+	 * @param exportMetaData
+	 * @param failureCause
+	 * @param logContext
+	 */
 	private AnaplanResponse(String responseMessage, OperationStatus status,
 			ServerFile serverFile, ExportMetadata exportMetaData,
 			Throwable failureCause, String logContext) {
@@ -145,6 +159,7 @@ public class AnaplanResponse implements Serializable {
 		LogUtil.debug(logContext, header);
 
 		// write response to string-buffer
+		sb.append(header);
 		String dataLine = cellReader.readWholeDataRow();
 		while (dataLine != null) {
 			dataLine += "\n";
@@ -179,11 +194,10 @@ public class AnaplanResponse implements Serializable {
 			// getStatus().name(), null);
 			throw new AnaplanAPIException("Response is empty: " + getStatus());
 		}
-
 		final CellReader cellReader = serverFile.getDownloadCellReader();
 		if (getExportMetadata() != null) {
-			LogUtil.debug(logContext, getExportMetadata()
-					.collectExportFileInfo());
+			LogUtil.debug(logContext,
+					getExportMetadata().collectExportFileInfo());
 		}
 		return writeResponse(cellReader, true, logContext);
 	}
@@ -268,8 +282,8 @@ public class AnaplanResponse implements Serializable {
 			Throwable e, String reason) {
 		final String msg;
 		if (reason == null) {
-			msg = "Unexpected operation error: Generating OperationResponse error for "
-					+ e.getMessage();
+			msg = "Unexpected operation error: Generating OperationResponse "
+					+ "error for " + e.getMessage();
 		} else {
 			msg = reason + ": " + e.getMessage();
 		}
@@ -277,34 +291,30 @@ public class AnaplanResponse implements Serializable {
 		LogUtil.error(connection.getLogContext(), msg, e); // for stack trace
 		// ResponseUtil.addExceptionFailure(response, inputData, e);
 	}
+//
+//	 private void responseSuccess(String... messageLines) {
+//		 response.addResult(inputData, OperationStatus.SUCCESS,
+//				 this.getResponseMessage(), OperationStatus.SUCCESS.toString(),
+//				 PayloadUtil.toPayload(AnaplanUtil.squish(messageLines)));
+//	 }
 
-	// private void responseSuccess(OperationResponse response,
-	// TrackedData inputData, String... messageLines) {
-	// response.addResult(inputData, OperationStatus.SUCCESS,
-	// this.getResponseMessage(), OperationStatus.SUCCESS.toString(),
-	// PayloadUtil.toPayload(AnaplanUtil.squish(messageLines)));
-	// }
+	 public void writeImportData(AnaplanConnection connection, String importId,
+		 String logContext) throws IOException, AnaplanAPIException {
 
-	// public void writeImportData(AnaplanConnection connection,
-	// TrackedData input, OperationResponse response, String importId,
-	// UserLog operationLog) throws IOException, AnaplanAPIException {
-	//
-	// if (getServerFile() != null) {
-	// responseServerFile(input, getServerFile(), response,
-	// getLogContext(), operationLog);
-	// } else if (getStatus() == OperationStatus.SUCCESS) {
-	// responseSuccess(response, input,
-	// UserMessages.getMessage("importSuccess", importId),
-	// getResponseMessage());
-	// } else {
-	// if (getException() == null) {
-	// responseFail(response, input, connection, getResponseMessage());
-	// } else {
-	// responseEpicFail(response, input, connection, getException(),
-	// getResponseMessage());
-	// }
-	// }
-	// }
+		 if (getServerFile() != null) {
+			 responseServerFile(getServerFile(), getLogContext());
+		 } else if (getStatus() == OperationStatus.SUCCESS) {
+			 LogUtil.status(UserMessages.getMessage("importSuccess", importId),
+					 getResponseMessage());
+		 } else {
+			 if (getException() == null) {
+				 responseFail(connection, getResponseMessage());
+		 } else {
+			 responseEpicFail(connection, getException(),
+					 getResponseMessage());
+		 	}
+		 }
+	 }
 
 	// public void writeExecuteActionData(AnaplanConnection connection,
 	// TrackedData input, OperationResponse response, String actionId,
