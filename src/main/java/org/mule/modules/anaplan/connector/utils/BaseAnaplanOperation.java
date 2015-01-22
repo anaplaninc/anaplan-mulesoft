@@ -6,11 +6,15 @@
 package org.mule.modules.anaplan.connector.utils;
 
 import org.mule.modules.anaplan.connector.AnaplanConnection;
+import org.mule.modules.anaplan.connector.AnaplanResponse;
 import org.mule.modules.anaplan.connector.exceptions.AnaplanOperationException;
 
+import com.anaplan.client.Action;
 import com.anaplan.client.AnaplanAPIException;
 import com.anaplan.client.Model;
 import com.anaplan.client.Service;
+import com.anaplan.client.Task;
+import com.anaplan.client.TaskStatus;
 import com.anaplan.client.Workspace;
 
 
@@ -111,5 +115,39 @@ public class BaseAnaplanOperation {
 				"Model ID is valid: " + modelId);
 		// validate export ID
 		// TODO: Fetch JSON response for list of export-IDs, then validate
+	}
+
+	/**
+	 * Used to run export, upsert and delete operations.
+	 * @param model
+	 * @param actionId
+	 * @param logContext
+	 * @return
+	 * @throws AnaplanAPIException
+	 */
+	protected static AnaplanResponse executeAction(Model model, String actionId,
+			String logContext) throws AnaplanAPIException {
+
+		final Action action = model.getAction(actionId);
+
+		if (action == null) {
+			final String msg = UserMessages.getMessage("invalidAction",
+					actionId);
+			return AnaplanResponse.executeActionFailure(msg, null, logContext);
+		}
+
+		final Task task = action.createTask();
+		final TaskStatus status = AnaplanUtil.runServerTask(task,logContext);
+
+		if (status.getTaskState() == TaskStatus.State.COMPLETE &&
+		    status.getResult().isSuccessful()) {
+			LogUtil.status(logContext, "Action executed successfully.");
+			return AnaplanResponse.executeActionSuccess(
+					status.getTaskState().name(),
+					logContext);
+		} else {
+			return AnaplanResponse.executeActionFailure("Execute Action Failed",
+					null, logContext);
+		}
 	}
 }

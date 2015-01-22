@@ -5,17 +5,12 @@
 
 package org.mule.modules.anaplan.connector;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.mule.api.ConnectionException;
 import org.mule.api.ConnectionExceptionCode;
 import org.mule.api.annotations.Connect;
 import org.mule.api.annotations.ConnectionIdentifier;
 import org.mule.api.annotations.Connector;
 import org.mule.api.annotations.Disconnect;
-import org.mule.api.annotations.MetaDataKeyRetriever;
-import org.mule.api.annotations.MetaDataRetriever;
 import org.mule.api.annotations.Processor;
 import org.mule.api.annotations.ValidateConnection;
 import org.mule.api.annotations.display.Password;
@@ -23,16 +18,9 @@ import org.mule.api.annotations.param.ConnectionKey;
 import org.mule.api.annotations.param.Default;
 import org.mule.api.annotations.param.Optional;
 import org.mule.api.annotations.param.Payload;
-import org.mule.common.metadata.DefaultMetaData;
-import org.mule.common.metadata.DefaultMetaDataKey;
-import org.mule.common.metadata.MetaData;
-import org.mule.common.metadata.MetaDataKey;
-import org.mule.common.metadata.MetaDataModel;
-import org.mule.common.metadata.builder.DefaultMetaDataBuilder;
-import org.mule.common.metadata.builder.DynamicObjectBuilder;
-import org.mule.common.metadata.datatype.DataType;
 import org.mule.modules.anaplan.connector.exceptions.AnaplanConnectionException;
 import org.mule.modules.anaplan.connector.exceptions.AnaplanOperationException;
+import org.mule.modules.anaplan.connector.utils.AnaplanDeleteOperation;
 import org.mule.modules.anaplan.connector.utils.AnaplanExportOperation;
 import org.mule.modules.anaplan.connector.utils.AnaplanImportOperation;
 import org.mule.modules.anaplan.connector.utils.LogUtil;
@@ -51,54 +39,10 @@ import com.anaplan.client.Service;
 public class AnaplanConnector {
 
 	private AnaplanConnection apiConn;
+	private static AnaplanDeleteOperation deleter;
 	private static AnaplanExportOperation exporter;
 	private static AnaplanImportOperation importer;
 
-	/**
-	 * Retrieves the list of keys
-	 */
-	@MetaDataKeyRetriever
-	public List<MetaDataKey> getMetaDataKeys() throws Exception {
-		List<MetaDataKey> keys = new ArrayList<MetaDataKey>();
-
-		// Generate the keys
-		keys.add(new DefaultMetaDataKey("id1", "User"));
-		keys.add(new DefaultMetaDataKey("id2", "Book"));
-
-		return keys;
-	}
-
-	/**
-	 * Get MetaData given the Key the user selects
-	 *
-	 * @param key
-	 *            The key selected from the list of valid keys
-	 * @return The MetaData model of that corresponds to the key
-	 * @throws Exception
-	 *             If anything fails
-	 */
-	@MetaDataRetriever
-	public MetaData getMetaData(MetaDataKey key) throws Exception {
-		DefaultMetaDataBuilder builder = new DefaultMetaDataBuilder();
-		// If you have a Pojo class
-		// PojoMetaDataBuilder<?> pojoObject=builder.createPojo(Pojo.class);
-
-		// If you use maps as input of your processors that work with DataSense
-		DynamicObjectBuilder<?> dynamicObject = builder.createDynamicObject(key
-				.getId());
-
-		if (key.getId().equals("id1")) {
-			dynamicObject.addSimpleField("Username", DataType.STRING);
-			dynamicObject.addSimpleField("age", DataType.INTEGER);
-		} else {
-			dynamicObject.addSimpleField("Author", DataType.STRING);
-			dynamicObject.addSimpleField("Tittle", DataType.STRING);
-		}
-		MetaDataModel model = builder.build();
-		MetaData metaData = new DefaultMetaData(model);
-
-		return metaData;
-	}
 
 	/**
 	 * Reads in CSV data that represents an Anaplan model, delimited by the
@@ -120,8 +64,7 @@ public class AnaplanConnector {
 							  @Default("\t") String delimiter)
 									  throws AnaplanConnectionException,
 										     AnaplanOperationException {
-		// validate API connection, throws AnaplanConnectionException if
-		// something goes wrong
+		// validate API connection
 		validateConnection();
 
 		// start the import
@@ -136,7 +79,7 @@ public class AnaplanConnector {
 	 * hence a check needs to be made to verify if the current connection
 	 * exists. If not, re-establish it by calling .openConnection().
 	 *
-	 * @return Serializable response object.
+	 * @return CSV string.
 	 * @throws AnaplanConnectionException
 	 */
 	@Processor(friendlyName = "Export")
@@ -146,8 +89,7 @@ public class AnaplanConnector {
 										  throws AnaplanConnectionException,
 										  		 AnaplanOperationException {
 
-		// validate API connection, throws AnaplanConnectionException if
-		// something goes wrong
+		// validate API connection
 		validateConnection();
 
 		// start the export
@@ -157,26 +99,45 @@ public class AnaplanConnector {
 	}
 
 	/**
-	 * Deletes a record
+	 * Deletes data from a model by executing the respective delete action.
 	 *
-	 * @return
+	 * @throws AnaplanConnectionException
+	 * @throws AnaplanOperationException
 	 */
 	@Processor(friendlyName = "Delete")
-	public boolean deleteModel(String anaplanModelId) {
-		return false;
+	public void deleteFromModel(String anaplanWorkspaceNameOrId,
+								String anaplanModelNameOrId,
+								String anaplanDeleteActionNameOrId)
+										throws AnaplanConnectionException,
+											   AnaplanOperationException {
+		// validate the API connection
+		validateConnection();
+
+		// start the delete process
+		deleter = new AnaplanDeleteOperation(apiConn);
+		deleter.runDelete(anaplanWorkspaceNameOrId, anaplanModelNameOrId,
+				anaplanDeleteActionNameOrId);
 	}
 
 	/**
+	 * Checks if the API connection has been established. If no connection
+	 * object was found, then throws {@link AnaplanConnectionException}, else
+	 * opens the connection and registers the service object.
 	 *
 	 * @throws AnaplanConnectionException
 	 */
 	private void validateConnection() throws AnaplanConnectionException {
 		// validate API connection
-		if (apiConn.getConnection() == null) {
-			apiConn.openConnection();
+		if (isConnected()) {
+			if (apiConn.getConnection() == null) {
+				apiConn.openConnection();
+			} else {
+				LogUtil.status(apiConn.getLogContext(),
+						"Connection to API exists. Proceeding with export...");
+			}
 		} else {
-			LogUtil.status(apiConn.getLogContext(),
-					"Connection to API exists. Proceeding with export...");
+			throw new AnaplanConnectionException(
+					"No connection object: call connect()");
 		}
 	}
 
