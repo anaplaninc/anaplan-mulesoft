@@ -114,9 +114,9 @@ public class AnaplanConnector {
 	 */
 	@Processor(friendlyName = "Import")
 	public void importToModel(@Payload String data,
-							  String anaplanWorkspaceId,
-							  String anaplanModelId,
-							  String anaplanImportId,
+							  String anaplanWorkspaceNameOrId,
+							  String anaplanModelNameOrId,
+							  String anaplanImportNameOrId,
 							  @Default("\t") String delimiter)
 									  throws AnaplanConnectionException,
 										     AnaplanOperationException {
@@ -126,8 +126,8 @@ public class AnaplanConnector {
 
 		// start the import
 		importer = new AnaplanImportOperation(apiConn);
-		importer.runImport(data, anaplanWorkspaceId, anaplanModelId,
-					anaplanImportId, delimiter);
+		importer.runImport(data, anaplanWorkspaceNameOrId, anaplanModelNameOrId,
+				anaplanImportNameOrId, delimiter);
 	}
 
 	/**
@@ -140,9 +140,9 @@ public class AnaplanConnector {
 	 * @throws AnaplanConnectionException
 	 */
 	@Processor(friendlyName = "Export")
-	public String exportFromModel(String anaplanWorkspaceId,
-								  String anaplanModelId,
-								  String anaplanExportId)
+	public String exportFromModel(String anaplanWorkspaceNameOrId,
+								  String anaplanModelNameOrId,
+								  String anaplanExportActionNameOrId)
 										  throws AnaplanConnectionException,
 										  		 AnaplanOperationException {
 
@@ -152,8 +152,8 @@ public class AnaplanConnector {
 
 		// start the export
 		exporter = new AnaplanExportOperation(apiConn);
-		return exporter.runExport(anaplanWorkspaceId, anaplanModelId,
-					anaplanExportId);
+		return exporter.runExport(anaplanWorkspaceNameOrId, anaplanModelNameOrId,
+				anaplanExportActionNameOrId);
 	}
 
 	/**
