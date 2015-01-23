@@ -65,5 +65,4 @@ public class AnaplanDeleteOperation extends BaseAnaplanOperation {
 		LogUtil.status(exportLogContext, "Delete operation " + deleteId
 				+ " completed");
 	}
-
 }
