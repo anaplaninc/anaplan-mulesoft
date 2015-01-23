@@ -6,6 +6,10 @@
 package org.mule.modules.anaplan.connector.exceptions;
 
 
+/**
+ * Used for throwing upsert, export, delete operations.
+ * @author spondonsaha
+ */
 public class AnaplanOperationException extends Exception{
 
 	private static final long serialVersionUID = 1L;

@@ -39,9 +39,9 @@ import com.anaplan.client.Service;
 public class AnaplanConnector {
 
 	private AnaplanConnection apiConn;
-	private static AnaplanDeleteOperation deleter;
 	private static AnaplanExportOperation exporter;
 	private static AnaplanImportOperation importer;
+	private static AnaplanDeleteOperation tuhminator;
 
 
 	/**
@@ -114,8 +114,8 @@ public class AnaplanConnector {
 		validateConnection();
 
 		// start the delete process
-		deleter = new AnaplanDeleteOperation(apiConn);
-		deleter.runDelete(anaplanWorkspaceNameOrId, anaplanModelNameOrId,
+		tuhminator = new AnaplanDeleteOperation(apiConn);
+		tuhminator.runDelete(anaplanWorkspaceNameOrId, anaplanModelNameOrId,
 				anaplanDeleteActionNameOrId);
 	}
 
