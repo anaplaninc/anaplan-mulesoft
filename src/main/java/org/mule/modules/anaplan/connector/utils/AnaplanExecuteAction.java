@@ -35,7 +35,7 @@ public class AnaplanExecuteAction extends BaseAnaplanOperation {
 	 * @param actionId
 	 * @throws AnaplanOperationException
 	 */
-	public void runDelete(String workspaceId, String modelId, String actionId)
+	public void runExecute(String workspaceId, String modelId, String actionId)
 			throws AnaplanOperationException {
 		final String logContext = apiConn.getLogContext();
 		final String exportLogContext = logContext + " [" + actionId + "]";
@@ -52,7 +52,7 @@ public class AnaplanExecuteAction extends BaseAnaplanOperation {
 		try {
 			final AnaplanResponse anaplanResponse = executeAction(model,
 					actionId, exportLogContext);
-			LogUtil.status(logContext, "Deletion complete: Status: "
+			LogUtil.status(logContext, "Action complete: Status: "
 					+ anaplanResponse.getStatus() + ", Response message: "
 					+ anaplanResponse.getResponseMessage());
 

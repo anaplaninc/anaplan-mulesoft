@@ -115,7 +115,7 @@ public class AnaplanConnector {
 
 		// start the delete process
 		runner = new AnaplanExecuteAction(apiConn);
-		runner.runDelete(anaplanWorkspaceNameOrId, anaplanModelNameOrId,
+		runner.runExecute(anaplanWorkspaceNameOrId, anaplanModelNameOrId,
 						 anaplanActionId);
 	}
 
