@@ -16,13 +16,13 @@ import com.anaplan.client.AnaplanAPIException;
  * Used to Delete data from an Anaplan model.
  * @author spondonsaha
  */
-public class AnaplanDeleteOperation extends BaseAnaplanOperation {
+public class AnaplanExecuteAction extends BaseAnaplanOperation {
 
 	/**
 	 * Constructor.
 	 * @param apiConn
 	 */
-	public AnaplanDeleteOperation(AnaplanConnection apiConn) {
+	public AnaplanExecuteAction(AnaplanConnection apiConn) {
 		super(apiConn);
 	}
 
@@ -32,18 +32,18 @@ public class AnaplanDeleteOperation extends BaseAnaplanOperation {
 	 *
 	 * @param workspaceId
 	 * @param modelId
-	 * @param deleteId
+	 * @param actionId
 	 * @throws AnaplanOperationException
 	 */
-	public void runDelete(String workspaceId, String modelId, String deleteId)
+	public void runDelete(String workspaceId, String modelId, String actionId)
 			throws AnaplanOperationException {
 		final String logContext = apiConn.getLogContext();
-		final String exportLogContext = logContext + " [" + deleteId + "]";
+		final String exportLogContext = logContext + " [" + actionId + "]";
 
-		LogUtil.status(logContext, "<< Starting Delete >>");
+		LogUtil.status(logContext, "<< Starting Execute-Action >>");
 		LogUtil.status(logContext, "Workspace-ID: " + workspaceId);
 		LogUtil.status(logContext, "Model-ID: " + modelId);
-		LogUtil.status(logContext, "Delete Action ID: " + deleteId);
+		LogUtil.status(logContext, "Action ID: " + actionId);
 
 		// validate that workspace, model and export-ID are valid.
 		validateInput(workspaceId, modelId);
@@ -51,7 +51,7 @@ public class AnaplanDeleteOperation extends BaseAnaplanOperation {
 		// run the export
 		try {
 			final AnaplanResponse anaplanResponse = executeAction(model,
-					deleteId, exportLogContext);
+					actionId, exportLogContext);
 			LogUtil.status(logContext, "Deletion complete: Status: "
 					+ anaplanResponse.getStatus() + ", Response message: "
 					+ anaplanResponse.getResponseMessage());
@@ -62,7 +62,7 @@ public class AnaplanDeleteOperation extends BaseAnaplanOperation {
 			apiConn.closeConnection();
 		}
 
-		LogUtil.status(exportLogContext, "Delete operation " + deleteId
+		LogUtil.status(exportLogContext, "Execute action " + actionId
 				+ " completed");
 	}
 }

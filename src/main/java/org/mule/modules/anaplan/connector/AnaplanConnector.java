@@ -20,7 +20,7 @@ import org.mule.api.annotations.param.Optional;
 import org.mule.api.annotations.param.Payload;
 import org.mule.modules.anaplan.connector.exceptions.AnaplanConnectionException;
 import org.mule.modules.anaplan.connector.exceptions.AnaplanOperationException;
-import org.mule.modules.anaplan.connector.utils.AnaplanDeleteOperation;
+import org.mule.modules.anaplan.connector.utils.AnaplanExecuteAction;
 import org.mule.modules.anaplan.connector.utils.AnaplanExportOperation;
 import org.mule.modules.anaplan.connector.utils.AnaplanImportOperation;
 import org.mule.modules.anaplan.connector.utils.LogUtil;
@@ -41,7 +41,7 @@ public class AnaplanConnector {
 	private AnaplanConnection apiConn;
 	private static AnaplanExportOperation exporter;
 	private static AnaplanImportOperation importer;
-	private static AnaplanDeleteOperation tuhminator;
+	private static AnaplanExecuteAction runner;
 
 
 	/**
@@ -104,19 +104,19 @@ public class AnaplanConnector {
 	 * @throws AnaplanConnectionException
 	 * @throws AnaplanOperationException
 	 */
-	@Processor(friendlyName = "Delete")
-	public void deleteFromModel(String anaplanWorkspaceNameOrId,
-								String anaplanModelNameOrId,
-								String anaplanDeleteActionNameOrId)
+	@Processor(friendlyName = "Execute Action")
+	public void executeAction(String anaplanWorkspaceNameOrId,
+							  String anaplanModelNameOrId,
+							  String anaplanActionId)
 										throws AnaplanConnectionException,
 											   AnaplanOperationException {
 		// validate the API connection
 		validateConnection();
 
 		// start the delete process
-		tuhminator = new AnaplanDeleteOperation(apiConn);
-		tuhminator.runDelete(anaplanWorkspaceNameOrId, anaplanModelNameOrId,
-				anaplanDeleteActionNameOrId);
+		runner = new AnaplanExecuteAction(apiConn);
+		runner.runDelete(anaplanWorkspaceNameOrId, anaplanModelNameOrId,
+						 anaplanActionId);
 	}
 
 	/**

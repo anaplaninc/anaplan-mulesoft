@@ -99,6 +99,12 @@ public class AnaplanImportOperation extends BaseAnaplanOperation{
 	}
 
 	/**
+	 * Core method to run the Import operation. Expects data as a string-ified
+	 * CSV, parses the data based on provided delimiter, creates an import
+	 * action based on Model provided, writes the provided data to the action
+	 * object, executes the action on the server and monitor's the status
+	 * until the import completes successfully and responds the status
+	 * (failed/succeeded) via an AnaplanResponse object.
 	 *
 	 * @param data
 	 * @param model
@@ -195,6 +201,7 @@ public class AnaplanImportOperation extends BaseAnaplanOperation{
 
 	/**
 	 * Imports a model using the provided workspace-ID, model-ID and Import-ID.
+	 *
 	 * @param workspaceId
 	 * @param modelId
 	 * @param importId

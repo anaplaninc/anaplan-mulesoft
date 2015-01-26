@@ -118,7 +118,11 @@ public class BaseAnaplanOperation {
 	}
 
 	/**
-	 * Used to run export, upsert and delete operations.
+	 * Used to run delete or M2M operations, or any such action that does not
+	 * rely on any input from the flow or outputs any data to the flow. This
+	 * allows you to execute any inert operation within Anaplan's core
+	 * infrastructure.
+	 *
 	 * @param model
 	 * @param actionId
 	 * @param logContext
