@@ -29,8 +29,9 @@ import com.anaplan.client.Service;
 
 
 /**
- * Anaplan Connector built using Anypoint Studio to export, import, update
- * and delete Anaplan models.
+ * Anaplan Connector built using Anypoint Studio to export, upsert, delete of
+ * data within models. It also supports running generic actions for performing
+ * M2M import operations.
  *
  * @author MuleSoft, Inc.
  * @author Spondon Saha.
