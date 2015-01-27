@@ -5,11 +5,16 @@
 
 package org.mule.modules.anaplan.connector.utils;
 
+/**
+ * Simple Enum used for sending different response types.
+ *
+ * @author spondonsaha
+ */
 public enum OperationStatus {
+
 	SUCCESS,
 	FAILURE,
 	APPLICATION_ERROR;
-	
-	private OperationStatus() {
-	}
+
+	private OperationStatus() {}
 }

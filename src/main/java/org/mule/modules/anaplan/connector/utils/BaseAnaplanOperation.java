@@ -95,7 +95,6 @@ public class BaseAnaplanOperation {
 					+ "model for Workspace ID: " + workspaceId + ", Model ID"
 					+ modelId);
 		}
-
 		return model;
 	}
 
