@@ -42,6 +42,13 @@ public class AnaplanUtil {
 		return sb.toString();
 	}
 
+	/**
+	 * Prints an array of strings as a string, delimited by "||". This is for
+	 * debug logs only.
+	 *
+	 * @param toprint
+	 * @return
+	 */
 	public static String debug_output(String[] toprint) {
 		String sb = "";
 		for (String s : toprint) {
