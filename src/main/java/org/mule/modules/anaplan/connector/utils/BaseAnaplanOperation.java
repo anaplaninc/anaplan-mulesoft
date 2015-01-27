@@ -37,6 +37,7 @@ public class BaseAnaplanOperation {
 	/**
 	 * Helper method to set internal reference of API connection and service
 	 * parameters.
+	 *
 	 * @param apiConn
 	 */
 	private void setApiConn(AnaplanConnection apiConn) {
@@ -46,6 +47,7 @@ public class BaseAnaplanOperation {
 
 	/**
 	 * Fetches the workspace using the provided workspace ID.
+	 *
 	 * @param workspaceId
 	 * @return Workspace keyed by provided "workspaceId".
 	 * @throws BaseAnaplanOperationException
@@ -70,6 +72,7 @@ public class BaseAnaplanOperation {
 
 	/**
 	 * Fetches the model for the provided workspace and model IDs.
+	 *
 	 * @param workspaceId
 	 * @param modelId
 	 * @return Model keyed by the model and workspace IDs.
@@ -99,6 +102,7 @@ public class BaseAnaplanOperation {
 	/**
 	 * Simple validation that tries to fetch the workspace and model using
 	 * provided IDs. If any of the operation fails, then an exception is thrown.
+	 *
 	 * @param workspaceId
 	 * @param modelId
 	 * @param exportId

@@ -5,11 +5,10 @@
 
 package org.mule.modules.anaplan.connector;
 
-//import java.io.IOException;
-
 import java.io.IOException;
 import java.io.Serializable;
 
+import org.mule.modules.anaplan.connector.exceptions.AnaplanOperationException;
 import org.mule.modules.anaplan.connector.utils.LogUtil;
 import org.mule.modules.anaplan.connector.utils.OperationStatus;
 import org.mule.modules.anaplan.connector.utils.UserMessages;
@@ -19,21 +18,16 @@ import com.anaplan.client.CellReader;
 import com.anaplan.client.ExportMetadata;
 import com.anaplan.client.ServerFile;
 
-//import org.mule.modules.anaplan.utils.AnaplanUtil;
 
 /**
- * Translates anaplan task results into boomi response handling.
+ * Translates Anaplan task results into connector friendly responses. Provides
+ * constructors corresponding to the expected states of a completed Anaplan
+ * server task, utilities to convert these into DI platform responses.
  *
- * Provides constructors corresponding to the expected states of a completed
- * anaplan server task, utilities to convert these into boomi responses, and
- * shortcut methods to generate boomi failures (for use where e.g. failure
- * occurs before any anaplan task has been created).
- *
- * Payloads generated here form the data output from the anaplan connector. In
+ * Payload generated here form the data output from the Anaplan connector. In
  * the case of an operation success or partial success, this is written out as
  * Current Data for a downstream connector to consume; in the case of complete
- * failure this payload is displayed in the UI if running Boomi in test mode, or
- * does ???? if running in production mode.
+ * failure an exception is thrown to force the data-flow to stop.
  */
 public class AnaplanResponse implements Serializable {
 
@@ -45,24 +39,63 @@ public class AnaplanResponse implements Serializable {
 	private final String logContext;
 	private final Throwable exception;
 
+	/**
+	 * Failure response constructor for data exports from Anaplan, whenever a
+	 * failure is encountered during a data-export. Most likely thrown due to
+	 * invalid Workspace-ID, Model-ID or Export-action-ID.
+	 *
+	 * @param responseMessage
+	 * @param exportMetadata
+	 * @param cause
+	 * @param logContext
+	 * @return
+	 */
 	public static AnaplanResponse exportFailure(String responseMessage,
 			ExportMetadata exportMetadata, Throwable cause, String logContext) {
 		return new AnaplanResponse(responseMessage, OperationStatus.FAILURE,
 				null, exportMetadata, cause, logContext);
 	}
 
+	/**
+	 * Failure response constructor used to signal a failure during an import
+	 * operation into Anaplan, which usually is because of malformed input data.
+	 *
+	 * @param responseMessage
+	 * @param cause
+	 * @param logContext
+	 * @return
+	 */
 	public static AnaplanResponse importFailure(String responseMessage,
 			Throwable cause, String logContext) {
 		return new AnaplanResponse(responseMessage, OperationStatus.FAILURE,
 				null, null, cause, logContext);
 	}
 
+	/**
+	 * Failure response constructor from the connector whenever a generic
+	 * execute operation fails.
+	 *
+	 * @param responseMessage
+	 * @param cause
+	 * @param logContext
+	 * @return
+	 */
 	public static AnaplanResponse executeActionFailure(String responseMessage,
 			Throwable cause, String logContext) {
 		return new AnaplanResponse(responseMessage, OperationStatus.FAILURE,
 				null, null, cause, logContext);
 	}
 
+	/**
+	 * Success response constructor whenever an export operation succeeds.
+	 *
+	 * @param responseMessage
+	 * @param exportOutput
+	 * @param exportMetadata
+	 * @param logContext
+	 * @return
+	 * @throws IllegalArgumentException
+	 */
 	public static AnaplanResponse exportSuccess(String responseMessage,
 			ServerFile exportOutput, ExportMetadata exportMetadata,
 			String logContext) throws IllegalArgumentException {
@@ -78,18 +111,43 @@ public class AnaplanResponse implements Serializable {
 		}
 	}
 
+	/**
+	 * Success response constructor to signal a successful Import operation.
+	 *
+	 * @param responseMessage
+	 * @param logContext
+	 * @param serverFile
+	 * @return
+	 */
 	public static AnaplanResponse importSuccess(String responseMessage,
 			String logContext, ServerFile serverFile) {
 		return new AnaplanResponse(responseMessage, OperationStatus.SUCCESS,
 				serverFile, null, null, logContext);
 	}
 
+	/**
+	 * Success response constructor to signal a successful generic action
+	 * operation, such as a successful Delete operation or an M2M operation.
+	 *
+	 * @param responseMessage
+	 * @param logContext
+	 * @return
+	 */
 	public static AnaplanResponse executeActionSuccess(String responseMessage,
 			String logContext) {
 		return new AnaplanResponse(responseMessage, OperationStatus.SUCCESS,
 				null, null, null, logContext);
 	}
 
+	/**
+	 * Response constructor used when an Import operation fails and the server
+	 * provides a failure-dump to help debug.
+	 *
+	 * @param responseMessage
+	 * @param failDump
+	 * @param logContext
+	 * @return
+	 */
 	public static AnaplanResponse importWithFailureDump(String responseMessage,
 			ServerFile failDump, String logContext) {
 		return new AnaplanResponse(responseMessage,
@@ -122,6 +180,8 @@ public class AnaplanResponse implements Serializable {
 	}
 
 	/**
+	 * Constructor.
+	 *
 	 * @param responseMessage
 	 * @param status
 	 * @param serverFile
@@ -143,6 +203,8 @@ public class AnaplanResponse implements Serializable {
 	}
 
 	/**
+	 * Uses the server cell-reader handler to read the server response contents
+	 * and then write it to a string-buffer to be returned as a response.
 	 *
 	 * @param cellReader
 	 * @param isStreaming
@@ -172,26 +234,17 @@ public class AnaplanResponse implements Serializable {
 	}
 
 	/**
-	 * Includes finalising result.
+	 * Finalizes the result sent back from the server and returns it as a
+	 * string.
 	 *
-	 * Currently always sets streaming=true.
-	 *
-	 * @param input
 	 * @param serverFile
-	 * @param resp
-	 * @param response
 	 * @param logContext
-	 * @param userLog
-	 *            optional log to write status and errors into.
 	 * @throws IOException
 	 * @throws AnaplanAPIException
 	 */
 	private String responseServerFile(ServerFile serverFile, String logContext)
 			throws IOException, AnaplanAPIException {
 		if (serverFile == null) {
-			// userLog.status(UserMessages.getMessage("missingFile"));
-			// response.addResult(input, getStatus(), getResponseMessage(),
-			// getStatus().name(), null);
 			throw new AnaplanAPIException("Response is empty: " + getStatus());
 		}
 		final CellReader cellReader = serverFile.getDownloadCellReader();
@@ -203,8 +256,8 @@ public class AnaplanResponse implements Serializable {
 	}
 
 	/**
-	 * Logs failure with the given reason to everywhere for all data items in
-	 * the request.
+	 * Currently logs the error provided in 'reason' and creates a general
+	 * Log4j.error() message.
 	 *
 	 * @param response
 	 * @param request
@@ -212,74 +265,24 @@ public class AnaplanResponse implements Serializable {
 	 * @param reason
 	 */
 	public static void responseFail(AnaplanConnection connection, String reason) {
-		// response.addCombinedResult(request, OperationStatus.FAILURE, null,
-		// reason, PayloadUtil.toPayload(reason));
-
-		// for (TrackedData inputData : request) {
-		// final UserLog dataLog = new LogUtil.ShapeDataLog(inputData,
-		// connection);
-		// dataLog.error("Aborting operation: " + reason);
-		// }
-
-		// final UserLog operationLog = new LogUtil.ProcessLog(response,
-		// connection);
-		// operationLog.error("Aborting operation for all documents in request: "
-		// + reason);
-
 		LogUtil.error(connection.getLogContext(), "Aborting operation for all "
 				+ "documents in request: " + reason);
 	}
 
 	/**
-	 * Logs failure with the given reason to everywhere for all data items in
-	 * the request.
+	 * Usually as a last resort to error-logging, whenever the cause of the
+	 * error is unknown and everything needs to be brought to a grinding halt.
+	 * In order to stop the flow, the Throwable is wrapped into a
+	 * AnaplanOperationException.
 	 *
-	 * @param response
-	 * @param request
 	 * @param connection
+	 * @param e
 	 * @param reason
+	 * @throws AnaplanOperationException
+	 * @throws Throwable
 	 */
-	// public static void responseFail(OperationResponse response,
-	// DeleteRequest request, AnaplanConnection connection, String reason) {
-	// response.addCombinedResult(request, OperationStatus.FAILURE, null,
-	// reason, PayloadUtil.toPayload(reason));
-	//
-	// for (TrackedData inputData : request) {
-	// final UserLog dataLog = new LogUtil.ShapeDataLog(inputData,
-	// connection);
-	// dataLog.error("Aborting operation: " + reason);
-	// }
-	//
-	// final UserLog operationLog = new LogUtil.ProcessLog(response,
-	// connection);
-	// operationLog.error("Aborting Delete Operation due to : " + reason);
-	// }
-
-	/**
-	 * Logs failure with the given reason to everywhere.
-	 *
-	 * @param response
-	 * @param inputData
-	 * @param connection
-	 * @param reason
-	 */
-	// public static void responseFail(OperationResponse response,
-	// TrackedData inputData, AnaplanConnection connection, String reason) {
-	//
-	// response.addResult(inputData, OperationStatus.FAILURE,
-	// OperationStatus.FAILURE.toString(), reason,
-	// PayloadUtil.toPayload(reason));
-	//
-	// final UserLog operationLog = new LogUtil.ProcessLog(response,
-	// connection);
-	// operationLog.error("Aborting operation: " + reason);
-	//
-	// final UserLog dataLog = new LogUtil.ShapeDataLog(inputData, connection);
-	// dataLog.error("Aborting operation: " + reason);
-	// }
-
 	public static void responseEpicFail(AnaplanConnection connection,
-			Throwable e, String reason) {
+			Throwable e, String reason) throws AnaplanOperationException {
 		final String msg;
 		if (reason == null) {
 			msg = "Unexpected operation error: Generating OperationResponse "
@@ -289,64 +292,58 @@ public class AnaplanResponse implements Serializable {
 		}
 
 		LogUtil.error(connection.getLogContext(), msg, e); // for stack trace
-		// ResponseUtil.addExceptionFailure(response, inputData, e);
+		throw new AnaplanOperationException(e.getMessage());
 	}
-//
-//	 private void responseSuccess(String... messageLines) {
-//		 response.addResult(inputData, OperationStatus.SUCCESS,
-//				 this.getResponseMessage(), OperationStatus.SUCCESS.toString(),
-//				 PayloadUtil.toPayload(AnaplanUtil.squish(messageLines)));
-//	 }
-
-	 public void writeImportData(AnaplanConnection connection, String importId,
-		 String logContext) throws IOException, AnaplanAPIException {
-
-		 if (getServerFile() != null) {
-			 responseServerFile(getServerFile(), getLogContext());
-		 } else if (getStatus() == OperationStatus.SUCCESS) {
-			 LogUtil.status(UserMessages.getMessage("importSuccess", importId),
-					 getResponseMessage());
-		 } else {
-			 if (getException() == null) {
-				 responseFail(connection, getResponseMessage());
-		 } else {
-			 responseEpicFail(connection, getException(),
-					 getResponseMessage());
-		 	}
-		 }
-	 }
-
-	// public void writeExecuteActionData(AnaplanConnection connection,
-	// TrackedData input, OperationResponse response, String actionId,
-	// UserLog operationLog) throws AnaplanAPIException {
-	//
-	// operationLog
-	// .error("Inside executeAction.writeExecuteAction and Operation Status is::");
-	// if (getStatus() == OperationStatus.SUCCESS) {
-	// responseSuccess(response, input,
-	// UserMessages.getMessage("executeActionSuccess", actionId),
-	// getResponseMessage());
-	// } else {
-	// if (getException() == null) {
-	// responseFail(response, input, connection, getResponseMessage());
-	// } else {
-	// responseEpicFail(response, input, connection, getException(),
-	// getResponseMessage());
-	// }
-	// }
-	// }
 
 	/**
+	 * Writes the import data to Anaplan using the provided Import-ID and
+	 * connection.
+	 *
+	 * @param connection
+	 * @param importId
+	 * @param logContext
+	 * @throws IOException
+	 * @throws AnaplanAPIException
+	 * @throws Throwable
+	 */
+	public void writeImportData(AnaplanConnection connection, String importId,
+								String logContext)
+										throws AnaplanOperationException,
+											   IOException,
+											   AnaplanAPIException {
+		if (getServerFile() != null) {
+			responseServerFile(getServerFile(), getLogContext());
+		} else if (getStatus() == OperationStatus.SUCCESS) {
+			LogUtil.status(UserMessages.getMessage("importSuccess", importId),
+					getResponseMessage());
+		} else {
+			if (getException() == null) {
+				responseFail(connection, getResponseMessage());
+			} else {
+				responseEpicFail(connection, getException(),
+						getResponseMessage());
+			}
+		}
+	}
+
+	/**
+	 * Reads the export-data from the registered Serverfile object and emits
+	 * the data as a string into the Mulesoft platform for the next
+	 * connector down the data-flow pipeline.
 	 *
 	 * @param connection
 	 * @param exportId
 	 * @param logContext
 	 * @throws AnaplanAPIException
 	 * @throws IOException
+	 * @throws AnaplanOperationException
+	 * @throws Throwable
 	 */
-	public String writeExportData(AnaplanConnection connection,
-			String exportId, String logContext) throws AnaplanAPIException,
-			IOException {
+	public String writeExportData(AnaplanConnection connection, String exportId,
+								  String logContext)
+										  throws IOException,
+										  		 AnaplanAPIException,
+										  		 AnaplanOperationException {
 		if (getStatus() != OperationStatus.SUCCESS) {
 			if (getException() == null) {
 				responseFail(connection, getResponseMessage());

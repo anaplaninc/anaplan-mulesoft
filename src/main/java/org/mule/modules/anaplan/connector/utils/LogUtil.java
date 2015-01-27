@@ -5,47 +5,17 @@
 
 package org.mule.modules.anaplan.connector.utils;
 
-//import java.util.logging.Level;
-//import java.util.logging.Logger;
-
-//import java.io.FileInputStream;
-//import java.io.FileNotFoundException;
-//import java.io.IOException;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.mule.modules.anaplan.connector.AnaplanConnection;
-//import org.apache.logging.log4j.core.config.ConfigurationSource;
-//import org.apache.logging.log4j.core.config.Configurator;
 
 
 /**
- * Log output to Boomi has 3 main routes:
- * <ul>
- * <li>Atom server log: Internal log for debug and reporting. Global or
- * class-based loggers output to here.
- * <li>Boomi process log: The main user-facing log. {@link OperationResponse}
- * loggers output to here.
- * <li>Boomi per-shape log: Component-specific user-facing logs.
- * {@link TrackedData} loggers output here.
- * </ul>
- *
- * Messages logged at INFO and above should describe normal or error connector
- * operation in a user-friendly way if at all possible. All messages written to
- * the user-visible logs are mirrored to the server logs.
- *
- * Server log level is set to DEBUG, there doesn't seem to be a way to configure
- * this through Boomi externally.
- *
- * Processed customer data is written to internal logs at TRACE level only,
- * which is not displayed by default.
+ * Simple log-wrapper around Log4j with debug, trace, status, warning and error
+ * static log methods.
  */
 public final class LogUtil {
-
-//	private static final String logConfigFileLocation = "/etc/logger/conf/log4j2.xml";
-
-//	private static ConfigurationSource source;
 
 	private LogUtil() {
 		// static only
@@ -151,13 +121,4 @@ public final class LogUtil {
 			super(serverLog, connection.getLogContext());
 		}
 	}
-
-	/**
-	 * Write to the per-shape log regarding a particular data input.
-	 */
-//	public static class ShapeDataLog extends UserLog {
-//		public ShapeDataLog(TrackedData input, AnaplanConnection connection) {
-//			super(input.getLogger(), connection.getLogContext());
-//		}
-//	}
 }
