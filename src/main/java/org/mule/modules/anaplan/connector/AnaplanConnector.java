@@ -88,7 +88,6 @@ public class AnaplanConnector {
 								  String anaplanExportActionNameOrId)
 										  throws AnaplanConnectionException,
 										  		 AnaplanOperationException {
-
 		// validate API connection
 		validateConnection();
 
