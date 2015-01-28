@@ -44,7 +44,6 @@ public class AnaplanConnector {
 	private static AnaplanImportOperation importer;
 	private static AnaplanExecuteAction runner;
 
-
 	/**
 	 * Reads in CSV data that represents an Anaplan model, delimited by the
 	 * provided delimiter, parses it, then loads it into an Anaplan model.
@@ -62,7 +61,8 @@ public class AnaplanConnector {
 							  String anaplanWorkspaceNameOrId,
 							  String anaplanModelNameOrId,
 							  String anaplanImportNameOrId,
-							  @Default("\t") String delimiter)
+							  @Default(",") String columnSeparator,
+							  @Default("\"") String delimiter)
 									  throws AnaplanConnectionException,
 										     AnaplanOperationException {
 		// validate API connection
@@ -71,7 +71,7 @@ public class AnaplanConnector {
 		// start the import
 		importer = new AnaplanImportOperation(apiConn);
 		importer.runImport(data, anaplanWorkspaceNameOrId, anaplanModelNameOrId,
-				anaplanImportNameOrId, delimiter);
+				anaplanImportNameOrId, columnSeparator, delimiter);
 	}
 
 	/**
