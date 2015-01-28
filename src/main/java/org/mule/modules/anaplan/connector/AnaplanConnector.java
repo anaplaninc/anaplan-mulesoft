@@ -148,22 +148,33 @@ public class AnaplanConnector {
 	 * @param password
 	 * @throws ConnectionException
 	 */
+	// TODO: Figure out what to do with ConnectionKey, as we need to either use
+	// basic authentication, or certificate authentication. But the prompt
+	// right now uses both. Need to figure out a way on the Mulesoft UI to allow
+	// users to select an authentication type and accordingly provide the
+	// relevant fields.
 	@Connect
 	public synchronized void connect(
 			@ConnectionKey String username,
 			@Password String password,
+			@Optional String certificatePath,
+			@Optional @Password String certificatePassword,
 			@Default("https://api.anaplan.com/") String url,
 			@Optional @Default("") String proxyHost,
 			@Optional @Default("") String proxyUser,
-			@Optional @Default("") String proxyPass)
+			@Optional @Password @Default("") String proxyPass)
 					throws org.mule.api.ConnectionException {
 
 		LogUtil.status(getClass().toString(), "Initiating connection...");
 		Service service = null;
 
 		if (apiConn == null) {
-			apiConn = new AnaplanConnection(username, password, url, proxyHost,
-					proxyUser, proxyPass);
+			// create the connection object using credentials provided, or the
+			// provided certificate.
+			apiConn = new AnaplanConnection(certificatePath == null, username,
+					password, url, certificatePath, proxyHost, proxyUser,
+					proxyPass);
+			// Connect to the Anaplan API.
 			try {
 				service = apiConn.openConnection();
 			} catch (AnaplanConnectionException e) {
@@ -201,10 +212,7 @@ public class AnaplanConnector {
 	 */
 	@ValidateConnection
 	public boolean isConnected() {
-		if (apiConn != null) {
-			return true;
-		}
-		return false;
+		return apiConn != null;
 	}
 
 	/**
