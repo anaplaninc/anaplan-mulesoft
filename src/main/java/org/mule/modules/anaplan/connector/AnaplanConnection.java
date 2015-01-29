@@ -54,6 +54,7 @@ public class AnaplanConnection {
 
 	private final AnaplanConnectorProperties connectionConfig;
 	private final boolean isCertificate;
+
 	// cached Anaplan objects when a valid open connection exists, else null
 	private Service openConnection = null;
 
@@ -106,15 +107,15 @@ public class AnaplanConnection {
 	 * @return
 	 * @throws AnaplanConnectionException
 	 */
-	public X509Certificate readCertificate(String certificateLocation,
-			String password) throws AnaplanConnectionException {
+	public X509Certificate readCertificate(String certificateLocation)
+			throws AnaplanConnectionException {
 		String alias = "auth-cert";
 		FileInputStream fileStream = null;
 		X509Certificate x509 = null;
 		try {
 			fileStream = new FileInputStream(certificateLocation);
 			KeyStore keyStore = KeyStore.getInstance("JKS");
-			keyStore.load(fileStream, password.toCharArray());
+			keyStore.load(fileStream, null);
 			Certificate cert = keyStore.getCertificate(alias);
 			if (cert instanceof X509Certificate) {
 				x509 = (X509Certificate) cert;
@@ -184,7 +185,7 @@ public class AnaplanConnection {
 			// read in the certificate if provided, or fallback to basic
 			// authentication.
 			if (isCertificate)
-				creds = new Credentials(readCertificate(certLocation, password));
+				creds = new Credentials(readCertificate(certLocation));
 			else
 				creds = new Credentials(username, password, null, null);
 			// Set the credentials on the service.
