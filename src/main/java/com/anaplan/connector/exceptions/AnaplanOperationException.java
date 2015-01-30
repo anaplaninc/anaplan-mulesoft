@@ -14,26 +14,31 @@
  * limitations under the License.
  */
 
-package org.mule.modules.anaplan.connector.exceptions;
+package com.anaplan.connector.exceptions;
 
-public class ConnectorPropertiesException extends Exception {
+
+/**
+ * Used for throwing upsert, export, delete operations.
+ * @author spondonsaha
+ */
+public class AnaplanOperationException extends Exception{
 
 	private static final long serialVersionUID = 1L;
 
 	/**
-	 * Creates an exception with the specified messsage
+	 * Creates an exception with the specified message.
 	 * @param message
 	 */
-	public ConnectorPropertiesException(String message) {
+	public AnaplanOperationException(String message) {
 		super(message);
 	}
 
 	/**
-	 * Creates an exception with the specified message and cause
+	 * Creates an exception with the specified message and throwable to throw.
 	 * @param message
 	 * @param cause
 	 */
-	public ConnectorPropertiesException(String message, Throwable cause) {
+	public AnaplanOperationException(String message, Throwable cause) {
 		super(message, cause);
 	}
 }

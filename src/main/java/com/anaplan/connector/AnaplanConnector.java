@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.mule.modules.anaplan.connector;
+package com.anaplan.connector;
 
 import org.mule.api.ConnectionException;
 import org.mule.api.ConnectionExceptionCode;
@@ -30,14 +30,14 @@ import org.mule.api.annotations.param.ConnectionKey;
 import org.mule.api.annotations.param.Default;
 import org.mule.api.annotations.param.Optional;
 import org.mule.api.annotations.param.Payload;
-import org.mule.modules.anaplan.connector.exceptions.AnaplanConnectionException;
-import org.mule.modules.anaplan.connector.exceptions.AnaplanOperationException;
-import org.mule.modules.anaplan.connector.utils.AnaplanExecuteAction;
-import org.mule.modules.anaplan.connector.utils.AnaplanExportOperation;
-import org.mule.modules.anaplan.connector.utils.AnaplanImportOperation;
-import org.mule.modules.anaplan.connector.utils.LogUtil;
 
 import com.anaplan.client.Service;
+import com.anaplan.connector.exceptions.AnaplanConnectionException;
+import com.anaplan.connector.exceptions.AnaplanOperationException;
+import com.anaplan.connector.utils.AnaplanExecuteAction;
+import com.anaplan.connector.utils.AnaplanExportOperation;
+import com.anaplan.connector.utils.AnaplanImportOperation;
+import com.anaplan.connector.utils.LogUtil;
 
 
 /**

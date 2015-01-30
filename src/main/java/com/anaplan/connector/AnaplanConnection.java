@@ -21,21 +21,21 @@
  * Author: Spondon Saha
  */
 
-package org.mule.modules.anaplan.connector;
+package com.anaplan.connector;
 
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 
-import org.mule.modules.anaplan.connector.exceptions.AnaplanConnectionException;
-import org.mule.modules.anaplan.connector.exceptions.ConnectorPropertiesException;
-import org.mule.modules.anaplan.connector.utils.LogUtil;
-import org.mule.modules.anaplan.connector.utils.UserMessages;
 
 import com.anaplan.client.AnaplanAPIException;
 import com.anaplan.client.Credentials;
 import com.anaplan.client.Service;
 import com.anaplan.client.Workspace;
+import com.anaplan.connector.exceptions.AnaplanConnectionException;
+import com.anaplan.connector.exceptions.ConnectorPropertiesException;
+import com.anaplan.connector.utils.LogUtil;
+import com.anaplan.connector.utils.UserMessages;
 
 /**
  * Validation and communication with the Anaplan model.

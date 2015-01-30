@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.mule.modules.anaplan.connector.exceptions;
+package com.anaplan.connector.exceptions;
 
 
 public class AnaplanConnectionException extends Exception {

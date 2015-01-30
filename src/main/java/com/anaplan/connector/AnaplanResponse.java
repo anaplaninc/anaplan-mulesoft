@@ -14,20 +14,20 @@
  * limitations under the License.
  */
 
-package org.mule.modules.anaplan.connector;
+package com.anaplan.connector;
 
 import java.io.IOException;
 import java.io.Serializable;
 
-import org.mule.modules.anaplan.connector.exceptions.AnaplanOperationException;
-import org.mule.modules.anaplan.connector.utils.LogUtil;
-import org.mule.modules.anaplan.connector.utils.OperationStatus;
-import org.mule.modules.anaplan.connector.utils.UserMessages;
 
 import com.anaplan.client.AnaplanAPIException;
 import com.anaplan.client.CellReader;
 import com.anaplan.client.ExportMetadata;
 import com.anaplan.client.ServerFile;
+import com.anaplan.connector.exceptions.AnaplanOperationException;
+import com.anaplan.connector.utils.LogUtil;
+import com.anaplan.connector.utils.OperationStatus;
+import com.anaplan.connector.utils.UserMessages;
 
 
 /**

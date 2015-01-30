@@ -14,31 +14,18 @@
  * limitations under the License.
  */
 
-package org.mule.modules.anaplan.connector.exceptions;
-
+package com.anaplan.connector.utils;
 
 /**
- * Used for throwing upsert, export, delete operations.
+ * Simple Enum used for sending different response types.
+ *
  * @author spondonsaha
  */
-public class AnaplanOperationException extends Exception{
+public enum OperationStatus {
 
-	private static final long serialVersionUID = 1L;
+	SUCCESS,
+	FAILURE,
+	APPLICATION_ERROR;
 
-	/**
-	 * Creates an exception with the specified message.
-	 * @param message
-	 */
-	public AnaplanOperationException(String message) {
-		super(message);
-	}
-
-	/**
-	 * Creates an exception with the specified message and throwable to throw.
-	 * @param message
-	 * @param cause
-	 */
-	public AnaplanOperationException(String message, Throwable cause) {
-		super(message, cause);
-	}
+	private OperationStatus() {}
 }

@@ -14,12 +14,13 @@
  * limitations under the License.
  */
 
-package org.mule.modules.anaplan.connector.utils;
+package com.anaplan.connector.utils;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.mule.modules.anaplan.connector.AnaplanConnection;
+
+import com.anaplan.connector.AnaplanConnection;
 
 
 /**

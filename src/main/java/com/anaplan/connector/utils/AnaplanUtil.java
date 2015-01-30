@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.mule.modules.anaplan.connector.utils;
+package com.anaplan.connector.utils;
 
 import com.anaplan.client.AnaplanAPIException;
 import com.anaplan.client.Task;

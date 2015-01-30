@@ -14,18 +14,26 @@
  * limitations under the License.
  */
 
-package org.mule.modules.anaplan.connector.utils;
+package com.anaplan.connector.exceptions;
 
-/**
- * Simple Enum used for sending different response types.
- *
- * @author spondonsaha
- */
-public enum OperationStatus {
+public class ConnectorPropertiesException extends Exception {
 
-	SUCCESS,
-	FAILURE,
-	APPLICATION_ERROR;
+	private static final long serialVersionUID = 1L;
 
-	private OperationStatus() {}
+	/**
+	 * Creates an exception with the specified messsage
+	 * @param message
+	 */
+	public ConnectorPropertiesException(String message) {
+		super(message);
+	}
+
+	/**
+	 * Creates an exception with the specified message and cause
+	 * @param message
+	 * @param cause
+	 */
+	public ConnectorPropertiesException(String message, Throwable cause) {
+		super(message, cause);
+	}
 }
