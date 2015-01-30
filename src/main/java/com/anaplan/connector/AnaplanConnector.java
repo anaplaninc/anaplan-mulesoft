@@ -85,7 +85,8 @@ public class AnaplanConnector {
 
 		// start the import
 		importer = new AnaplanImportOperation(apiConn);
-		importer.runImport(data, workspaceId, modelId, importId, columnSeparator, delimiter);
+		importer.runImport(data, workspaceId, modelId, importId,
+				columnSeparator, delimiter);
 	}
 
 	/**
