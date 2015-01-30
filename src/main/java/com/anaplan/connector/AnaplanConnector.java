@@ -25,6 +25,7 @@ import org.mule.api.annotations.Disconnect;
 import org.mule.api.annotations.Processor;
 import org.mule.api.annotations.ValidateConnection;
 import org.mule.api.annotations.display.FriendlyName;
+import org.mule.api.annotations.display.Icons;
 import org.mule.api.annotations.display.Password;
 import org.mule.api.annotations.param.ConnectionKey;
 import org.mule.api.annotations.param.Default;
@@ -47,7 +48,9 @@ import com.anaplan.connector.utils.LogUtil;
  * @author MuleSoft, Inc.
  * @author Spondon Saha.
  */
-@Connector(name = "anaplan", schemaVersion = "1.0", friendlyName = "Anaplan")
+@Icons(connectorLarge="../../../icons/anaplan-connector-24x16-logo.png",
+	   connectorSmall="../../../icons/anaplan-connector-24x16-logo.png")
+@Connector(name="anaplan", schemaVersion="1.0", friendlyName="Anaplan")
 public class AnaplanConnector {
 
 	private AnaplanConnection apiConn;
