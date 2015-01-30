@@ -57,8 +57,9 @@ public class AnaplanImportOperation extends BaseAnaplanOperation{
 	}
 
 	/**
-	 * Creates the regex to split CSV lines with provided delimiter. This is
-	 * esepcially useful when escape quotes are used for cell values.
+	 * Creates the regex to split CSV lines with provided column-separator and
+	 * delimiter. This is esepcially useful when escape quotes are used for
+	 * cell values.
 	 *
 	 * @param delimiter
 	 * @return
