@@ -48,8 +48,8 @@ import com.anaplan.connector.utils.LogUtil;
  * @author MuleSoft, Inc.
  * @author Spondon Saha.
  */
-@Icons(connectorLarge="../../../icons/anaplan-connector-24x16-logo.png",
-	   connectorSmall="../../../icons/anaplan-connector-24x16-logo.png")
+@Icons(connectorLarge="../../../icons/anaplan-connector-48x32-logo.png",
+	   connectorSmall="../../../icons/anaplan-connector-16x16.png")
 @Connector(name="anaplan", schemaVersion="1.0", friendlyName="Anaplan")
 public class AnaplanConnector {
 
