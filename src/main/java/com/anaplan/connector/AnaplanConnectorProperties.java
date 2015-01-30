@@ -3,13 +3,13 @@
  * a copy of which has been included with this distribution in the LICENSE.md file.
  */
 
-package org.mule.modules.anaplan.connector;
+package com.anaplan.connector;
 
 
 import java.util.HashMap;
 
-import org.mule.modules.anaplan.connector.exceptions.ConnectorPropertiesException;
-import org.mule.modules.anaplan.connector.utils.LogUtil;
+import com.anaplan.connector.exceptions.ConnectorPropertiesException;
+import com.anaplan.connector.utils.LogUtil;
 
 
 /**

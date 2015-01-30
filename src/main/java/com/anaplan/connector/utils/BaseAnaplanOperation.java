@@ -3,11 +3,8 @@
  * a copy of which has been included with this distribution in the LICENSE.md file.
  */
 
-package org.mule.modules.anaplan.connector.utils;
+package com.anaplan.connector.utils;
 
-import org.mule.modules.anaplan.connector.AnaplanConnection;
-import org.mule.modules.anaplan.connector.AnaplanResponse;
-import org.mule.modules.anaplan.connector.exceptions.AnaplanOperationException;
 
 import com.anaplan.client.Action;
 import com.anaplan.client.AnaplanAPIException;
@@ -16,6 +13,9 @@ import com.anaplan.client.Service;
 import com.anaplan.client.Task;
 import com.anaplan.client.TaskStatus;
 import com.anaplan.client.Workspace;
+import com.anaplan.connector.AnaplanConnection;
+import com.anaplan.connector.AnaplanResponse;
+import com.anaplan.connector.exceptions.AnaplanOperationException;
 
 
 /**

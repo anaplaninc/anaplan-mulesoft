@@ -3,7 +3,7 @@
  * a copy of which has been included with this distribution in the LICENSE.md file.
  */
 
-package org.mule.modules.anaplan.connector.utils;
+package com.anaplan.connector.utils;
 
 import com.anaplan.client.AnaplanAPIException;
 import com.anaplan.client.Task;

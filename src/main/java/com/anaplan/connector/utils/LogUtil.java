@@ -3,12 +3,13 @@
  * a copy of which has been included with this distribution in the LICENSE.md file.
  */
 
-package org.mule.modules.anaplan.connector.utils;
+package com.anaplan.connector.utils;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.mule.modules.anaplan.connector.AnaplanConnection;
+
+import com.anaplan.connector.AnaplanConnection;
 
 
 /**
