@@ -41,9 +41,8 @@ import com.anaplan.client.Service;
 
 
 /**
- * Anaplan Connector built using Anypoint Studio to export, upsert, delete of
- * data within models. It also supports running generic actions for performing
- * M2M import operations.
+ * Anaplan Connector that supports Anaplan actions such as Import, Export,
+ * and Delete.
  *
  * @author MuleSoft, Inc.
  * @author Spondon Saha.
@@ -99,7 +98,7 @@ public class AnaplanConnector {
 	public String exportFromModel(
 			@FriendlyName("Workspace name or ID") String workspaceId,
 			@FriendlyName("Model name or ID") String modelId,
-			@FriendlyName("Import name or ID") String exportId)
+			@FriendlyName("Export name or ID") String exportId)
 					throws AnaplanConnectionException,
 						   AnaplanOperationException {
 		// validate API connection
@@ -145,7 +144,7 @@ public class AnaplanConnector {
 				apiConn.openConnection();
 			} else {
 				LogUtil.status(apiConn.getLogContext(),
-						"Connection to API exists. Proceeding with export...");
+						"Connection to API exists. Proceeding...");
 			}
 		} else {
 			throw new AnaplanConnectionException(
