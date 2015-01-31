@@ -1,6 +1,17 @@
 /**
- * (c) 2003-2014 MuleSoft, Inc. The software in this package is published under the terms of the CPAL v1.0 license,
- * a copy of which has been included with this distribution in the LICENSE.md file.
+ * Copyright 2015 Anaplan Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License.md file for the specific language governing permissions and
+ * limitations under the License.
  */
 
 package com.anaplan.connector;
@@ -14,6 +25,7 @@ import org.mule.api.annotations.Disconnect;
 import org.mule.api.annotations.Processor;
 import org.mule.api.annotations.ValidateConnection;
 import org.mule.api.annotations.display.FriendlyName;
+import org.mule.api.annotations.display.Icons;
 import org.mule.api.annotations.display.Password;
 import org.mule.api.annotations.param.ConnectionKey;
 import org.mule.api.annotations.param.Default;
@@ -30,21 +42,21 @@ import com.anaplan.connector.utils.LogUtil;
 
 
 /**
- * Anaplan Connector built using Anypoint Studio to export, upsert, delete of
- * data within models. It also supports running generic actions for performing
- * M2M import operations.
+ * Anaplan Connector that supports Anaplan actions such as Import, Export,
+ * and Delete.
  *
  * @author MuleSoft, Inc.
  * @author Spondon Saha.
  */
-@Connector(name = "anaplan", schemaVersion = "1.0", friendlyName = "Anaplan")
+@Icons(connectorLarge="../../../icons/anaplan-connector-48x32-logo.png",
+	   connectorSmall="../../../icons/anaplan-connector-16x16.png")
+@Connector(name="anaplan", schemaVersion="1.0", friendlyName="Anaplan")
 public class AnaplanConnector {
 
 	private AnaplanConnection apiConn;
 	private static AnaplanExportOperation exporter;
 	private static AnaplanImportOperation importer;
 	private static AnaplanExecuteAction runner;
-
 
 	/**
 	 * Reads in CSV data that represents an Anaplan model, delimited by the
@@ -64,7 +76,8 @@ public class AnaplanConnector {
 			@FriendlyName("Workspace name or ID") String workspaceId,
 		    @FriendlyName("Model name or ID") String modelId,
 		    @FriendlyName("Import name or ID") String importId,
-		    @Default("\t") String delimiter)
+			@FriendlyName("Column separator") @Default(",") String columnSeparator,
+			@FriendlyName("Delimiter") @Default("\"") String delimiter)
 		    		throws AnaplanConnectionException,
 		    			   AnaplanOperationException {
 		// validate API connection
@@ -72,7 +85,8 @@ public class AnaplanConnector {
 
 		// start the import
 		importer = new AnaplanImportOperation(apiConn);
-		importer.runImport(data, workspaceId, modelId, importId, delimiter);
+		importer.runImport(data, workspaceId, modelId, importId,
+				columnSeparator, delimiter);
 	}
 
 	/**
@@ -88,7 +102,7 @@ public class AnaplanConnector {
 	public String exportFromModel(
 			@FriendlyName("Workspace name or ID") String workspaceId,
 			@FriendlyName("Model name or ID") String modelId,
-			@FriendlyName("Import name or ID") String exportId)
+			@FriendlyName("Export name or ID") String exportId)
 					throws AnaplanConnectionException,
 						   AnaplanOperationException {
 		// validate API connection
@@ -134,7 +148,7 @@ public class AnaplanConnector {
 				apiConn.openConnection();
 			} else {
 				LogUtil.status(apiConn.getLogContext(),
-						"Connection to API exists. Proceeding with export...");
+						"Connection to API exists. Proceeding...");
 			}
 		} else {
 			throw new AnaplanConnectionException(

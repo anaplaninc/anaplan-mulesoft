@@ -1,6 +1,17 @@
 /**
- * (c) 2003-2014 MuleSoft, Inc. The software in this package is published under the terms of the CPAL v1.0 license,
- * a copy of which has been included with this distribution in the LICENSE.md file.
+ * Copyright 2015 Anaplan Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License.md file for the specific language governing permissions and
+ * limitations under the License.
  */
 
 package com.anaplan.connector.utils;
@@ -46,65 +57,60 @@ public class AnaplanImportOperation extends BaseAnaplanOperation{
 	}
 
 	/**
-	 * CSV parser extracted from runImportCSV so Unit test could be created
+	 * Creates the regex to split CSV lines with provided column-separator and
+	 * delimiter. This is esepcially useful when escape quotes are used for
+	 * cell values.
 	 *
-	 * @param is
-	 * @param row_count
+	 * @param delimiter
 	 * @return
-	 * @throws IOException
 	 */
-	public static List<String[]> parseCsv(InputStream is, int row_count)
-			throws IOException {
-		String line;
-		List<String[]> rows = new ArrayList<String[]>();
-		BufferedReader reader = new BufferedReader(new InputStreamReader(is));
-		while ((line = reader.readLine()) != null) {
-			if (row_count == 0) {
-				HEADER = line.split(",");
-			} else {
-				String[] row = line.split(",");
-				rows.add(row);
-			}
-
-			row_count++;
-		}
-		return rows;
+	private static String generateDelimiterRegex(String columnSeparator,
+			String delimiter) {
+		return columnSeparator.trim() + "(?=([^\\" + delimiter.trim() + "]*\\" +
+			   delimiter.trim() + "[^\\" + delimiter.trim() + "]*\\" +
+			   delimiter.trim() + ")*[^\\" + delimiter.trim() + "]*$)";
 	}
 
 	/**
-	 * Import Data Parser
+	 * Import Data Parser: splits import data by new-lines, then for each row,
+	 * splits by the provided column-separator and escape delimiter.
 	 *
 	 * @param is
-	 * @param row_count
+	 * @param rowCount
 	 * @param columnSeperator
-	 * @return
+	 * @return Array of rows properly escaped.
 	 * @throws IOException
 	 */
-	private static List<String[]> parseImportData(InputStream is, int row_count,
-			String columnSeparator) throws IOException {
+	private static List<String[]> parseImportData(InputStream is, int rowCount,
+			String columnSeparator, String delimiter) throws IOException {
 		String line;
+		String[] cellTokens;
 		List<String[]> rows = new ArrayList<String[]>();
 		BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+		String delimRegex = generateDelimiterRegex(columnSeparator, delimiter);
 		while ((line = reader.readLine()) != null) {
-			if (row_count == 0) {
-				HEADER = line.split(columnSeparator);
+			// trim all quotes
+			cellTokens = line.split(delimRegex);
+			for (int i = 0; i < cellTokens.length; i++)
+				cellTokens[i] = cellTokens[i].replaceAll("^\"|\"$", "");
+			// append header and rows
+			if (rowCount == 0) {
+				HEADER = cellTokens;
 			} else {
-				String[] row = line.split(columnSeparator);
-				rows.add(row);
+				rows.add(cellTokens);
 			}
-
-			row_count++;
+			rowCount++;
 		}
 		return rows;
 	}
 
 	/**
 	 * Core method to run the Import operation. Expects data as a string-ified
-	 * CSV, parses the data based on provided delimiter, creates an import
-	 * action based on Model provided, writes the provided data to the action
-	 * object, executes the action on the server and monitor's the status
-	 * until the import completes successfully and responds the status
-	 * (failed/succeeded) via an AnaplanResponse object.
+	 * CSV, parses the data based on provided column-separator and delimiter,
+	 * creates an import action based on Model provided, writes the provided
+	 * data to the action object, executes the action on the server and
+	 * monitor's the status until the import completes successfully and responds
+	 * the status (failed/succeeded) via an AnaplanResponse object.
 	 *
 	 * @param data
 	 * @param model
@@ -115,8 +121,10 @@ public class AnaplanImportOperation extends BaseAnaplanOperation{
 	 * @throws IOException
 	 */
 	private static AnaplanResponse runImportCsv(String data, Model model,
-			String importId, String delimiter, String logContext)
-					throws AnaplanAPIException, JsonSyntaxException, IOException {
+			String importId, String columnSeparator, String delimiter,
+			String logContext)
+					throws AnaplanAPIException, JsonSyntaxException,
+					IOException {
 
 		int rowsProcessed = 0;
 
@@ -127,23 +135,19 @@ public class AnaplanImportOperation extends BaseAnaplanOperation{
 		}
 
 		final ServerFile serverFile = model.getServerFile(imp.getSourceFileId());
-
 		if (serverFile != null) {
-			 serverFile.setSeparator(delimiter);
-			// final String msg = UserMessages.getMessage("invalidFile",
-			// imp.getSourceFileId());
-			// userLog.error(msg);
-			// return AnaplanResponse.importFailure(msg, null, logContext);
 
-			int row_count = 0;
-			// List<String[]> rows = parseCsv(is,row_count);
+			// set the column-separator and delimiter for the input
+			serverFile.setSeparator(columnSeparator);
+			serverFile.setDelimiter(delimiter);
+
+			int rowCount = 0;
 			InputStream is = new ByteArrayInputStream(data.getBytes());
-			List<String[]> rows = parseImportData(is, row_count, delimiter);
+			List<String[]> rows = parseImportData(is, rowCount, columnSeparator,
+					delimiter);
 
-			/*
-			 * final CellWriter dataWriter =
-			 * serverFile.getUploadCellWriter(serverFile .getSeparator());
-			 */
+			// get the data-writer and write data to it, i.e. serverFile by
+			// reference
 			final CellWriter dataWriter = serverFile.getUploadCellWriter();
 			dataWriter.writeHeaderRow(HEADER);
 			LogUtil.status(logContext, "import header is:\n"
@@ -208,7 +212,8 @@ public class AnaplanImportOperation extends BaseAnaplanOperation{
 	 * @throws AnaplanOperationException
 	 */
 	public void runImport(String data, String workspaceId, String modelId,
-			String importId, String delimiter) throws AnaplanOperationException{
+			String importId, String columnSeparator, String delimiter)
+					throws AnaplanOperationException {
 
 		final String importLogContext = apiConn.getLogContext() + " ["
 				+ importId + "]";
@@ -225,7 +230,7 @@ public class AnaplanImportOperation extends BaseAnaplanOperation{
 			LogUtil.status(importLogContext, "Starting import: " + importId);
 
 			final AnaplanResponse anaplanResponse = runImportCsv(data, model,
-					importId, delimiter, importLogContext);
+					importId, columnSeparator, delimiter, importLogContext);
 			anaplanResponse.writeImportData(apiConn, importId, importLogContext);
 
 			LogUtil.status(importLogContext, "Import complete: Status: "
