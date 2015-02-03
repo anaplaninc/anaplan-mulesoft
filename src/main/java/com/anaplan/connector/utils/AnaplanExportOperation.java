@@ -25,8 +25,8 @@ import com.anaplan.client.Model;
 import com.anaplan.client.ServerFile;
 import com.anaplan.client.Task;
 import com.anaplan.client.TaskStatus;
-import com.anaplan.connector.AnaplanConnection;
 import com.anaplan.connector.AnaplanResponse;
+import com.anaplan.connector.connection.AnaplanConnection;
 import com.anaplan.connector.exceptions.AnaplanOperationException;
 
 

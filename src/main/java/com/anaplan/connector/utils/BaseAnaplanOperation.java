@@ -24,8 +24,8 @@ import com.anaplan.client.Service;
 import com.anaplan.client.Task;
 import com.anaplan.client.TaskStatus;
 import com.anaplan.client.Workspace;
-import com.anaplan.connector.AnaplanConnection;
 import com.anaplan.connector.AnaplanResponse;
+import com.anaplan.connector.connection.AnaplanConnection;
 import com.anaplan.connector.exceptions.AnaplanOperationException;
 
 
@@ -46,7 +46,7 @@ public class BaseAnaplanOperation {
 	}
 
 	/**
-	 * Helper method to set internal reference of API connection and service
+	 * Helper method to set internal reference of API connStrategy and service
 	 * parameters.
 	 *
 	 * @param apiConn

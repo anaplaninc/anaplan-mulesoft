@@ -1,3 +1,7 @@
-<!-- BEGIN_INCLUDE(anaplan:my-processor) -->
-    <anaplan:my-processor content="#[map-payload:content]" />
-<!-- END_INCLUDE(anaplan:my-processor) -->
+<!-- BEGIN_INCLUDE(anaplan:config-auth-basic) -->
+<anaplan:config-auth-basic name="anaplan-default-auth" username="someUserName"
+             password="somePassword" />
+<!-- END_INCLUDE(anaplan:config-auth-basic) -->
+<!-- BEGIN_INCLUDE(anaplan:config-auth-cert) -->
+<anaplan:config-auth-cert name="anaplan-cert-auth" ... />
+<!-- END_INCLUDE(anaplan:config-auth-cert) -->

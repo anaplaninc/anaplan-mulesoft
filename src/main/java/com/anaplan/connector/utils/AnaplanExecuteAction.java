@@ -18,8 +18,8 @@ package com.anaplan.connector.utils;
 
 
 import com.anaplan.client.AnaplanAPIException;
-import com.anaplan.connector.AnaplanConnection;
 import com.anaplan.connector.AnaplanResponse;
+import com.anaplan.connector.connection.AnaplanConnection;
 import com.anaplan.connector.exceptions.AnaplanOperationException;
 
 /**
