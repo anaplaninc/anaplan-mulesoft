@@ -132,7 +132,7 @@ public class AnaplanConnector {
 	public void executeAction(
 			@FriendlyName("Workspace name or ID") String workspaceId,
 			@FriendlyName("Model name or ID") String modelId,
-			@FriendlyName("Import name or ID") String actionId)
+			@FriendlyName("Action name or ID") String actionId)
 					throws AnaplanConnectionException,
 						   AnaplanOperationException {
 		// validate the API connectionStrategy
