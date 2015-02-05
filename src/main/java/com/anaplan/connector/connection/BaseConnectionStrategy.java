@@ -40,7 +40,7 @@ public class BaseConnectionStrategy {
 	 * credentials or certificate.
 	 * @return
 	 */
-	public AnaplanConnection getService() {
+	public AnaplanConnection getApiConnection() {
 		return apiConn;
 	}
 

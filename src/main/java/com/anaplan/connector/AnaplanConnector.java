@@ -93,7 +93,8 @@ public class AnaplanConnector {
 		connectionStrategy.validateConnection();
 
 		// start the import
-		importer = new AnaplanImportOperation(connectionStrategy.getService());
+		importer = new AnaplanImportOperation(
+				connectionStrategy.getApiConnection());
 		importer.runImport(data, workspaceId, modelId, importId,
 				columnSeparator, delimiter);
 	}
@@ -118,7 +119,8 @@ public class AnaplanConnector {
 		connectionStrategy.validateConnection();
 
 		// start the export
-		exporter = new AnaplanExportOperation(connectionStrategy.getService());
+		exporter = new AnaplanExportOperation(
+				connectionStrategy.getApiConnection());
 		return exporter.runExport(workspaceId, modelId, exportId);
 	}
 
@@ -139,7 +141,8 @@ public class AnaplanConnector {
 		connectionStrategy.validateConnection();
 
 		// start the delete process
-		runner = new AnaplanExecuteAction(connectionStrategy.getService());
+		runner = new AnaplanExecuteAction(
+				connectionStrategy.getApiConnection());
 		runner.runExecute(workspaceId, modelId, actionId);
 	}
 }
