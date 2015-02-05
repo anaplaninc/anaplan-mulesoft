@@ -23,15 +23,14 @@
 
 package com.anaplan.connector.connection;
 
+import java.io.BufferedInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.security.KeyStore;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
+import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 import java.util.List;
 
@@ -113,9 +112,10 @@ public class AnaplanConnection {
 	}
 
 	/**
-	 * Stores the certificate in a password-protected Java KeyStore under an
-	 * alias and then returns that X509Certificate object to be used for
-	 * authentication.
+	 * Opens the DER encoded certificate from the provided path into an input
+	 * stream and then generates a X.509 certificate from the file contents and
+	 * returns it. To view the certificate contents on the command line, do:
+	 * $ openssl x509 -in /path/to/certificate/file.cer -inform der -text -noout
 	 *
 	 * @param certificateLocation
 	 * @param password
@@ -123,15 +123,14 @@ public class AnaplanConnection {
 	 * @throws AnaplanConnectionException
 	 */
 	public X509Certificate readCertificate(String certificateLocation)
-			throws AnaplanConnectionException {
-		String alias = "auth-cert";
-		FileInputStream fileStream = null;
+					throws AnaplanConnectionException {
+		BufferedInputStream buffStream = null;
 		X509Certificate x509 = null;
 		try {
-			fileStream = new FileInputStream(certificateLocation);
-			KeyStore keyStore = KeyStore.getInstance("JKS");
-			keyStore.load(fileStream, null);
-			Certificate cert = keyStore.getCertificate(alias);
+			buffStream = new BufferedInputStream(
+					new FileInputStream(certificateLocation));
+			Certificate cert = CertificateFactory.getInstance("X.509")
+					.generateCertificate(buffStream);
 			if (cert instanceof X509Certificate) {
 				x509 = (X509Certificate) cert;
 				LogUtil.status(getLogContext(),
@@ -140,19 +139,16 @@ public class AnaplanConnection {
 		} catch (CertificateException e) {
 			throw new AnaplanConnectionException(
 					"Bad certificate: " + e.getMessage());
-        } catch (NoSuchAlgorithmException e) {
-            throw new AnaplanConnectionException(
-            		"No such algorithm: " + e.getMessage());
-        } catch (KeyStoreException e) {
-            throw new AnaplanConnectionException(
-            		"Keystore exception occured: " + e.getMessage());
         } catch (IOException e) {
         	throw new AnaplanConnectionException(
         			"Could not open certificate: " + e.getMessage());
+        } catch (Throwable e) {
+			throw new AnaplanConnectionException(
+					"Unknown exception occured: " + e.getMessage());
         } finally {
-            if (fileStream != null) {
+            if (buffStream != null) {
                 try {
-					fileStream.close();
+                	buffStream.close();
 				} catch (IOException e) {
 					throw new AnaplanConnectionException(e.getMessage());
 				}

@@ -107,7 +107,7 @@ public class AnaplanConnector {
 	 * @return CSV string.
 	 * @throws AnaplanConnectionException
 	 */
-	@Processor(friendlyName = "Export")
+	@Processor(friendlyName="Export")
 	public String exportFromModel(
 			@FriendlyName("Workspace name or ID") String workspaceId,
 			@FriendlyName("Model name or ID") String modelId,
@@ -128,7 +128,7 @@ public class AnaplanConnector {
 	 * @throws AnaplanConnectionException
 	 * @throws AnaplanOperationException
 	 */
-	@Processor(friendlyName = "Execute Action")
+	@Processor(friendlyName="Execute Action")
 	public void executeAction(
 			@FriendlyName("Workspace name or ID") String workspaceId,
 			@FriendlyName("Model name or ID") String modelId,

@@ -53,6 +53,7 @@ public class CertAuthConnectionStrategy extends BaseConnectionStrategy {
 			@Optional @Default("") String proxyUser,
 			@Optional @Default("") String proxyPass)
 					throws org.mule.api.ConnectionException {
+
 		LogUtil.status(getClass().toString(),
 				"Initiating certificate connection...");
 
