@@ -15,7 +15,7 @@
  */
 
 /**
- * Basic Anaplan Connection class that helps establish an API connStrategy using
+ * Basic Anaplan Connection class that helps establish an API connection using
  * the provided credentials from the connector.
  *
  * Author: Spondon Saha
@@ -65,7 +65,7 @@ public class AnaplanConnection {
 	private final AnaplanConnectorProperties connectionConfig;
 	private final boolean isCertificate;
 
-	// cached Anaplan objects when a valid open connStrategy exists, else null
+	// cached Anaplan objects when a valid open connection exists, else null
 	private Service openConnection = null;
 
 
@@ -98,11 +98,11 @@ public class AnaplanConnection {
 					"Could not set connector properties!"
 							+ e.getStackTrace().toString());
 		}
-		LogUtil.status(getLogContext(), "Stored connStrategy properties!");
+		LogUtil.status(getLogContext(), "Stored connection properties!");
 	}
 
 	/**
-	 * Getter for the connStrategy ID, which is the string representation of this
+	 * Getter for the connection ID, which is the string representation of this
 	 * object.
 	 *
 	 * @return
@@ -158,7 +158,7 @@ public class AnaplanConnection {
 	}
 
 	/**
-	 * Opens a service for accessing anaplan workspaces with this connStrategy's
+	 * Opens a service for accessing anaplan workspaces with this connection's
 	 * API endpoint and credentials.
 	 *
 	 * @return The service object that contains workspace/model details for the
@@ -169,7 +169,7 @@ public class AnaplanConnection {
 	 *             properties.
 	 */
 	private Service cacheService() throws AnaplanConnectionException {
-		LogUtil.debug(getLogContext(), "trying Anaplan service connStrategy...");
+		LogUtil.debug(getLogContext(), "trying Anaplan service connection...");
 
 		final String apiUrl = connectionConfig.getStringProperty(URL_FIELD);
 		Service service = null;
@@ -225,7 +225,7 @@ public class AnaplanConnection {
 		}
 
 		LogUtil.debug(getLogContext(),
-				"Anaplan service connStrategy information cached");
+				"Anaplan service connection information cached");
 
 		// validate username/password credentials by pulling workspaces for user
 		List<Workspace> availableWorkspaces = null;
@@ -256,7 +256,7 @@ public class AnaplanConnection {
 		}
 
 		LogUtil.debug(getLogContext(),
-				"Anaplan service connStrategy validated successfully");
+				"Anaplan service connection validated successfully");
 
 		openConnection = service;
 
@@ -268,7 +268,7 @@ public class AnaplanConnection {
 	 * access. Service should be closed by caller when access complete using
 	 * {@link #closeConnection()}.
 	 *
-	 * If any open connStrategy already exists it will be closed.
+	 * If any open connection already exists it will be closed.
 	 *
 	 * @return null if workspace or model is not valid, else anaplan model
 	 *         object
@@ -276,20 +276,20 @@ public class AnaplanConnection {
 	 *             With user-friendly message if the model cannot be opened.
 	 */
 	public Service openConnection() throws AnaplanConnectionException {
-		LogUtil.status(getLogContext(), "Establishing connStrategy....");
+		LogUtil.status(getLogContext(), "Establishing connection....");
 		if (openConnection == null) {
-			LogUtil.status(getLogContext(), "No new connStrategy found, "
-					+ "establishing new connStrategy!");
+			LogUtil.status(getLogContext(), "No new connection found, "
+					+ "establishing new connection!");
 			return cacheService();
 		} else {
 			LogUtil.status(getLogContext(), "Connection exists, returning "
-					+ "cached connStrategy!");
+					+ "cached connection!");
 			return this.openConnection;
 		}
 	}
 
 	/**
-	 * Getter for retrieving the open-connStrategy, which is the service object
+	 * Getter for retrieving the open-connection, which is the service object
 	 * to use for querying workspace and model details.
 	 * @return
 	 */
@@ -298,7 +298,7 @@ public class AnaplanConnection {
 	}
 
 	/**
-	 * Closes the open-connStrategy if one exists.
+	 * Closes the open-connection if one exists.
 	 */
 	public void closeConnection() {
 		if (openConnection != null) {
