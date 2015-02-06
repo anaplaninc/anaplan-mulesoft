@@ -45,7 +45,7 @@ public class AnaplanExecuteAction extends BaseAnaplanOperation {
 	 * @param actionId
 	 * @throws AnaplanOperationException
 	 */
-	public void runExecute(String workspaceId, String modelId, String actionId)
+	public String runExecute(String workspaceId, String modelId, String actionId)
 			throws AnaplanOperationException {
 		final String logContext = apiConn.getLogContext();
 		final String exportLogContext = logContext + " [" + actionId + "]";
@@ -72,7 +72,8 @@ public class AnaplanExecuteAction extends BaseAnaplanOperation {
 			apiConn.closeConnection();
 		}
 
-		LogUtil.status(exportLogContext, "Execute action " + actionId
-				+ " completed");
+		String statusMsg = "[" + actionId + "] completed successfully!";
+		LogUtil.status(exportLogContext, statusMsg);
+		return statusMsg;
 	}
 }

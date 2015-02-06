@@ -76,11 +76,12 @@ public class AnaplanConnector {
 	 * @param anaplanModelId
 	 * @param anaplanImportId
 	 * @param delimiter
+	 * @return Status message from running the Import operation.
 	 * @throws AnaplanConnectionException
 	 * @throws AnaplanOperationException
 	 */
 	@Processor(friendlyName = "Import")
-	public void importToModel(
+	public String importToModel(
 			@Payload String data,
 			@FriendlyName("Workspace name or ID") String workspaceId,
 		    @FriendlyName("Model name or ID") String modelId,
@@ -95,7 +96,7 @@ public class AnaplanConnector {
 		// start the import
 		importer = new AnaplanImportOperation(
 				connectionStrategy.getApiConnection());
-		importer.runImport(data, workspaceId, modelId, importId,
+		return importer.runImport(data, workspaceId, modelId, importId,
 				columnSeparator, delimiter);
 	}
 
@@ -127,11 +128,12 @@ public class AnaplanConnector {
 	/**
 	 * Deletes data from a model by executing the respective delete action.
 	 *
+	 * @return Status message from running the Exection-Action.
 	 * @throws AnaplanConnectionException
 	 * @throws AnaplanOperationException
 	 */
 	@Processor(friendlyName="Execute Action")
-	public void executeAction(
+	public String executeAction(
 			@FriendlyName("Workspace name or ID") String workspaceId,
 			@FriendlyName("Model name or ID") String modelId,
 			@FriendlyName("Action name or ID") String actionId)
@@ -143,6 +145,6 @@ public class AnaplanConnector {
 		// start the delete process
 		runner = new AnaplanExecuteAction(
 				connectionStrategy.getApiConnection());
-		runner.runExecute(workspaceId, modelId, actionId);
+		return runner.runExecute(workspaceId, modelId, actionId);
 	}
 }

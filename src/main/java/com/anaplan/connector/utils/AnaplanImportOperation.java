@@ -24,7 +24,6 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
-
 import com.anaplan.client.AnaplanAPIException;
 import com.anaplan.client.CellWriter;
 import com.anaplan.client.Import;
@@ -47,6 +46,7 @@ import com.google.gson.JsonSyntaxException;
 public class AnaplanImportOperation extends BaseAnaplanOperation{
 
 	protected static String[] HEADER;
+	private static String importDetails;
 
 	/**
 	 * Constructor
@@ -126,6 +126,8 @@ public class AnaplanImportOperation extends BaseAnaplanOperation{
 					throws AnaplanAPIException, JsonSyntaxException,
 					IOException {
 
+		// 1. Write the provided CSV data to the data-writer.
+
 		int rowsProcessed = 0;
 
 		final Import imp = model.getImport(importId);
@@ -162,6 +164,8 @@ public class AnaplanImportOperation extends BaseAnaplanOperation{
 			dataWriter.close();
 		}
 
+		// 2. Create the task that will import the data to the server.
+
 		final Task task = imp.createTask();
 		final TaskStatus status = AnaplanUtil.runServerTask(task, logContext);
 		final TaskResult taskResult = status.getResult();
@@ -180,8 +184,10 @@ public class AnaplanImportOperation extends BaseAnaplanOperation{
 				LogUtil.status(logContext, "Import complete");
 			}
 		}
-		final String importDetails = taskDetails.toString();
+		importDetails = taskDetails.toString();
 		LogUtil.status(logContext, importDetails);
+
+		// 3. Determine execution status and create response.
 
 		if (taskResult.isFailureDumpAvailable()) {
 			LogUtil.status(logContext, UserMessages.getMessage("failureDump"));
@@ -211,7 +217,7 @@ public class AnaplanImportOperation extends BaseAnaplanOperation{
 	 * @param importId
 	 * @throws AnaplanOperationException
 	 */
-	public void runImport(String data, String workspaceId, String modelId,
+	public String runImport(String data, String workspaceId, String modelId,
 			String importId, String columnSeparator, String delimiter)
 					throws AnaplanOperationException {
 
@@ -247,7 +253,8 @@ public class AnaplanImportOperation extends BaseAnaplanOperation{
 			apiConn.closeConnection();
 		}
 
-		LogUtil.debug(importLogContext, "import operation " + importId
-				+ " completed");
+		String statusMsg = "[" + importId + "] ran successfully!";
+		LogUtil.debug(importLogContext, statusMsg);
+		return statusMsg + "\n\n" + importDetails;
 	}
 }
