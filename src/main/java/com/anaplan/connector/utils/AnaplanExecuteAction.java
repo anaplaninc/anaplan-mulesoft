@@ -74,6 +74,6 @@ public class AnaplanExecuteAction extends BaseAnaplanOperation {
 
 		String statusMsg = "[" + actionId + "] completed successfully!";
 		LogUtil.status(exportLogContext, statusMsg);
-		return statusMsg;
+		return statusMsg + "\n\n" + getRunStatusDetails();
 	}
 }

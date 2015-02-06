@@ -254,7 +254,7 @@ public class AnaplanImportOperation extends BaseAnaplanOperation{
 		}
 
 		String statusMsg = "[" + importId + "] ran successfully!";
-		LogUtil.debug(importLogContext, statusMsg);
+		LogUtil.status(importLogContext, statusMsg);
 		return statusMsg + "\n\n" + importDetails;
 	}
 }
