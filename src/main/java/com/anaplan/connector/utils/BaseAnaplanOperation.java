@@ -55,7 +55,7 @@ public class BaseAnaplanOperation {
 	 * @return String containing the run-detail logs sent back from the server
 	 * 		for running a particular action.
 	 */
-	public String getRunStatusDetails() {
+	public static String getRunStatusDetails() {
 		return runStatusDetails;
 	}
 

@@ -46,7 +46,6 @@ import com.google.gson.JsonSyntaxException;
 public class AnaplanImportOperation extends BaseAnaplanOperation{
 
 	protected static String[] HEADER;
-	private static String importDetails;
 
 	/**
 	 * Constructor
@@ -184,8 +183,8 @@ public class AnaplanImportOperation extends BaseAnaplanOperation{
 				LogUtil.status(logContext, "Import complete");
 			}
 		}
-		importDetails = taskDetails.toString();
-		LogUtil.status(logContext, importDetails);
+		runStatusDetails = taskDetails.toString();
+		LogUtil.status(logContext, runStatusDetails);
 
 		// 3. Determine execution status and create response.
 
@@ -200,10 +199,10 @@ public class AnaplanImportOperation extends BaseAnaplanOperation{
 			LogUtil.status(logContext, UserMessages.getMessage("noFailureDump"));
 
 			if (taskResult.isSuccessful()) {
-				return AnaplanResponse.importSuccess(importDetails, logContext,
-						serverFile);
+				return AnaplanResponse.importSuccess(runStatusDetails,
+						logContext, serverFile);
 			} else {
-				return AnaplanResponse.importFailure(importDetails, null,
+				return AnaplanResponse.importFailure(runStatusDetails, null,
 						logContext);
 			}
 		}
@@ -255,6 +254,6 @@ public class AnaplanImportOperation extends BaseAnaplanOperation{
 
 		String statusMsg = "[" + importId + "] ran successfully!";
 		LogUtil.status(importLogContext, statusMsg);
-		return statusMsg + "\n\n" + importDetails;
+		return statusMsg + "\n\n" + getRunStatusDetails();
 	}
 }
