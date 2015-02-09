@@ -24,7 +24,6 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
-
 import com.anaplan.client.AnaplanAPIException;
 import com.anaplan.client.CellWriter;
 import com.anaplan.client.Import;
@@ -126,6 +125,8 @@ public class AnaplanImportOperation extends BaseAnaplanOperation{
 					throws AnaplanAPIException, JsonSyntaxException,
 					IOException {
 
+		// 1. Write the provided CSV data to the data-writer.
+
 		int rowsProcessed = 0;
 
 		final Import imp = model.getImport(importId);
@@ -162,6 +163,8 @@ public class AnaplanImportOperation extends BaseAnaplanOperation{
 			dataWriter.close();
 		}
 
+		// 2. Create the task that will import the data to the server.
+
 		final Task task = imp.createTask();
 		final TaskStatus status = AnaplanUtil.runServerTask(task, logContext);
 		final TaskResult taskResult = status.getResult();
@@ -180,8 +183,10 @@ public class AnaplanImportOperation extends BaseAnaplanOperation{
 				LogUtil.status(logContext, "Import complete");
 			}
 		}
-		final String importDetails = taskDetails.toString();
-		LogUtil.status(logContext, importDetails);
+		runStatusDetails = taskDetails.toString();
+		LogUtil.status(logContext, runStatusDetails);
+
+		// 3. Determine execution status and create response.
 
 		if (taskResult.isFailureDumpAvailable()) {
 			LogUtil.status(logContext, UserMessages.getMessage("failureDump"));
@@ -194,10 +199,10 @@ public class AnaplanImportOperation extends BaseAnaplanOperation{
 			LogUtil.status(logContext, UserMessages.getMessage("noFailureDump"));
 
 			if (taskResult.isSuccessful()) {
-				return AnaplanResponse.importSuccess(importDetails, logContext,
-						serverFile);
+				return AnaplanResponse.importSuccess(runStatusDetails,
+						logContext, serverFile);
 			} else {
-				return AnaplanResponse.importFailure(importDetails, null,
+				return AnaplanResponse.importFailure(runStatusDetails, null,
 						logContext);
 			}
 		}
@@ -211,7 +216,7 @@ public class AnaplanImportOperation extends BaseAnaplanOperation{
 	 * @param importId
 	 * @throws AnaplanOperationException
 	 */
-	public void runImport(String data, String workspaceId, String modelId,
+	public String runImport(String data, String workspaceId, String modelId,
 			String importId, String columnSeparator, String delimiter)
 					throws AnaplanOperationException {
 
@@ -247,7 +252,8 @@ public class AnaplanImportOperation extends BaseAnaplanOperation{
 			apiConn.closeConnection();
 		}
 
-		LogUtil.debug(importLogContext, "import operation " + importId
-				+ " completed");
+		String statusMsg = "[" + importId + "] ran successfully!";
+		LogUtil.status(importLogContext, statusMsg);
+		return statusMsg + "\n\n" + getRunStatusDetails();
 	}
 }

@@ -22,6 +22,8 @@ import com.anaplan.client.AnaplanAPIException;
 import com.anaplan.client.Model;
 import com.anaplan.client.Service;
 import com.anaplan.client.Task;
+import com.anaplan.client.TaskResult;
+import com.anaplan.client.TaskResultDetail;
 import com.anaplan.client.TaskStatus;
 import com.anaplan.client.Workspace;
 import com.anaplan.connector.AnaplanResponse;
@@ -40,9 +42,21 @@ public class BaseAnaplanOperation {
 	protected Service service;
 	protected Workspace workspace = null;
 	protected Model model = null;
+	protected static String runStatusDetails = null;
 
 	public BaseAnaplanOperation(AnaplanConnection apiConn) {
 		setApiConn(apiConn);
+	}
+
+	/**
+	 * Public getter for the Run-status. The string for runStatusDetails is
+	 * populated by executeAction().
+	 *
+	 * @return String containing the run-detail logs sent back from the server
+	 * 		for running a particular action.
+	 */
+	public static String getRunStatusDetails() {
+		return runStatusDetails;
 	}
 
 	/**
@@ -160,6 +174,17 @@ public class BaseAnaplanOperation {
 		if (status.getTaskState() == TaskStatus.State.COMPLETE &&
 		    status.getResult().isSuccessful()) {
 			LogUtil.status(logContext, "Action executed successfully.");
+
+			// Collect all the status details for running the action.
+			final TaskResult taskResult = status.getResult();
+			final StringBuilder taskDetails = new StringBuilder();
+			if (taskResult.getDetails() != null) {
+				for (TaskResultDetail detail : taskResult.getDetails()) {
+					taskDetails.append("\n" + detail.getLocalizedMessageText());
+				}
+				runStatusDetails = taskDetails.toString();
+			}
+
 			return AnaplanResponse.executeActionSuccess(
 					status.getTaskState().name(),
 					logContext);
