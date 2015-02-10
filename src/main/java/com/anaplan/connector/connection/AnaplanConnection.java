@@ -133,8 +133,8 @@ public class AnaplanConnection {
 					.generateCertificate(buffStream);
 			if (cert instanceof X509Certificate) {
 				x509 = (X509Certificate) cert;
-				LogUtil.status(getLogContext(),
-						"Successfully registered certificate!\n" + x509);
+				LogUtil.status(getLogContext(), "Certificate VALID!");
+				LogUtil.debug(getLogContext(), x509.toString());
 			}
 		} catch (CertificateException e) {
 			throw new AnaplanConnectionException(
