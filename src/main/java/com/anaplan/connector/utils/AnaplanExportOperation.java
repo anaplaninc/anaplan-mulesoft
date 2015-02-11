@@ -33,7 +33,7 @@ import com.anaplan.connector.exceptions.AnaplanOperationException;
 
 /**
  * Creates an export-task and executes it to data-dump Model contents and return
- * a <code>AnaplanResponse</code> object.
+ * an <code>AnaplanResponse</code> object.
  *
  * @author spondonsaha
  */

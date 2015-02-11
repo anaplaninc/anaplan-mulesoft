@@ -67,19 +67,24 @@ public class AnaplanConnector {
         this.connectionStrategy = connStrategy;
     }
 
-	/**
-	 * Reads in CSV data that represents an Anaplan model, delimited by the
+    /**
+     * Reads in CSV data that represents an Anaplan model, delimited by the
 	 * provided delimiter, parses it, then loads it into an Anaplan model.
 	 *
-	 * @param data
-	 * @param anaplanWorkspaceId
-	 * @param anaplanModelId
-	 * @param anaplanImportId
-	 * @param delimiter
-	 * @return Status message from running the Import operation.
-	 * @throws AnaplanConnectionException
-	 * @throws AnaplanOperationException
-	 */
+	 * {@sample.xml ../../../doc/anaplan-connector.xml.sample anaplan:importToModel}
+     *
+     * @param data Stringified CSV data that is to be imported into Anaplan.
+     * @param workspaceId Anaplan workspace ID.
+     * @param modelId Anaplan model ID.
+     * @param importId Action ID of the Import operation.
+     * @param columnSeparator Cell escape values defaults to double-quotes.
+     * @param delimiter Column delimiter defaults to comma
+     * @return Status message from running the Import operation.
+     * @throws AnaplanConnectionException When an error occurs during
+     * 									  authentication
+     * @throws AnaplanOperationException When the Import operation encounters an
+     * 									 error.
+     */
 	@Processor(friendlyName = "Import")
 	public String importToModel(
 			@Payload String data,
@@ -106,8 +111,15 @@ public class AnaplanConnector {
 	 * hence a check needs to be made to verify if the current connectionStrategy
 	 * exists. If not, re-establish it by calling .openConnection().
 	 *
+	 * {@sample.xml ../../../doc/anaplan-connector.xml.sample anaplan:exportFromModel}
+	 *
+	 * @param workspaceId Anaplan workspace ID.
+	 * @param modelId Anaplan model ID.
+	 * @param exportId Action ID of the export operation.
 	 * @return CSV string.
-	 * @throws AnaplanConnectionException
+	 * @throws AnaplanConnectionException When an error occurs at authentication.
+	 * @throws AnaplanOperationException When the Export operation encounters an
+	 * 									 error.
 	 */
 	@Processor(friendlyName="Export")
 	public String exportFromModel(
@@ -128,9 +140,16 @@ public class AnaplanConnector {
 	/**
 	 * Deletes data from a model by executing the respective delete action.
 	 *
+	 * {@sample.xml ../../../doc/anaplan-connector.xml.sample anaplan:executeAction}
+	 *
+	 * @param workspaceId Anaplan workspace ID.
+	 * @param modelId Anaplan model ID.
+	 * @param actionId Anaplan action ID: delete, M2M imports, or any other
+	 * 				   generic action.
 	 * @return Status message from running the Exection-Action.
-	 * @throws AnaplanConnectionException
-	 * @throws AnaplanOperationException
+	 * @throws AnaplanConnectionException When an error occurs at authentication.
+	 * @throws AnaplanOperationException When the Action encounters an error
+	 * 									 while executing.
 	 */
 	@Processor(friendlyName="Execute Action")
 	public String executeAction(

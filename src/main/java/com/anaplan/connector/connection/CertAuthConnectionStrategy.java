@@ -27,6 +27,17 @@ import org.mule.api.annotations.param.Optional;
 import com.anaplan.connector.utils.LogUtil;
 
 
+/**
+ * Certificate authentication for Anaplan users. The path to the certificate
+ * file is required (.cer). If behind proxy, then proxy credentials are also
+ * required.
+ *
+ * NOTE: This is the preferred authentication strategy because in the
+ * basic-authentication strategy, Mulesoft stores the password in plain text.
+ *
+ * @author spondonsaha
+ *
+ */
 @ConnectionManagement(
 		friendlyName="Certificate Authentication",
 		configElementName="cert-auth-connection")

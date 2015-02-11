@@ -26,6 +26,8 @@ import com.anaplan.connector.connection.AnaplanConnection;
 /**
  * Simple log-wrapper around Log4j with debug, trace, status, warning and error
  * static log methods.
+ *
+ * @author spondonsaha
  */
 public final class LogUtil {
 

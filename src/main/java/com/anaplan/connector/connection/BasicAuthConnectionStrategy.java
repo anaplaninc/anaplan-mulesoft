@@ -27,6 +27,13 @@ import org.mule.api.annotations.param.Optional;
 import com.anaplan.connector.utils.LogUtil;
 
 
+/**
+ * Basic connection strategy to authenticate the Anaplan user via provided
+ * username and password. If behind proxy connection, then proxy credentials
+ * are required.
+ * @author spondonsaha
+ *
+ */
 @ConnectionManagement(
 		friendlyName="Basic Authentication",
 		configElementName="basic-auth-connection")

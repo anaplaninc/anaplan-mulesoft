@@ -40,7 +40,8 @@ import com.google.gson.JsonSyntaxException;
 
 
 /**
- * Used to import CSV data into Anaplan
+ * Used to import CSV data into Anaplan lists or modules.
+ *
  * @author spondonsaha
  */
 public class AnaplanImportOperation extends BaseAnaplanOperation{
