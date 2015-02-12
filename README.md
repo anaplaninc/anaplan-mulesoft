@@ -3,14 +3,13 @@
 For building a flow that does an Export from Anaplan, Import to Anaplan, or Execute Action (Delete).
 
 # Mule supported versions
-3.5+
-Anypoint Studio 5 or later
+Mule 3.5+ with Anypoint Studio 5 or later
 
 # Installation 
-Open MuleStudio, go to Help → Install New Software and select MuleStudio Cloud Connectors Update Site.
+Open Anypoint Studio, go to Help → Install New Software, select MuleStudio Cloud Connectors Update Site, and look for Anaplan.
 
 #Usage
-See https://github.com/anaplaninc/anaplan-mulesoft
+See AnaplanConnectorforMuleSoft.pdf at https://github.com/anaplaninc/anaplan-mulesoft
 
 # Reporting Issues
 
