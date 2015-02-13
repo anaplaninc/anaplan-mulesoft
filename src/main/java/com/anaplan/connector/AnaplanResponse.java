@@ -19,11 +19,11 @@ package com.anaplan.connector;
 import java.io.IOException;
 import java.io.Serializable;
 
-
 import com.anaplan.client.AnaplanAPIException;
 import com.anaplan.client.CellReader;
 import com.anaplan.client.ExportMetadata;
 import com.anaplan.client.ServerFile;
+import com.anaplan.connector.connection.AnaplanConnection;
 import com.anaplan.connector.exceptions.AnaplanOperationException;
 import com.anaplan.connector.utils.LogUtil;
 import com.anaplan.connector.utils.OperationStatus;
@@ -272,7 +272,7 @@ public class AnaplanResponse implements Serializable {
 	 *
 	 * @param response
 	 * @param request
-	 * @param connection
+	 * @param connStrategy
 	 * @param reason
 	 */
 	public static void responseFail(AnaplanConnection connection, String reason) {
@@ -286,7 +286,7 @@ public class AnaplanResponse implements Serializable {
 	 * In order to stop the flow, the Throwable is wrapped into a
 	 * AnaplanOperationException.
 	 *
-	 * @param connection
+	 * @param connStrategy
 	 * @param e
 	 * @param reason
 	 * @throws AnaplanOperationException
@@ -308,9 +308,9 @@ public class AnaplanResponse implements Serializable {
 
 	/**
 	 * Writes the import data to Anaplan using the provided Import-ID and
-	 * connection.
+	 * connStrategy.
 	 *
-	 * @param connection
+	 * @param connStrategy
 	 * @param importId
 	 * @param logContext
 	 * @throws IOException
@@ -342,7 +342,7 @@ public class AnaplanResponse implements Serializable {
 	 * the data as a string into the Mulesoft platform for the next
 	 * connector down the data-flow pipeline.
 	 *
-	 * @param connection
+	 * @param connStrategy
 	 * @param exportId
 	 * @param logContext
 	 * @throws AnaplanAPIException

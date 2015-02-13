@@ -16,6 +16,14 @@
 
 package com.anaplan.connector.exceptions;
 
+
+/**
+ * Used to throw exceptions when errors occur during creating new properties,
+ * either connection or other sorts.
+ *
+ * @author spondonsaha
+ *
+ */
 public class ConnectorPropertiesException extends Exception {
 
 	private static final long serialVersionUID = 1L;

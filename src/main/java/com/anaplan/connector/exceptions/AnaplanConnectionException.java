@@ -17,6 +17,12 @@
 package com.anaplan.connector.exceptions;
 
 
+/**
+ * Used for throwing exceptions when errors occur during the authentication
+ * phase.
+ *
+ * @author spondonsaha
+ */
 public class AnaplanConnectionException extends Exception {
 
 	private static final long serialVersionUID = 1L;

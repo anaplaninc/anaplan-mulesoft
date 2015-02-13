@@ -21,21 +21,29 @@
  * Author: Spondon Saha
  */
 
-package com.anaplan.connector;
+package com.anaplan.connector.connection;
 
+import java.io.BufferedInputStream;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.security.cert.Certificate;
+import java.security.cert.CertificateException;
+import java.security.cert.CertificateFactory;
+import java.security.cert.X509Certificate;
 import java.util.List;
-
 
 import com.anaplan.client.AnaplanAPIException;
 import com.anaplan.client.Credentials;
 import com.anaplan.client.Service;
 import com.anaplan.client.Workspace;
+import com.anaplan.connector.AnaplanConnectorProperties;
 import com.anaplan.connector.exceptions.AnaplanConnectionException;
 import com.anaplan.connector.exceptions.ConnectorPropertiesException;
 import com.anaplan.connector.utils.LogUtil;
 import com.anaplan.connector.utils.UserMessages;
+
 
 /**
  * Validation and communication with the Anaplan model.
@@ -46,28 +54,45 @@ import com.anaplan.connector.utils.UserMessages;
  */
 public class AnaplanConnection {
 
-	private static final String URL_FIELD = "url";
-	private static final String PASSWORD_FIELD = "password";
 	private static final String USERNAME_FIELD = "username";
+	private static final String PASSWORD_FIELD = "password";
+	private static final String URL_FIELD = "url";
+	private static final String CERT_PATH = "certPath";
 	private static final String URL_PROXY = "proxyHost";
 	private static final String URL_PROXY_USER = "proxyUser";
 	private static final String URL_PROXY_PASS = "proxyPass";
 
 	private final AnaplanConnectorProperties connectionConfig;
+	private final boolean isCertificate;
 
 	// cached Anaplan objects when a valid open connection exists, else null
 	private Service openConnection = null;
 
-	// private Model model = null;
 
-	public AnaplanConnection(String... credentials) {
+	/**
+	 * Constructor.
+	 *
+	 * @param isCertificate
+	 * 				If set to true then just use certificate for authentication.
+	 * 				If false, then we are using basic authentication and so just
+	 * 				need username and password.
+	 * @param credentials
+	 * 				String[] of credential values, which includes the username,
+	 * 				password, API url, certificate path and proxy URL and their
+	 * 				credentials if using this connector behind a firewall.
+	 */
+	public AnaplanConnection(boolean isCertificate, String... credentials) {
 		LogUtil.debug("NOTICE: ", credentials[0] + " @ " + credentials[2]);
-		// LOGGER.info("{} : {} ", credentials[0], credentials[1]);
+		this.isCertificate = isCertificate;
 		connectionConfig = new AnaplanConnectorProperties();
 		try {
-			connectionConfig.setProperties(credentials, USERNAME_FIELD,
-					PASSWORD_FIELD, URL_FIELD, URL_PROXY, URL_PROXY_USER,
-					URL_PROXY_PASS);
+			if (isCertificate)
+				connectionConfig.setProperties(credentials, CERT_PATH,
+						URL_FIELD, URL_PROXY, URL_PROXY_USER, URL_PROXY_PASS);
+			else
+				connectionConfig.setProperties(credentials, USERNAME_FIELD,
+						PASSWORD_FIELD, URL_FIELD, URL_PROXY, URL_PROXY_USER,
+						URL_PROXY_PASS);
 		} catch (ConnectorPropertiesException e) {
 			LogUtil.error(getLogContext(),
 					"Could not set connector properties!"
@@ -76,8 +101,60 @@ public class AnaplanConnection {
 		LogUtil.status(getLogContext(), "Stored connection properties!");
 	}
 
+	/**
+	 * Getter for the connection ID, which is the string representation of this
+	 * object.
+	 *
+	 * @return
+	 */
 	public String getConnectionId() {
 		return this.toString();
+	}
+
+	/**
+	 * Opens the DER encoded certificate from the provided path into an input
+	 * stream and then generates a X.509 certificate from the file contents and
+	 * returns it. To view the certificate contents on the command line, do:
+	 * $ openssl x509 -in /path/to/certificate/file.cer -inform der -text -noout
+	 *
+	 * @param certificateLocation
+	 * @param password
+	 * @return
+	 * @throws AnaplanConnectionException
+	 */
+	public X509Certificate readCertificate(String certificateLocation)
+					throws AnaplanConnectionException {
+		BufferedInputStream buffStream = null;
+		X509Certificate x509 = null;
+		try {
+			buffStream = new BufferedInputStream(
+					new FileInputStream(certificateLocation));
+			Certificate cert = CertificateFactory.getInstance("X.509")
+					.generateCertificate(buffStream);
+			if (cert instanceof X509Certificate) {
+				x509 = (X509Certificate) cert;
+				LogUtil.status(getLogContext(), "Certificate VALID!");
+				LogUtil.debug(getLogContext(), x509.toString());
+			}
+		} catch (CertificateException e) {
+			throw new AnaplanConnectionException(
+					"Bad certificate: " + e.getMessage());
+        } catch (IOException e) {
+        	throw new AnaplanConnectionException(
+        			"Could not open certificate: " + e.getMessage());
+        } catch (Throwable e) {
+			throw new AnaplanConnectionException(
+					"Unknown exception occured: " + e.getMessage());
+        } finally {
+            if (buffStream != null) {
+                try {
+                	buffStream.close();
+				} catch (IOException e) {
+					throw new AnaplanConnectionException(e.getMessage());
+				}
+            }
+        }
+		return x509;
 	}
 
 	/**
@@ -93,14 +170,6 @@ public class AnaplanConnection {
 	 */
 	private Service cacheService() throws AnaplanConnectionException {
 		LogUtil.debug(getLogContext(), "trying Anaplan service connection...");
-		// try {
-		// connectionConfig.hasAllRequiredProperties(true);
-		// } catch (IllegalStateException e) {
-		// closeConnection();
-		//
-		// LogUtil.error(getLogContext(), e.getMessage(), e);
-		// throw new AnaplanConnectionException(e.getMessage(), e);
-		// }
 
 		final String apiUrl = connectionConfig.getStringProperty(URL_FIELD);
 		Service service = null;
@@ -114,21 +183,25 @@ public class AnaplanConnection {
 			LogUtil.error(getLogContext(), msg, e);
 			throw new AnaplanConnectionException(msg, e);
 		}
-
-		final String username = connectionConfig
-				.getStringProperty(USERNAME_FIELD);
-		final String password = connectionConfig
-				.getStringProperty(PASSWORD_FIELD);
+		// fetch all stored credentials and properties
+		final String username = connectionConfig.getStringProperty(USERNAME_FIELD);
+		final String password = connectionConfig.getStringProperty(PASSWORD_FIELD);
+		final String certLocation = connectionConfig.getStringProperty(CERT_PATH);
 		final String proxyHost = connectionConfig.getStringProperty(URL_PROXY);
-		final String proxyUser = connectionConfig
-				.getStringProperty(URL_PROXY_USER);
-		final String proxyPass = connectionConfig
-				.getStringProperty(URL_PROXY_PASS);
+		final String proxyUser = connectionConfig.getStringProperty(URL_PROXY_USER);
+		final String proxyPass = connectionConfig.getStringProperty(URL_PROXY_PASS);
 
+		Credentials creds = null;
 		try {
-			service.setServiceCredentials(new Credentials(username, password,
-					null, null));
-			// TODO write simple unit test after extracting method
+			// read in the certificate if provided, or fallback to basic
+			// authentication.
+			if (isCertificate)
+				creds = new Credentials(readCertificate(certLocation));
+			else
+				creds = new Credentials(username, password, null, null);
+			// Set the credentials on the service.
+			service.setServiceCredentials(creds);
+			// Set proxy credentials if provided.
 			if (proxyHost != null && !proxyHost.isEmpty()) {
 				service.setProxyLocation(new URI(proxyHost));
 				if (proxyUser != null && !proxyUser.isEmpty()) {
@@ -139,18 +212,12 @@ public class AnaplanConnection {
 			}
 		} catch (AnaplanAPIException e) {
 			closeConnection();
-
-			// I think credentials only fail here if using certificate auth:
-			// invalid username/password are ok until workspace retrieval
 			final String msg = UserMessages.getMessage("apiConnectFail",
 					e.getMessage());
 			LogUtil.error(getLogContext(), msg, e);
 			throw new AnaplanConnectionException(msg, e);
 		} catch (URISyntaxException e) {
 			closeConnection();
-
-			// I think credentials only fail here if using certificate auth:
-			// invalid username/password are ok until workspace retrieval
 			final String msg = UserMessages.getMessage("apiConnectFail",
 					e.getMessage());
 			LogUtil.error(getLogContext(), msg, e);
@@ -171,8 +238,6 @@ public class AnaplanConnection {
 
 			if (e.getMessage() == null
 					|| !e.getMessage().toLowerCase().contains("credentials")) {
-				// bug INTBOOMI-72: cases covered include incorrect api url, but
-				// this detail is only found in the chained exception message.
 				String exceptionDetails = e.getMessage();
 				if (e.getCause() != null && e.getCause().getMessage() != null) {
 					exceptionDetails = exceptionDetails + " ("

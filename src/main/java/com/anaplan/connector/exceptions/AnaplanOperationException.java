@@ -18,7 +18,9 @@ package com.anaplan.connector.exceptions;
 
 
 /**
- * Used for throwing upsert, export, delete operations.
+ * Used for throwing exceptions when errors occur doing one of upsert, export
+ * or delete operations.
+ *
  * @author spondonsaha
  */
 public class AnaplanOperationException extends Exception{
