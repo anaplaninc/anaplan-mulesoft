@@ -6,11 +6,10 @@ For building a flow that does an Export from Anaplan, Import to Anaplan, or Exec
 Mule 3.5+ with Anypoint Studio 5 or later
 
 # Installation 
-Open Anypoint Studio, go to Help → Install New Software, select MuleStudio Cloud Connectors Update Site, and look for Anaplan.
+Read the "Installation" section in the PDF document at https://app.box.com/s/67gxzz5e27oi6smlvkor46lfpffka62y
 
 #Usage
-See AnaplanConnectorforMuleSoft.pdf at https://github.com/anaplaninc/anaplan-mulesoft
+Read about Setup, Usage, and Execution in the same PDF document at https://app.box.com/s/67gxzz5e27oi6smlvkor46lfpffka62y
 
 # Reporting Issues
-
 We use GitHub:Issues for tracking issues with this connector. You can report new issues at this link http://github.com/mulesoft/anaplan/issues.
