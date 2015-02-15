@@ -1,3 +1,34 @@
-<!-- BEGIN_INCLUDE(anaplan:my-processor) -->
-    <anaplan:my-processor content="#[map-payload:content]" />
-<!-- END_INCLUDE(anaplan:my-processor) -->
+<!-- BEGIN_INCLUDE(anaplan:config-auth-basic) -->
+	<anaplan:config-auth-basic 
+		name="anaplan-default-auth" 
+		username="someUserName"
+		password="somePassword" />
+<!-- END_INCLUDE(anaplan:config-auth-basic) -->
+
+<!-- BEGIN_INCLUDE(anaplan:config-auth-cert) -->
+	<anaplan:config-auth-cert name="anaplan-cert-auth" ... />
+<!-- END_INCLUDE(anaplan:config-auth-cert) -->
+
+<!-- BEGIN_INCLUDE(anaplan:importToModel) -->
+	<anaplan:importToModel
+		data="#[header:data]" 
+		workspaceId="#[header:workspaceId]" 
+		modelId="#[header:modelId]" 
+		importId="#[header:importId]" 
+		columnSeparator="#[header:columnSeparator]" 
+		delimiter="#[header:delimiter]" />
+<!-- END_INCLUDE(anaplan:importToModel) -->
+
+<!-- BEGIN_INCLUDE(anaplan:exportFromModel) -->
+	<anaplan:exportFromModel
+		workspaceId="#[header:workspaceId]" 
+		modelId="#[header:modelId]" 
+		exportId="#[header:exportId]" />
+<!-- END_INCLUDE(anaplan:exportFromModel) -->
+
+<!-- BEGIN_INCLUDE(anaplan:executeAction) -->
+	<anaplan:executeAction
+		workspaceId="#[header:workspaceId]" 
+		modelId="#[header:modelId]" 
+		actionId="#[header:actionId]" />
+<!-- END_INCLUDE(anaplan:executeAction) -->

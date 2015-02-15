@@ -19,7 +19,6 @@ package com.anaplan.connector;
 import java.io.IOException;
 import java.io.Serializable;
 
-
 import com.anaplan.client.AnaplanAPIException;
 import com.anaplan.client.CellReader;
 import com.anaplan.client.ExportMetadata;
