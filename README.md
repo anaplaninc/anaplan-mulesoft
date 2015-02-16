@@ -12,4 +12,4 @@ Read the "Installation" section in the PDF document at https://app.box.com/s/67g
 Read about Setup, Usage, and Execution in the same PDF document at https://app.box.com/s/67gxzz5e27oi6smlvkor46lfpffka62y
 
 # Reporting Issues
-We use GitHub:Issues for tracking issues with this connector. You can report new issues at this link http://github.com/mulesoft/anaplan/issues.
+We use GitHub:Issues for tracking issues with this connector. You can report new issues at this link https://github.com/anaplaninc/anaplan-mulesoft/issues.
