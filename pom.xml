@@ -54,8 +54,8 @@
         </dependency> -->
         <dependency>
            <groupId>com.anaplan.connect</groupId>
-           <artifactId>1.3.4-boomi</artifactId>
-           <version>1.0-SNAPSHOT</version>
+           <artifactId>anaplan-connect</artifactId>
+           <version>1-3-4-dev</version>
        </dependency>
         <dependency>
             <groupId>com.lmax</groupId>
