@@ -30,6 +30,7 @@ import com.anaplan.connector.exceptions.AnaplanOperationException;
 import com.anaplan.connector.utils.AnaplanExecuteAction;
 import com.anaplan.connector.utils.AnaplanExportOperation;
 import com.anaplan.connector.utils.AnaplanImportOperation;
+import com.anaplan.connector.utils.AnaplanProcessOperation;
 
 
 /**
@@ -46,7 +47,8 @@ public class AnaplanConnector {
 
 	private static AnaplanExportOperation exporter;
 	private static AnaplanImportOperation importer;
-	private static AnaplanExecuteAction runner;
+	private static AnaplanExecuteAction actionRunner;
+	private static AnaplanProcessOperation processRunner;
 
 	@ConnectionStrategy
 	private BaseConnectionStrategy connectionStrategy;
@@ -162,8 +164,39 @@ public class AnaplanConnector {
 		connectionStrategy.validateConnection();
 
 		// start the delete process
-		runner = new AnaplanExecuteAction(
+		actionRunner = new AnaplanExecuteAction(
 				connectionStrategy.getApiConnection());
-		return runner.runExecute(workspaceId, modelId, actionId);
+		return actionRunner.runExecute(workspaceId, modelId, actionId);
+	}
+
+	/**
+	 * Runs a specific Anaplan Process, which could be a multitude of actions
+	 * represented as a single Anaplan process.
+	 *
+	 * {@sample.xml ../../../doc/anaplan-connector.xml.sample anaplan:runProcess}
+	 *
+	 * @param workspaceId Anaplan workspace ID against which to run the process.
+	 * @param modelId Anaplan model ID against which to run the process.
+	 * @param processId Anaplan process ID
+	 * @return Status response string of running the process, along with any
+	 * 						   failure dump strings as applicable.
+	 * @throws AnaplanConnectionException
+	 * @throws AnaplanOperationException
+	 */
+	@Processor(friendlyName="Run Process")
+	public String runProcess(
+			@FriendlyName("Workspace name or ID") String workspaceId,
+			@FriendlyName("Model name or ID") String modelId,
+			@FriendlyName("Process name or ID") String processId)
+					throws AnaplanConnectionException,
+						   AnaplanOperationException {
+		// validate the API connectionStrategy
+		connectionStrategy.validateConnection();
+
+		// run the process
+		processRunner = new AnaplanProcessOperation(
+				connectionStrategy.getApiConnection());
+		return processRunner.runProcess(workspaceId, modelId, processId);
+
 	}
 }

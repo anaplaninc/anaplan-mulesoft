@@ -43,6 +43,7 @@ public class BaseAnaplanOperation {
 	protected Service service;
 	protected Workspace workspace = null;
 	protected Model model = null;
+	// TODO: Needs a setter as well.
 	protected static String runStatusDetails = null;
 
 	public BaseAnaplanOperation(AnaplanConnection apiConn) {
@@ -146,6 +147,8 @@ public class BaseAnaplanOperation {
 		// TODO: Fetch JSON response for list of export-IDs, then validate
 	}
 
+	// TODO: Move this method to AnaplanExecuteAction.java and rename it to
+	// doDelete() or something.
 	/**
 	 * Used to run delete or M2M operations, or any such action that does not
 	 * rely on any input from the flow or outputs any data to the flow. This

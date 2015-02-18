@@ -32,3 +32,10 @@
 		modelId="#[header:modelId]" 
 		actionId="#[header:actionId]" />
 <!-- END_INCLUDE(anaplan:executeAction) -->
+
+<!-- BEGIN_INCLUDE(anaplan:runProcess) -->
+	<anaplan:runProcess
+		workspaceId="#[header:workspaceId]" 
+		modelId="#[header:modelId]" 
+		actionId="#[header:processId]" />
+<!-- END_INCLUDE(anaplan:runProcess) -->
