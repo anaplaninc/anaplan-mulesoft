@@ -4,8 +4,6 @@ import com.anaplan.client.AnaplanAPIException;
 import com.anaplan.client.Model;
 import com.anaplan.client.Process;
 import com.anaplan.client.Task;
-import com.anaplan.client.TaskResult;
-import com.anaplan.client.TaskResultDetail;
 import com.anaplan.client.TaskStatus;
 import com.anaplan.connector.AnaplanResponse;
 import com.anaplan.connector.connection.AnaplanConnection;
@@ -57,14 +55,7 @@ public class AnaplanProcessOperation extends BaseAnaplanOperation {
 			LogUtil.status(logContext, "Process ran successfully!");
 
 			// Collect all the status details of running the action
-			final TaskResult taskResult = status.getResult();
-			final StringBuilder taskDetails = new StringBuilder();
-			if (taskResult.getDetails() != null) {
-				for (TaskResultDetail detail : taskResult.getDetails()) {
-					taskDetails.append("\n" + detail.getLocalizedMessageText());
-				}
-				runStatusDetails = taskDetails.toString();
-			}
+			setRunStatusDetails(collectTaskLogs(status));
 
 			return AnaplanResponse.runProcessSuccess(
 					status.getTaskState().name(),

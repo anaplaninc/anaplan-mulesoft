@@ -23,8 +23,6 @@ import com.anaplan.client.Export;
 import com.anaplan.client.Model;
 import com.anaplan.client.ServerFile;
 import com.anaplan.client.Task;
-import com.anaplan.client.TaskResult;
-import com.anaplan.client.TaskResultDetail;
 import com.anaplan.client.TaskStatus;
 import com.anaplan.connector.AnaplanResponse;
 import com.anaplan.connector.connection.AnaplanConnection;
@@ -68,8 +66,6 @@ public class AnaplanExportOperation extends BaseAnaplanOperation {
 
 		final Task task = exp.createTask();
 		final TaskStatus status = AnaplanUtil.runServerTask(task, logContext);
-		final TaskResult taskResult = status.getResult();
-		final StringBuilder taskDetails = new StringBuilder();
 
 		if (status.getTaskState() == TaskStatus.State.COMPLETE &&
 			status.getResult().isSuccessful()) {
@@ -82,12 +78,7 @@ public class AnaplanExportOperation extends BaseAnaplanOperation {
 						logContext);
 			}
 			// collect all server messages regarding the export, if any
-			if (taskResult.getDetails() != null) {
-				for (TaskResultDetail detail: taskResult.getDetails()) {
-					taskDetails.append("\n" + detail.getLocalizedMessageText());
-				}
-			}
-			runStatusDetails = taskDetails.toString();
+			setRunStatusDetails(collectTaskLogs(status));
 			LogUtil.status(logContext, getRunStatusDetails());
 
 			return AnaplanResponse.exportSuccess(status.getTaskState().name(),
