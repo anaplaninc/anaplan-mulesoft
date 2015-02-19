@@ -182,7 +182,7 @@ public class AnaplanConnector {
 	 * @throws AnaplanConnectionException
 	 * @throws AnaplanOperationException
 	 */
-	@Processor(friendlyName="Run Process")
+	@Processor(friendlyName="Process")
 	public String runProcess(
 			@FriendlyName("Workspace name or ID") String workspaceId,
 			@FriendlyName("Model name or ID") String modelId,
