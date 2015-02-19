@@ -15,8 +15,6 @@
     </parent>
 
    <url>http://anaplaninc.github.io/mvn-repos</url>
-   <!-- <url>https://github.com/anaplaninc/anaplan-mulesoft</url> -->
-   <!-- <url>https://github.com/anaplaninc/test-mvn-repo</url> -->
 
     <properties>
         <junit.version>4.9</junit.version>
@@ -75,83 +73,16 @@
             <id>anaplan-github-mvn-repo</id>
             <name>Anaplan Github MVN Repository</name>
             <url>http://anaplaninc.github.io/mvn-repos/</url>
-            <!-- <snapshots>
-                <enabled>true</enabled>
-                <updatePolicy>always</updatePolicy>
-            </snapshots> -->
             <layout>default</layout>
         </repository>
   	</repositories>
  
     <distributionManagement>
-        <!-- <repository>
-            <id>internal.repo</id>
-            <name>Temporary Staging Repository</name>
-            <url>file://${project.build.directory}/mvn-repo</url>
-        </repository> -->
         <repository>
             <id>anaplan.mvn.repo</id>
             <name>Anaplan Github Maven Repo</name>
             <url>http://anaplaninc.github.io/mvn-repos/</url>
         </repository>
     </distributionManagement>
- 
-    <build>
-        <plugins>
-            <!-- <plugin>
-                <artifactId>maven-deploy-plugin</artifactId>
-                <version>2.8.1</version>
-                <configuration>
-                    <altDeploymentRepository>
-                        internal.repo::default::file://${project.build.directory}/mvn-repos
-                    </altDeploymentRepository>
-                </configuration>
-            </plugin> -->
-            <plugin>
-                <!-- Deploy the web site -->
-                <groupId>com.github.github</groupId>
-                <artifactId>site-maven-plugin</artifactId>
-                <version>0.9</version>
-                <configuration>
-
-                    <!-- repository identification -->
-                    <!-- <repositoryName>anaplaninc.github.io</repositoryName>
-                    <repositoryOwner>anaplaninc</repositoryOwner>
-                    <server>github</server> -->
-
-                    <!-- disable webpage processing -->
-                    <!-- <noJekyll>true</noJekyll> -->
-
-                    <!-- matches distribution management repository url above -->
-                    <!-- <outputDirectory>${project.build.directory}/mvn-repos</outputDirectory> -->
-
-                    <!-- remote branch name -->
-                    <branch>refs/heads/new-github-maven-plugin-repo-upload-trial-1</branch>
-
-                    <!-- <includes><include>**/*</include></includes> -->
-
-                    <!-- git commit message -->
-                    <message>Maven artifacts for v${project.version}</message>
-
-                    <!-- The location where the site is uploaded -->
-                    <path>${site.path}</path>
-
-                    <!-- Use merge or override the content -->
-                    <merge>true</merge>
-
-                </configuration>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>site</goal>
-                        </goals>
-                        
-                        <!-- select the Maven phase in which the plugin will be executed -->
-                        <phase>site-deploy</phase>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
-    </build>
  
 </project>
