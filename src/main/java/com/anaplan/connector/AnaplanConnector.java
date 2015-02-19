@@ -27,7 +27,7 @@ import org.mule.api.annotations.param.Payload;
 import com.anaplan.connector.connection.BaseConnectionStrategy;
 import com.anaplan.connector.exceptions.AnaplanConnectionException;
 import com.anaplan.connector.exceptions.AnaplanOperationException;
-import com.anaplan.connector.utils.AnaplanExecuteAction;
+import com.anaplan.connector.utils.AnaplanDeleteOperation;
 import com.anaplan.connector.utils.AnaplanExportOperation;
 import com.anaplan.connector.utils.AnaplanImportOperation;
 import com.anaplan.connector.utils.AnaplanProcessOperation;
@@ -47,7 +47,7 @@ public class AnaplanConnector {
 
 	private static AnaplanExportOperation exporter;
 	private static AnaplanImportOperation importer;
-	private static AnaplanExecuteAction actionRunner;
+	private static AnaplanDeleteOperation deleter;
 	private static AnaplanProcessOperation processRunner;
 
 	@ConnectionStrategy
@@ -142,31 +142,30 @@ public class AnaplanConnector {
 	/**
 	 * Deletes data from a model by executing the respective delete action.
 	 *
-	 * {@sample.xml ../../../doc/anaplan-connector.xml.sample anaplan:executeAction}
+	 * {@sample.xml ../../../doc/anaplan-connector.xml.sample anaplan:deleteFromModel}
 	 *
 	 * @param workspaceId Anaplan workspace ID.
 	 * @param modelId Anaplan model ID.
-	 * @param actionId Anaplan action ID: delete, M2M imports, or any other
-	 * 				   generic action.
-	 * @return Status message from running the Exection-Action.
+	 * @param deleteActionId Anaplan delete action ID.
+	 * @return Status Any response message from running the Delete Action.
 	 * @throws AnaplanConnectionException When an error occurs at authentication.
 	 * @throws AnaplanOperationException When the Action encounters an error
 	 * 									 while executing.
 	 */
-	@Processor(friendlyName="Execute Action")
-	public String executeAction(
+	@Processor(friendlyName="Delete")
+	public String deleteFromModel(
 			@FriendlyName("Workspace name or ID") String workspaceId,
 			@FriendlyName("Model name or ID") String modelId,
-			@FriendlyName("Action name or ID") String actionId)
+			@FriendlyName("Delete action name or ID") String deleteActionId)
 					throws AnaplanConnectionException,
 						   AnaplanOperationException {
 		// validate the API connectionStrategy
 		connectionStrategy.validateConnection();
 
 		// start the delete process
-		actionRunner = new AnaplanExecuteAction(
+		deleter = new AnaplanDeleteOperation(
 				connectionStrategy.getApiConnection());
-		return actionRunner.runExecute(workspaceId, modelId, actionId);
+		return deleter.runDeleteAction(workspaceId, modelId, deleteActionId);
 	}
 
 	/**

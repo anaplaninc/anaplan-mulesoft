@@ -26,12 +26,12 @@
 		exportId="#[header:exportId]" />
 <!-- END_INCLUDE(anaplan:exportFromModel) -->
 
-<!-- BEGIN_INCLUDE(anaplan:executeAction) -->
+<!-- BEGIN_INCLUDE(anaplan:deleteFromModel) -->
 	<anaplan:executeAction
 		workspaceId="#[header:workspaceId]" 
 		modelId="#[header:modelId]" 
-		actionId="#[header:actionId]" />
-<!-- END_INCLUDE(anaplan:executeAction) -->
+		actionId="#[header:deleteActionId]" />
+<!-- END_INCLUDE(anaplan:deleteFromModel) -->
 
 <!-- BEGIN_INCLUDE(anaplan:runProcess) -->
 	<anaplan:runProcess
