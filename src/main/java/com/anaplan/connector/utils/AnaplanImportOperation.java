@@ -167,7 +167,6 @@ public class AnaplanImportOperation extends BaseAnaplanOperation{
 
 		final Task task = imp.createTask();
 		final TaskStatus status = AnaplanUtil.runServerTask(task, logContext);
-		final TaskResult taskResult = status.getResult();
 
 		final StringBuilder taskDetails = new StringBuilder();
 		taskDetails.append(collectTaskLogs(status));
@@ -178,6 +177,7 @@ public class AnaplanImportOperation extends BaseAnaplanOperation{
 
 		// 3. Determine execution status and create response.
 
+		final TaskResult taskResult = status.getResult();
 		if (taskResult.isFailureDumpAvailable()) {
 			LogUtil.status(logContext, UserMessages.getMessage("failureDump"));
 			final ServerFile failDump = taskResult.getFailureDump();
