@@ -73,11 +73,11 @@ public class AnaplanUtil {
 	}
 
 	/**
-	 * Executes a Anaplan import or export task.
+	 * Executes an Anaplan task and polls the status until its complete.
 	 *
 	 * @param task
 	 * @param logContext
-	 * @return
+	 * @return The status message from the running the task.
 	 * @throws AnaplanAPIException
 	 */
 	public static TaskStatus runServerTask(Task task, String logContext)
