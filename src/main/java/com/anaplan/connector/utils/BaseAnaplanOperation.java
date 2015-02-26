@@ -20,6 +20,9 @@ package com.anaplan.connector.utils;
 import com.anaplan.client.AnaplanAPIException;
 import com.anaplan.client.Model;
 import com.anaplan.client.Service;
+import com.anaplan.client.TaskResult;
+import com.anaplan.client.TaskResultDetail;
+import com.anaplan.client.TaskStatus;
 import com.anaplan.client.Workspace;
 import com.anaplan.connector.connection.AnaplanConnection;
 import com.anaplan.connector.exceptions.AnaplanOperationException;
@@ -37,14 +40,15 @@ public class BaseAnaplanOperation {
 	protected Service service;
 	protected Workspace workspace = null;
 	protected Model model = null;
-	protected static String runStatusDetails = null;
+	// TODO: Needs a setter as well.
+	private static String runStatusDetails = null;
 
 	public BaseAnaplanOperation(AnaplanConnection apiConn) {
 		setApiConn(apiConn);
 	}
 
 	/**
-	 * Public getter for the Run-status. The string for runStatusDetails is
+	 * Getter for the Run-status. The string for runStatusDetails is
 	 * populated by executeAction().
 	 *
 	 * @return String containing the run-detail logs sent back from the server
@@ -52,6 +56,16 @@ public class BaseAnaplanOperation {
 	 */
 	public static String getRunStatusDetails() {
 		return runStatusDetails;
+	}
+
+	/**
+	 * Setter for runStatusDetails, usually server side logs of success or
+	 * failure.
+	 *
+	 * @param statusMsgs String containing status message logs.
+	 */
+	public static void setRunStatusDetails(String statusMsgs) {
+		runStatusDetails = statusMsgs;
 	}
 
 	/**
@@ -138,5 +152,24 @@ public class BaseAnaplanOperation {
 				"Model ID is valid: " + modelId);
 		// validate export ID
 		// TODO: Fetch JSON response for list of export-IDs, then validate
+	}
+
+	/**
+	 * Helper method to collect logs sent back from server, using provided
+	 * TaskStatus object.
+	 *
+	 * @param status TaskStatus object containing task details
+	 * @return
+	 */
+	public static String collectTaskLogs(TaskStatus status) {
+		final TaskResult taskResult = status.getResult();
+		final StringBuilder taskDetails = new StringBuilder();
+		if (taskResult.getDetails() != null) {
+			for (TaskResultDetail detail : taskResult.getDetails()) {
+				taskDetails.append("\n" + detail.getLocalizedMessageText());
+			}
+			return taskDetails.toString();
+		}
+		return null;
 	}
 }
