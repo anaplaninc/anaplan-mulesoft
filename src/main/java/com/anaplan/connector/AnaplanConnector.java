@@ -30,6 +30,7 @@ import com.anaplan.connector.exceptions.AnaplanOperationException;
 import com.anaplan.connector.utils.AnaplanDeleteOperation;
 import com.anaplan.connector.utils.AnaplanExportOperation;
 import com.anaplan.connector.utils.AnaplanImportOperation;
+import com.anaplan.connector.utils.AnaplanProcessOperation;
 
 
 /**
@@ -47,6 +48,7 @@ public class AnaplanConnector {
 	private static AnaplanExportOperation exporter;
 	private static AnaplanImportOperation importer;
 	private static AnaplanDeleteOperation deleter;
+	private static AnaplanProcessOperation processRunner;
 
 	@ConnectionStrategy
 	private BaseConnectionStrategy connectionStrategy;
@@ -164,5 +166,36 @@ public class AnaplanConnector {
 		deleter = new AnaplanDeleteOperation(
 				connectionStrategy.getApiConnection());
 		return deleter.runDeleteAction(workspaceId, modelId, deleteActionId);
+	}
+
+	/**
+	 * Runs a specific Anaplan Process, which could be a multitude of actions
+	 * represented as a single Anaplan process.
+	 *
+	 * {@sample.xml ../../../doc/anaplan-connector.xml.sample anaplan:runProcess}
+	 *
+	 * @param workspaceId Anaplan workspace ID against which to run the process.
+	 * @param modelId Anaplan model ID against which to run the process.
+	 * @param processId Anaplan process ID
+	 * @return Status response string of running the process, along with any
+	 * 						   failure dump strings as applicable.
+	 * @throws AnaplanConnectionException
+	 * @throws AnaplanOperationException
+	 */
+	@Processor(friendlyName="Process")
+	public String runProcess(
+			@FriendlyName("Workspace name or ID") String workspaceId,
+			@FriendlyName("Model name or ID") String modelId,
+			@FriendlyName("Process name or ID") String processId)
+					throws AnaplanConnectionException,
+						   AnaplanOperationException {
+		// validate the API connectionStrategy
+		connectionStrategy.validateConnection();
+
+		// run the process
+		processRunner = new AnaplanProcessOperation(
+				connectionStrategy.getApiConnection());
+		return processRunner.runProcess(workspaceId, modelId, processId);
+
 	}
 }
