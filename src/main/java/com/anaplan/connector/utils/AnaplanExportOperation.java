@@ -24,7 +24,7 @@ import com.anaplan.client.Model;
 import com.anaplan.client.ServerFile;
 import com.anaplan.client.Task;
 import com.anaplan.client.TaskStatus;
-import com.anaplan.connector.AnaplanResponse;
+import com.anaplan.connector.MulesoftAnaplanResponse;
 import com.anaplan.connector.connection.AnaplanConnection;
 import com.anaplan.connector.exceptions.AnaplanOperationException;
 
@@ -55,13 +55,13 @@ public class AnaplanExportOperation extends BaseAnaplanOperation {
 	 * @throws IOException
 	 * @throws AnaplanAPIException
 	 */
-	private static AnaplanResponse doExport(Model model, String exportId,
+	private static MulesoftAnaplanResponse doExport(Model model, String exportId,
 			String logContext) throws IOException, AnaplanAPIException {
 
 		final Export exp = model.getExport(exportId);
 		if (exp == null) {
 			final String msg = UserMessages.getMessage("invalidExport", exportId);
-			return AnaplanResponse.exportFailure(msg, null, null, logContext);
+			return MulesoftAnaplanResponse.exportFailure(msg, null, null, logContext);
 		}
 
 		final Task task = exp.createTask();
@@ -72,7 +72,7 @@ public class AnaplanExportOperation extends BaseAnaplanOperation {
 			LogUtil.status(logContext, "Export completed successfully!");
 			final ServerFile serverFile = model.getServerFile(exp.getName());
 			if (serverFile == null) {
-				return AnaplanResponse.exportFailure(
+				return MulesoftAnaplanResponse.exportFailure(
 						UserMessages.getMessage("exportRetrieveError",
 								exp.getName()), exp.getExportMetadata(), null,
 						logContext);
@@ -81,11 +81,11 @@ public class AnaplanExportOperation extends BaseAnaplanOperation {
 			setRunStatusDetails(collectTaskLogs(status));
 			LogUtil.status(logContext, getRunStatusDetails());
 
-			return AnaplanResponse.exportSuccess(status.getTaskState().name(),
+			return MulesoftAnaplanResponse.exportSuccess(status.getTaskState().name(),
 					serverFile, exp.getExportMetadata(), logContext);
 		} else {
 			LogUtil.error(logContext, "Export failed !!!");
-			return AnaplanResponse.exportFailure(status.getTaskState().name(),
+			return MulesoftAnaplanResponse.exportFailure(status.getTaskState().name(),
 					exp.getExportMetadata(), null, logContext);
 		}
 	}
@@ -115,7 +115,7 @@ public class AnaplanExportOperation extends BaseAnaplanOperation {
 
 		// run the export
 		try {
-			final AnaplanResponse anaplanResponse = doExport(model,
+			final MulesoftAnaplanResponse anaplanResponse = doExport(model,
 					exportId, exportLogContext);
 			response = anaplanResponse.writeExportData(apiConn, exportId,
 					logContext);

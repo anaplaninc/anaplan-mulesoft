@@ -40,7 +40,7 @@ import com.anaplan.connector.utils.UserMessages;
  * Current Data for a downstream connector to consume; in the case of complete
  * failure an exception is thrown to force the data-flow to stop.
  */
-public class AnaplanResponse implements Serializable {
+public class MulesoftAnaplanResponse implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	private final String responseMessage;
@@ -60,7 +60,7 @@ public class AnaplanResponse implements Serializable {
 	 * @param failureCause
 	 * @param logContext
 	 */
-	private AnaplanResponse(String responseMessage, OperationStatus status,
+	private MulesoftAnaplanResponse(String responseMessage, OperationStatus status,
 			ServerFile serverFile, ExportMetadata exportMetaData,
 			Throwable failureCause, String logContext) {
 		this.responseMessage = responseMessage;
@@ -279,7 +279,7 @@ public class AnaplanResponse implements Serializable {
 	 * @return
 	 * @throws IllegalArgumentException
 	 */
-	public static AnaplanResponse exportSuccess(String responseMessage,
+	public static MulesoftAnaplanResponse exportSuccess(String responseMessage,
 			ServerFile exportOutput, ExportMetadata exportMetadata,
 			String logContext) throws IllegalArgumentException {
 		if (exportOutput == null) {
@@ -288,7 +288,7 @@ public class AnaplanResponse implements Serializable {
 			throw new IllegalArgumentException(
 					"Output cannot be null for a successful export");
 		} else {
-			return new AnaplanResponse(responseMessage,
+			return new MulesoftAnaplanResponse(responseMessage,
 					OperationStatus.SUCCESS, exportOutput, exportMetadata,
 					null, logContext);
 		}
@@ -305,9 +305,9 @@ public class AnaplanResponse implements Serializable {
 	 * @param logContext
 	 * @return
 	 */
-	public static AnaplanResponse exportFailure(String responseMessage,
+	public static MulesoftAnaplanResponse exportFailure(String responseMessage,
 			ExportMetadata exportMetadata, Throwable cause, String logContext) {
-		return new AnaplanResponse(responseMessage, OperationStatus.FAILURE,
+		return new MulesoftAnaplanResponse(responseMessage, OperationStatus.FAILURE,
 				null, exportMetadata, cause, logContext);
 	}
 
@@ -319,9 +319,9 @@ public class AnaplanResponse implements Serializable {
 	 * @param serverFile
 	 * @return
 	 */
-	public static AnaplanResponse importSuccess(String responseMessage,
+	public static MulesoftAnaplanResponse importSuccess(String responseMessage,
 			String logContext, ServerFile serverFile) {
-		return new AnaplanResponse(responseMessage, OperationStatus.SUCCESS,
+		return new MulesoftAnaplanResponse(responseMessage, OperationStatus.SUCCESS,
 				serverFile, null, null, logContext);
 	}
 
@@ -334,9 +334,9 @@ public class AnaplanResponse implements Serializable {
 	 * @param logContext
 	 * @return
 	 */
-	public static AnaplanResponse importFailure(String responseMessage,
+	public static MulesoftAnaplanResponse importFailure(String responseMessage,
 			Throwable cause, String logContext) {
-		return new AnaplanResponse(responseMessage, OperationStatus.FAILURE,
+		return new MulesoftAnaplanResponse(responseMessage, OperationStatus.FAILURE,
 				null, null, cause, logContext);
 	}
 
@@ -349,9 +349,9 @@ public class AnaplanResponse implements Serializable {
 	 * @param logContext
 	 * @return
 	 */
-	public static AnaplanResponse importWithFailureDump(String responseMessage,
+	public static MulesoftAnaplanResponse importWithFailureDump(String responseMessage,
 			ServerFile failDump, String logContext) {
-		return new AnaplanResponse(responseMessage,
+		return new MulesoftAnaplanResponse(responseMessage,
 				OperationStatus.APPLICATION_ERROR, failDump, null, null,
 				logContext);
 	}
@@ -364,9 +364,9 @@ public class AnaplanResponse implements Serializable {
 	 * @param logContext
 	 * @return
 	 */
-	public static AnaplanResponse executeActionSuccess(String responseMessage,
+	public static MulesoftAnaplanResponse executeActionSuccess(String responseMessage,
 			String logContext) {
-		return new AnaplanResponse(responseMessage, OperationStatus.SUCCESS,
+		return new MulesoftAnaplanResponse(responseMessage, OperationStatus.SUCCESS,
 				null, null, null, logContext);
 	}
 
@@ -379,9 +379,9 @@ public class AnaplanResponse implements Serializable {
 	 * @param logContext
 	 * @return
 	 */
-	public static AnaplanResponse executeActionFailure(String responseMessage,
+	public static MulesoftAnaplanResponse executeActionFailure(String responseMessage,
 			Throwable cause, String logContext) {
-		return new AnaplanResponse(responseMessage, OperationStatus.FAILURE,
+		return new MulesoftAnaplanResponse(responseMessage, OperationStatus.FAILURE,
 				null, null, cause, logContext);
 	}
 
@@ -392,9 +392,9 @@ public class AnaplanResponse implements Serializable {
 	 * @param logContext
 	 * @return
 	 */
-	public static AnaplanResponse runProcessSuccess(String responseMessage, 
+	public static MulesoftAnaplanResponse runProcessSuccess(String responseMessage, 
 			String logContext) {
-		return new AnaplanResponse(responseMessage, OperationStatus.SUCCESS,
+		return new MulesoftAnaplanResponse(responseMessage, OperationStatus.SUCCESS,
 				null, null, null, logContext);
 	}
 
@@ -405,9 +405,9 @@ public class AnaplanResponse implements Serializable {
 	 * @param logContext
 	 * @return
 	 */
-	public static AnaplanResponse runProcessFailure(String responseMessage,
+	public static MulesoftAnaplanResponse runProcessFailure(String responseMessage,
 			Throwable cause, String logContext) {
-		return new AnaplanResponse(responseMessage, OperationStatus.FAILURE,
+		return new MulesoftAnaplanResponse(responseMessage, OperationStatus.FAILURE,
 				null, null, cause, logContext);
 	}
 }

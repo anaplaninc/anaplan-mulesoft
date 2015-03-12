@@ -22,7 +22,7 @@ import com.anaplan.client.AnaplanAPIException;
 import com.anaplan.client.Model;
 import com.anaplan.client.Task;
 import com.anaplan.client.TaskStatus;
-import com.anaplan.connector.AnaplanResponse;
+import com.anaplan.connector.MulesoftAnaplanResponse;
 import com.anaplan.connector.connection.AnaplanConnection;
 import com.anaplan.connector.exceptions.AnaplanOperationException;
 
@@ -53,7 +53,7 @@ public class AnaplanDeleteOperation extends BaseAnaplanOperation {
 	 * @return
 	 * @throws AnaplanAPIException
 	 */
-	private static AnaplanResponse runDeleteAction(Model model, String actionId,
+	private static MulesoftAnaplanResponse runDeleteAction(Model model, String actionId,
 			String logContext) throws AnaplanAPIException {
 
 		final Action action = model.getAction(actionId);
@@ -61,7 +61,7 @@ public class AnaplanDeleteOperation extends BaseAnaplanOperation {
 		if (action == null) {
 			final String msg = UserMessages.getMessage("invalidAction",
 					actionId);
-			return AnaplanResponse.executeActionFailure(msg, null, logContext);
+			return MulesoftAnaplanResponse.executeActionFailure(msg, null, logContext);
 		}
 
 		final Task task = action.createTask();
@@ -75,11 +75,11 @@ public class AnaplanDeleteOperation extends BaseAnaplanOperation {
 			// Collect all the status details for running the action.
 			setRunStatusDetails(collectTaskLogs(status));
 
-			return AnaplanResponse.executeActionSuccess(
+			return MulesoftAnaplanResponse.executeActionSuccess(
 					status.getTaskState().name(),
 					logContext);
 		} else {
-			return AnaplanResponse.executeActionFailure("Execute Action Failed",
+			return MulesoftAnaplanResponse.executeActionFailure("Execute Action Failed",
 					null, logContext);
 		}
 	}
@@ -108,7 +108,7 @@ public class AnaplanDeleteOperation extends BaseAnaplanOperation {
 
 		// run the export
 		try {
-			final AnaplanResponse anaplanResponse = runDeleteAction(model,
+			final MulesoftAnaplanResponse anaplanResponse = runDeleteAction(model,
 					deleteActionId, exportLogContext);
 			LogUtil.status(logContext, "Action complete: Status: "
 					+ anaplanResponse.getStatus() + ", Response message: "
