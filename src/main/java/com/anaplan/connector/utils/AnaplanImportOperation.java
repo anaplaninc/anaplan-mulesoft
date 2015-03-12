@@ -32,7 +32,7 @@ import com.anaplan.client.ServerFile;
 import com.anaplan.client.Task;
 import com.anaplan.client.TaskResult;
 import com.anaplan.client.TaskStatus;
-import com.anaplan.connector.AnaplanResponse;
+import com.anaplan.connector.MulesoftAnaplanResponse;
 import com.anaplan.connector.connection.AnaplanConnection;
 import com.anaplan.connector.exceptions.AnaplanOperationException;
 import com.google.gson.JsonSyntaxException;
@@ -119,7 +119,7 @@ public class AnaplanImportOperation extends BaseAnaplanOperation{
 	 * @throws JsonSyntaxException
 	 * @throws IOException
 	 */
-	private static AnaplanResponse runImportCsv(String data, Model model,
+	private static MulesoftAnaplanResponse runImportCsv(String data, Model model,
 			String importId, String columnSeparator, String delimiter,
 			String logContext)
 					throws AnaplanAPIException, JsonSyntaxException,
@@ -132,7 +132,7 @@ public class AnaplanImportOperation extends BaseAnaplanOperation{
 		final Import imp = model.getImport(importId);
 		if (imp == null) {
 			final String msg = "Invalid import!";
-			return AnaplanResponse.importFailure(msg, null, logContext);
+			return MulesoftAnaplanResponse.importFailure(msg, null, logContext);
 		}
 
 		final ServerFile serverFile = model.getServerFile(imp.getSourceFileId());
@@ -182,17 +182,17 @@ public class AnaplanImportOperation extends BaseAnaplanOperation{
 			LogUtil.status(logContext, UserMessages.getMessage("failureDump"));
 			final ServerFile failDump = taskResult.getFailureDump();
 
-			return AnaplanResponse.importWithFailureDump(
+			return MulesoftAnaplanResponse.importWithFailureDump(
 					UserMessages.getMessage("importBadData", importId),
 					failDump, logContext);
 		} else {
 			LogUtil.status(logContext, UserMessages.getMessage("noFailureDump"));
 
 			if (taskResult.isSuccessful()) {
-				return AnaplanResponse.importSuccess(getRunStatusDetails(),
+				return MulesoftAnaplanResponse.importSuccess(getRunStatusDetails(),
 						logContext, serverFile);
 			} else {
-				return AnaplanResponse.importFailure(getRunStatusDetails(),
+				return MulesoftAnaplanResponse.importFailure(getRunStatusDetails(),
 						null, logContext);
 			}
 		}
@@ -224,7 +224,7 @@ public class AnaplanImportOperation extends BaseAnaplanOperation{
 		try {
 			LogUtil.status(importLogContext, "Starting import: " + importId);
 
-			final AnaplanResponse anaplanResponse = runImportCsv(data, model,
+			final MulesoftAnaplanResponse anaplanResponse = runImportCsv(data, model,
 					importId, columnSeparator, delimiter, importLogContext);
 			anaplanResponse.writeImportData(apiConn, importId, importLogContext);
 
@@ -233,11 +233,11 @@ public class AnaplanImportOperation extends BaseAnaplanOperation{
 					+ anaplanResponse.getResponseMessage());
 
 		} catch (IOException e) {
-			AnaplanResponse.responseEpicFail(apiConn, e, null);
+			MulesoftAnaplanResponse.responseEpicFail(apiConn, e, null);
 		} catch (JsonSyntaxException e) {
-			AnaplanResponse.responseEpicFail(apiConn, e, null);
+			MulesoftAnaplanResponse.responseEpicFail(apiConn, e, null);
 		} catch (AnaplanAPIException e) {
-			AnaplanResponse.responseEpicFail(apiConn, e, null);
+			MulesoftAnaplanResponse.responseEpicFail(apiConn, e, null);
 		} finally {
 			apiConn.closeConnection();
 		}

@@ -21,7 +21,7 @@ import com.anaplan.client.Model;
 import com.anaplan.client.Process;
 import com.anaplan.client.Task;
 import com.anaplan.client.TaskStatus;
-import com.anaplan.connector.AnaplanResponse;
+import com.anaplan.connector.MulesoftAnaplanResponse;
 import com.anaplan.connector.connection.AnaplanConnection;
 import com.anaplan.connector.exceptions.AnaplanOperationException;
 
@@ -51,7 +51,7 @@ public class AnaplanProcessOperation extends BaseAnaplanOperation {
 	 * @return
 	 * @throws AnaplanAPIException
 	 */
-	private AnaplanResponse runProcessTask(Model model, String processId,
+	private MulesoftAnaplanResponse runProcessTask(Model model, String processId,
 			String logContext) throws AnaplanAPIException {
 
 		final Process process = model.getProcess(processId);
@@ -59,7 +59,7 @@ public class AnaplanProcessOperation extends BaseAnaplanOperation {
 		if (process == null) {
 			final String msg = UserMessages.getMessage("invalidProcess",
 					processId);
-			return AnaplanResponse.runProcessFailure(msg, null, logContext);
+			return MulesoftAnaplanResponse.runProcessFailure(msg, null, logContext);
 		}
 
 		final Task task = process.createTask();
@@ -73,11 +73,11 @@ public class AnaplanProcessOperation extends BaseAnaplanOperation {
 			// Collect all the status details of running the action
 			setRunStatusDetails(collectTaskLogs(status));
 
-			return AnaplanResponse.runProcessSuccess(
+			return MulesoftAnaplanResponse.runProcessSuccess(
 					status.getTaskState().name(),
 					logContext);
 		} else {
-			return AnaplanResponse.runProcessFailure("Run Process failed!",
+			return MulesoftAnaplanResponse.runProcessFailure("Run Process failed!",
 					null, logContext);
 		}
 	}
@@ -107,7 +107,7 @@ public class AnaplanProcessOperation extends BaseAnaplanOperation {
 
 		try {
 			LogUtil.status(processLogContext, "Starting process: "+ processId);
-			final AnaplanResponse anaplanResponse = runProcessTask(model,
+			final MulesoftAnaplanResponse anaplanResponse = runProcessTask(model,
 					processId, processLogContext);
 			LogUtil.status(processLogContext, "Process ran successfully:"
 					+ anaplanResponse.getStatus() + ", Response message: "
