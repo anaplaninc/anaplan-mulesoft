@@ -73,11 +73,11 @@ public class AnaplanUtil {
 	}
 
 	/**
-	 * Executes a Anaplan import or export task.
+	 * Executes an Anaplan task and polls the status until its complete.
 	 *
 	 * @param task
 	 * @param logContext
-	 * @return
+	 * @return The status message from the running the task.
 	 * @throws AnaplanAPIException
 	 */
 	public static TaskStatus runServerTask(Task task, String logContext)
@@ -87,7 +87,7 @@ public class AnaplanUtil {
 		while (status.getTaskState() != TaskStatus.State.COMPLETE
 				&& status.getTaskState() != TaskStatus.State.CANCELLED) {
 
-			// if busy, nap and check again after
+			// if busy, nap and check again after 1 second
 			try {
 				Thread.sleep(1000);
 				LogUtil.debug(logContext, "Running Task = "
