@@ -16,6 +16,13 @@
 
 package com.anaplan.connector;
 
+import com.anaplan.connector.connection.BaseConnectionStrategy;
+import com.anaplan.connector.exceptions.AnaplanConnectionException;
+import com.anaplan.connector.exceptions.AnaplanOperationException;
+import com.anaplan.connector.utils.AnaplanDeleteOperation;
+import com.anaplan.connector.utils.AnaplanExportOperation;
+import com.anaplan.connector.utils.AnaplanImportOperation;
+import com.anaplan.connector.utils.AnaplanProcessOperation;
 import org.mule.api.annotations.ConnectionStrategy;
 import org.mule.api.annotations.Connector;
 import org.mule.api.annotations.Processor;
@@ -24,13 +31,8 @@ import org.mule.api.annotations.display.Icons;
 import org.mule.api.annotations.param.Default;
 import org.mule.api.annotations.param.Payload;
 
-import com.anaplan.connector.connection.BaseConnectionStrategy;
-import com.anaplan.connector.exceptions.AnaplanConnectionException;
-import com.anaplan.connector.exceptions.AnaplanOperationException;
-import com.anaplan.connector.utils.AnaplanDeleteOperation;
-import com.anaplan.connector.utils.AnaplanExportOperation;
-import com.anaplan.connector.utils.AnaplanImportOperation;
-import com.anaplan.connector.utils.AnaplanProcessOperation;
+import java.io.InputStream;
+import java.io.OutputStream;
 
 
 /**
@@ -53,19 +55,11 @@ public class AnaplanConnector {
 	@ConnectionStrategy
 	private BaseConnectionStrategy connectionStrategy;
 
-	/**
-	 * Getter for connectionStrategy.
-	 * @return
-	 */
 	public BaseConnectionStrategy getConnectionStrategy() {
         return this.connectionStrategy;
     }
 
-	/**
-	 * Setter for connectionStrategy
-	 * @param connStrategy
-	 */
-    public void setConnectionStrategy(BaseConnectionStrategy connStrategy) {
+	public void setConnectionStrategy(BaseConnectionStrategy connStrategy) {
         this.connectionStrategy = connStrategy;
     }
 
@@ -75,7 +69,7 @@ public class AnaplanConnector {
 	 *
 	 * {@sample.xml ../../../doc/anaplan-connector.xml.sample anaplan:importToModel}
      *
-     * @param data Stringified CSV data that is to be imported into Anaplan.
+     * @param data InputStream CSV data that is to be imported into Anaplan.
      * @param workspaceId Anaplan workspace ID.
      * @param modelId Anaplan model ID.
      * @param importId Action ID of the Import operation.
@@ -87,9 +81,9 @@ public class AnaplanConnector {
      * @throws AnaplanOperationException When the Import operation encounters an
      * 									 error.
      */
-	@Processor(friendlyName = "Import")
+	@Processor(friendlyName="Import")
 	public String importToModel(
-			@Payload String data,
+			@Payload InputStream data,
 			@FriendlyName("Workspace name or ID") String workspaceId,
 		    @FriendlyName("Model name or ID") String modelId,
 		    @FriendlyName("Import name or ID") String importId,
@@ -124,7 +118,7 @@ public class AnaplanConnector {
 	 * 									 error.
 	 */
 	@Processor(friendlyName="Export")
-	public String exportFromModel(
+	public OutputStream exportFromModel(
 			@FriendlyName("Workspace name or ID") String workspaceId,
 			@FriendlyName("Model name or ID") String modelId,
 			@FriendlyName("Export name or ID") String exportId)

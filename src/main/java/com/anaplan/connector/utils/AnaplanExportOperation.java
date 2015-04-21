@@ -16,17 +16,13 @@
 
 package com.anaplan.connector.utils;
 
-import java.io.IOException;
-
-import com.anaplan.client.AnaplanAPIException;
-import com.anaplan.client.Export;
-import com.anaplan.client.Model;
-import com.anaplan.client.ServerFile;
-import com.anaplan.client.Task;
-import com.anaplan.client.TaskStatus;
+import com.anaplan.client.*;
 import com.anaplan.connector.MulesoftAnaplanResponse;
 import com.anaplan.connector.connection.AnaplanConnection;
 import com.anaplan.connector.exceptions.AnaplanOperationException;
+
+import java.io.IOException;
+import java.io.OutputStream;
 
 
 /**
@@ -39,7 +35,7 @@ public class AnaplanExportOperation extends BaseAnaplanOperation {
 
 	/**
 	 * Constructor
-	 * @param apiConn
+	 * @param apiConn, AnaplanConnection object to the API.
 	 */
 	public AnaplanExportOperation(AnaplanConnection apiConn) {
 		super(apiConn);
@@ -48,9 +44,9 @@ public class AnaplanExportOperation extends BaseAnaplanOperation {
 	/**
 	 * Performs the Model export operation.
 	 *
-	 * @param model
-	 * @param exportId
-	 * @param logContext
+	 * @param model, Anaplan model object.
+	 * @param exportId, Anaplan export ID.
+	 * @param logContext, Log context for log messages.
 	 * @return <code>AnaplanResponse</code> object.
 	 * @throws IOException
 	 * @throws AnaplanAPIException
@@ -75,7 +71,7 @@ public class AnaplanExportOperation extends BaseAnaplanOperation {
 				return MulesoftAnaplanResponse.exportFailure(
 						UserMessages.getMessage("exportRetrieveError",
 								exp.getName()), exp.getExportMetadata(), null,
-						logContext);
+								logContext);
 			}
 			// collect all server messages regarding the export, if any
 			setRunStatusDetails(collectTaskLogs(status));
@@ -93,17 +89,17 @@ public class AnaplanExportOperation extends BaseAnaplanOperation {
 	/**
 	 * Exports a model as a CSV using the provided workspace-ID, model-ID and
 	 * the export-ID.
-	 * @param workspaceId
-	 * @param modelId
-	 * @param exportId
-	 * @return
+	 * @param workspaceId, Anaplan workspace ID.
+	 * @param modelId, Anaplan Model ID.
+	 * @param exportId, Anaplan Export ID.
+	 * @return An output-stream containing the export data.
 	 * @throws AnaplanOperationException
 	 */
-	public String runExport(String workspaceId, String modelId, String exportId)
+	public OutputStream runExport(String workspaceId, String modelId, String exportId)
 			throws AnaplanOperationException {
 		final String logContext = apiConn.getLogContext();
 		final String exportLogContext = logContext + " [" + exportId + "]";
-		String response = null;
+		OutputStream response = null;
 
 		LogUtil.status(logContext, "<< Starting export >>");
 		LogUtil.status(logContext, "Workspace-ID: " + workspaceId);
@@ -117,8 +113,7 @@ public class AnaplanExportOperation extends BaseAnaplanOperation {
 		try {
 			final MulesoftAnaplanResponse anaplanResponse = doExport(model,
 					exportId, exportLogContext);
-			response = anaplanResponse.writeExportData(apiConn, exportId,
-					logContext);
+			response = anaplanResponse.writeExportData(apiConn);
 			LogUtil.status(logContext, "Query complete: Status: "
 					+ anaplanResponse.getStatus() + ", Response message: "
 					+ anaplanResponse.getResponseMessage());
