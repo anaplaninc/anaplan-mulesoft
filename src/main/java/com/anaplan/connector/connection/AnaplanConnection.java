@@ -23,6 +23,16 @@
 
 package com.anaplan.connector.connection;
 
+import com.anaplan.client.AnaplanAPIException;
+import com.anaplan.client.Credentials;
+import com.anaplan.client.Service;
+import com.anaplan.client.Workspace;
+import com.anaplan.connector.AnaplanConnectorProperties;
+import com.anaplan.connector.exceptions.AnaplanConnectionException;
+import com.anaplan.connector.exceptions.ConnectorPropertiesException;
+import com.anaplan.connector.utils.LogUtil;
+import com.anaplan.connector.utils.UserMessages;
+
 import java.io.BufferedInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -33,16 +43,6 @@ import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 import java.util.List;
-
-import com.anaplan.client.AnaplanAPIException;
-import com.anaplan.client.Credentials;
-import com.anaplan.client.Service;
-import com.anaplan.client.Workspace;
-import com.anaplan.connector.AnaplanConnectorProperties;
-import com.anaplan.connector.exceptions.AnaplanConnectionException;
-import com.anaplan.connector.exceptions.ConnectorPropertiesException;
-import com.anaplan.connector.utils.LogUtil;
-import com.anaplan.connector.utils.UserMessages;
 
 
 /**
@@ -96,7 +96,7 @@ public class AnaplanConnection {
 		} catch (ConnectorPropertiesException e) {
 			LogUtil.error(getLogContext(),
 					"Could not set connector properties!"
-							+ e.getStackTrace().toString());
+							+ e.toString());
 		}
 		LogUtil.status(getLogContext(), "Stored connection properties!");
 	}
@@ -117,9 +117,8 @@ public class AnaplanConnection {
 	 * returns it. To view the certificate contents on the command line, do:
 	 * $ openssl x509 -in /path/to/certificate/file.cer -inform der -text -noout
 	 *
-	 * @param certificateLocation
-	 * @param password
-	 * @return
+	 * @param certificateLocation, X509 certificate location on local.
+	 * @return X509 certificate object.
 	 * @throws AnaplanConnectionException
 	 */
 	public X509Certificate readCertificate(String certificateLocation)
