@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:anaplan="http://www.mulesoft.org/schema/mule/anaplan" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:data-mapper="http://www.mulesoft.org/schema/mule/ee/data-mapper" xmlns:wd-financial="http://www.mulesoft.org/schema/mule/wd-financial" xmlns:tracking="http://www.mulesoft.org/schema/mule/ee/tracking" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:spring="http://www.springframework.org/schema/beans" version="EE-3.6.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/ee/data-mapper http://www.mulesoft.org/schema/mule/ee/data-mapper/current/mule-data-mapper.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/wd-financial http://www.mulesoft.org/schema/mule/wd-financial/current/mule-wd-financial.xsd
+http://www.mulesoft.org/schema/mule/ee/tracking http://www.mulesoft.org/schema/mule/ee/tracking/current/mule-tracking-ee.xsd
+http://www.mulesoft.org/schema/mule/anaplan http://www.mulesoft.org/schema/mule/anaplan/current/mule-anaplan.xsd">
+    <anaplan:basic-auth-connection name="Anaplan__Basic_Authentication" username="rupert.tagnipes@anaplan.com" password="b7faW-UB#n2h" doc:name="Anaplan: Basic Authentication" url="https://api.anaplan.com"/>
+    <wd-financial:config name="Workday_Financial_Management" financialUser="anaplan-impl@anaplan_pt1" financialPassword="-m7c278OnTLLRDm" doc:name="Workday Financial Management" financialEndpoint="https://wd2-impl-services1.workday.com/ccx/service/anaplan_pt1/Financial_Management/v23.0">
+        <wd-financial:connection-pooling-profile initialisationPolicy="INITIALISE_ONE" exhaustedAction="WHEN_EXHAUSTED_GROW"/>
+    </wd-financial:config>
+    <wd-financial:config name="Workday_Financial_Management1" financialUser="anaplan-impl@anaplan_pt1" financialPassword="-m7c278OnTLLRDm" financialEndpoint="https://wd2-impl-services1.workday.com/ccx/service/anaplan_pt1/Financial_Management/v23.0" doc:name="Workday Financial Management">
+        <wd-financial:connection-pooling-profile initialisationPolicy="INITIALISE_ONE" exhaustedAction="WHEN_EXHAUSTED_GROW"/>
+    </wd-financial:config>
+    <http:listener-config name="HTTP_Listener_Configuration" host="localhost" port="8081" doc:name="HTTP Listener Configuration"/>
+    <flow name="anaplan-exportFlow">
+        <http:listener config-ref="HTTP_Listener_Configuration" path="/" doc:name="HTTP"/>
+        <anaplan:export-from-model config-ref="Anaplan__Basic_Authentication" exportId="Grid - Employees.csv" modelId="42DB3E5CDD654BF4B4B737E7A8399DBF" workspaceId="8a81948849b9c4e2014a30802f5a02e4" doc:name="Anaplan"/>
+    </flow>
+</mule>
