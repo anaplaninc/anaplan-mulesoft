@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<mule-project xmlns="http://www.mulesoft.com/tooling/project" runtimeId="org.mule.tooling.server.3.6.0.ee" schemaVersion="3.5.0.0">
+    <name>anaplan-delete</name>
+    <description></description>
+    <muleExtension name="Anaplan" qualifier="org.mule.tooling.ui.contribution.anaplan.3.5.0"/>
+</mule-project>
