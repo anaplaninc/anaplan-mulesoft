@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:anaplan="http://www.mulesoft.org/schema/mule/anaplan" xmlns:file="http://www.mulesoft.org/schema/mule/file" xmlns:tracking="http://www.mulesoft.org/schema/mule/ee/tracking" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:spring="http://www.springframework.org/schema/beans" version="EE-3.6.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd
+http://www.mulesoft.org/schema/mule/anaplan http://www.mulesoft.org/schema/mule/anaplan/current/mule-anaplan.xsd
+http://www.mulesoft.org/schema/mule/ee/tracking http://www.mulesoft.org/schema/mule/ee/tracking/current/mule-tracking-ee.xsd">
+    <anaplan:basic-auth-connection name="Anaplan__Basic_Authentication" username="" password="" doc:name="Anaplan: Basic Authentication" url="https://api.anaplan.com"/>
+    <file:connector name="File" readFromDirectory="/Users/ruperttagnipes/Documents/Test" autoDelete="true" streaming="true" validateConnections="true" doc:name="File"/>
+    <flow name="product-importFlow">
+        <file:inbound-endpoint path="/Users/ruperttagnipes/Documents/Test" moveToDirectory="/Users/ruperttagnipes/Documents/success" connector-ref="File" responseTimeout="10000" doc:name="File"/>
+        <anaplan:import-to-model config-ref="Anaplan__Basic_Authentication" importId="Employees from Employees.csv" modelId="42DB3E5CDD654BF4B4B737E7A8399DBF" workspaceId="8a81948849b9c4e2014a30802f5a02e4" doc:name="Anaplan"/>
+    </flow>
+</mule>
