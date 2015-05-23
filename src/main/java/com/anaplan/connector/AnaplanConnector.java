@@ -55,7 +55,7 @@ public class AnaplanConnector {
 
 	/**
 	 * Getter for connectionStrategy.
-	 * @return
+	 * @return Certificate or Basic connection strategy.
 	 */
 	public BaseConnectionStrategy getConnectionStrategy() {
         return this.connectionStrategy;
@@ -63,7 +63,7 @@ public class AnaplanConnector {
 
 	/**
 	 * Setter for connectionStrategy
-	 * @param connStrategy
+	 * @param connStrategy Basic or Certificate connection strategy.
 	 */
     public void setConnectionStrategy(BaseConnectionStrategy connStrategy) {
         this.connectionStrategy = connStrategy;
@@ -178,9 +178,9 @@ public class AnaplanConnector {
 	 * @param modelId Anaplan model ID against which to run the process.
 	 * @param processId Anaplan process ID
 	 * @return Status response string of running the process, along with any
-	 * 						   failure dump strings as applicable.
-	 * @throws AnaplanConnectionException
-	 * @throws AnaplanOperationException
+	 * 		failure dump strings as applicable.
+	 * @throws AnaplanConnectionException Thrown when if API connection errors out.
+	 * @throws AnaplanOperationException Thrown when the Process operation fails.
 	 */
 	@Processor(friendlyName="Process")
 	public String runProcess(
