@@ -8,9 +8,9 @@ http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/cor
 http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
 http://www.mulesoft.org/schema/mule/anaplan http://www.mulesoft.org/schema/mule/anaplan/current/mule-anaplan.xsd">
     <http:listener-config name="HTTP_Listener_Configuration" host="0.0.0.0" port="8081" doc:name="HTTP Listener Configuration"/>
-    <anaplan:cert-auth-connection name="Anaplan__Certificate_Authentication" certificatePath="/Users/spondonsaha/Downloads/certificate-75376290123604983370908512420247624531.cer" url="https://api-beta.anaplan.com/" doc:name="Anaplan: Certificate Authentication"/>
+    <anaplan:cert-auth-connection name="Anaplan__Certificate_Authentication" certificatePath="${anaplan.certificatePath}" url="${anaplan.apiUrl}" doc:name="Anaplan: Certificate Authentication"/>
     <flow name="anaplan-deleteFlow">
         <http:listener config-ref="HTTP_Listener_Configuration" path="/" doc:name="HTTP"/>
-        <anaplan:delete-from-model config-ref="Anaplan__Certificate_Authentication" deleteActionId="Delete Employees" modelId="42DB3E5CDD654BF4B4B737E7A8399DBF" workspaceId="8a81948849b9c4e2014a30802f5a02e4" doc:name="Anaplan"/>
+        <anaplan:delete-from-model config-ref="Anaplan__Certificate_Authentication" deleteActionId="${anaplan.deleteActionId}" modelId="${anaplan.modelId}" workspaceId="${anaplan.workspaceId}" doc:name="Anaplan"/>
     </flow>
 </mule>

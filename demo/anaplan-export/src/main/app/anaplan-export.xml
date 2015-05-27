@@ -10,10 +10,10 @@ http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/htt
 http://www.mulesoft.org/schema/mule/wd-financial http://www.mulesoft.org/schema/mule/wd-financial/current/mule-wd-financial.xsd
 http://www.mulesoft.org/schema/mule/ee/tracking http://www.mulesoft.org/schema/mule/ee/tracking/current/mule-tracking-ee.xsd
 http://www.mulesoft.org/schema/mule/anaplan http://www.mulesoft.org/schema/mule/anaplan/current/mule-anaplan.xsd">
-    <anaplan:cert-auth-connection name="Anaplan__Certificate_Authentication" certificatePath="/Users/spondonsaha/Downloads/certificate-75376290123604983370908512420247624531.cer" url="https://api-beta.anaplan.com/" doc:name="Anaplan: Certificate Authentication"/>
+    <anaplan:cert-auth-connection name="Anaplan__Certificate_Authentication" certificatePath="${anaplan.certificatePath}" url="${anaplan.apiUrl}" doc:name="Anaplan: Certificate Authentication"/>
     <http:listener-config name="HTTP_Listener_Configuration" host="localhost" port="8081" doc:name="HTTP Listener Configuration"/>
     <flow name="anaplan-exportFlow">
         <http:listener config-ref="HTTP_Listener_Configuration" path="/" doc:name="HTTP"/>
-        <anaplan:export-from-model config-ref="Anaplan__Certificate_Authentication" exportId="Grid - Employees.csv" modelId="01C030435D214623B911CDB3D4D2F9D3" workspaceId="8a819c934d23e06b014d34d06d210255" doc:name="Anaplan"/>
+        <anaplan:export-from-model config-ref="Anaplan__Certificate_Authentication" exportId="${anaplan.exportId}" modelId="${anaplan.modelId}" workspaceId="${anaplan.workspaceId}" doc:name="Anaplan"/>
     </flow>
 </mule>
