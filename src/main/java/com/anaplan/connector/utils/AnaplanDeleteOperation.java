@@ -35,7 +35,7 @@ public class AnaplanDeleteOperation extends BaseAnaplanOperation {
 
 	/**
 	 * Constructor.
-	 * @param apiConn
+	 * @param apiConn Anaplan API connection object.
 	 */
 	public AnaplanDeleteOperation(AnaplanConnection apiConn) {
 		super(apiConn);
@@ -47,21 +47,22 @@ public class AnaplanDeleteOperation extends BaseAnaplanOperation {
 	 * allows you to execute any inert operation within Anaplan's core
 	 * infrastructure.
 	 *
-	 * @param model
-	 * @param actionId
-	 * @param logContext
-	 * @return
-	 * @throws AnaplanAPIException
+	 * @param model Anaplan Model object.
+	 * @param actionId Anaplan Delete action ID.
+	 * @param logContext Log context for delete operation logs.
+	 * @return Response object containing details of executing delete.
+	 * @throws AnaplanAPIException Thrown when errors at talkng to API.
 	 */
-	private static MulesoftAnaplanResponse runDeleteAction(Model model, String actionId,
-			String logContext) throws AnaplanAPIException {
+	private static MulesoftAnaplanResponse runDeleteAction(Model model,
+			String actionId, String logContext) throws AnaplanAPIException {
 
 		final Action action = model.getAction(actionId);
 
 		if (action == null) {
 			final String msg = UserMessages.getMessage("invalidAction",
 					actionId);
-			return MulesoftAnaplanResponse.executeActionFailure(msg, null, logContext);
+			return MulesoftAnaplanResponse.executeActionFailure(msg, null,
+					logContext);
 		}
 
 		final Task task = action.createTask();
@@ -88,10 +89,11 @@ public class AnaplanDeleteOperation extends BaseAnaplanOperation {
 	 * Performs a Deletion of records by executing the delete-action
 	 * specified by the deleteId.
 	 *
-	 * @param workspaceId
-	 * @param modelId
-	 * @param deleteActionId
-	 * @throws AnaplanOperationException
+	 * @param workspaceId Anaplan Workspace ID
+	 * @param modelId Anaplan Model ID.
+	 * @param deleteActionId Delete action ID.
+	 * @throws AnaplanOperationException Rethrown as internal exception
+	 * 		capturing AnaplanAPIException.
 	 */
 	public String runDeleteAction(String workspaceId, String modelId,
 			String deleteActionId) throws AnaplanOperationException {

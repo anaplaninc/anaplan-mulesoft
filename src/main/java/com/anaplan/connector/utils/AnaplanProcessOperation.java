@@ -35,7 +35,7 @@ public class AnaplanProcessOperation extends BaseAnaplanOperation {
 	/**
 	 * Constructor.
 	 *
-	 * @param apiConn
+	 * @param apiConn Anaplan API connection object.
 	 */
 	public AnaplanProcessOperation(AnaplanConnection apiConn) {
 		super(apiConn);
@@ -45,11 +45,12 @@ public class AnaplanProcessOperation extends BaseAnaplanOperation {
 	 * Runs/Executes an Anaplan Process using the provided model, process-ID and
 	 * log-context.
 	 *
-	 * @param model
-	 * @param processId
-	 * @param logContext
-	 * @return
-	 * @throws AnaplanAPIException
+	 * @param model Anaplan Model object.
+	 * @param processId Anaplan Process ID.
+	 * @param logContext Log context for Process operations.
+	 * @return Anaplan response object with execution details.
+	 * @throws AnaplanAPIException thrown if fetching the process or creating the task
+	 *                             to run the process is met with failure.
 	 */
 	private MulesoftAnaplanResponse runProcessTask(Model model, String processId,
 			String logContext) throws AnaplanAPIException {
@@ -86,11 +87,11 @@ public class AnaplanProcessOperation extends BaseAnaplanOperation {
 	 * Triggers execution of an Anaplan process, collects the failure dump if
 	 * any and returns it.
 	 *
-	 * @param workspaceId
-	 * @param modelId
-	 * @param processId
-	 * @return
-	 * @throws AnaplanOperationException
+	 * @param workspaceId Anaplan workspace ID
+	 * @param modelId Anaplan Model ID
+	 * @param processId Anaplan Process ID
+	 * @return Status message string for running process.
+	 * @throws AnaplanOperationException thrown if runProcessTask() met with failure.
 	 */
 	public String runProcess(String workspaceId, String modelId,
 			String processId) throws AnaplanOperationException {

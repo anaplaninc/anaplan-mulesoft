@@ -72,14 +72,12 @@ public class AnaplanConnection {
 	/**
 	 * Constructor.
 	 *
-	 * @param isCertificate
-	 * 				If set to true then just use certificate for authentication.
-	 * 				If false, then we are using basic authentication and so just
-	 * 				need username and password.
-	 * @param credentials
-	 * 				String[] of credential values, which includes the username,
-	 * 				password, API url, certificate path and proxy URL and their
-	 * 				credentials if using this connector behind a firewall.
+	 * @param isCertificate If set to true then just use certificate for
+     *      authentication. If false, then we are using basic authentication and
+     *      so just need username and password.
+	 * @param credentials String[] of credential values, which includes the
+     *      username, password, API url, certificate path and proxy URL and
+     *      their credentials if using this connector behind a firewall.
 	 */
 	public AnaplanConnection(boolean isCertificate, String... credentials) {
 		LogUtil.debug("NOTICE: ", credentials[0] + " @ " + credentials[2]);
@@ -105,7 +103,7 @@ public class AnaplanConnection {
 	 * Getter for the connection ID, which is the string representation of this
 	 * object.
 	 *
-	 * @return
+	 * @return Connection ID string.
 	 */
 	public String getConnectionId() {
 		return this.toString();
@@ -117,10 +115,10 @@ public class AnaplanConnection {
 	 * returns it. To view the certificate contents on the command line, do:
 	 * $ openssl x509 -in /path/to/certificate/file.cer -inform der -text -noout
 	 *
-	 * @param certificateLocation
-	 * @param password
-	 * @return
-	 * @throws AnaplanConnectionException
+	 * @param certificateLocation Location on file system of login certificate.
+	 * @return X509Certificate object containing user certificate details.
+	 * @throws AnaplanConnectionException Thrown if any sort of Certificate
+	 *      parsing exception occurs.
 	 */
 	public X509Certificate readCertificate(String certificateLocation)
 					throws AnaplanConnectionException {
@@ -160,13 +158,11 @@ public class AnaplanConnection {
 	/**
 	 * Opens a service for accessing anaplan workspaces with this connection's
 	 * API endpoint and credentials.
-	 *
+
 	 * @return The service object that contains workspace/model details for the
-	 *         authenticated user.
-	 *
-	 * @throws AnaplanConnectionException
-	 *             If there was an error with the service or any or the required
-	 *             properties.
+	 *      authenticated user.
+	 * @throws AnaplanConnectionException If there was an error with the service
+     *      or any or the required properties.
 	 */
 	private Service cacheService() throws AnaplanConnectionException {
 		LogUtil.debug(getLogContext(), "trying Anaplan service connection...");

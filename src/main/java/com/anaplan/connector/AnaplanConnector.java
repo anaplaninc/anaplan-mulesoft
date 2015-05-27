@@ -55,7 +55,7 @@ public class AnaplanConnector {
 
 	/**
 	 * Getter for connectionStrategy.
-	 * @return
+	 * @return Certificate or Basic connection strategy.
 	 */
 	public BaseConnectionStrategy getConnectionStrategy() {
         return this.connectionStrategy;
@@ -63,7 +63,7 @@ public class AnaplanConnector {
 
 	/**
 	 * Setter for connectionStrategy
-	 * @param connStrategy
+	 * @param connStrategy Basic or Certificate connection strategy.
 	 */
     public void setConnectionStrategy(BaseConnectionStrategy connStrategy) {
         this.connectionStrategy = connStrategy;
@@ -73,7 +73,7 @@ public class AnaplanConnector {
      * Reads in CSV data that represents an Anaplan model, delimited by the
 	 * provided delimiter, parses it, then loads it into an Anaplan model.
 	 *
-	 * {@sample.xml ../../../doc/anaplan-connector.xml.sample anaplan:importToModel}
+	 * {@sample.xml ../../../doc/anaplan-connector.xml.sample anaplan:import-to-model}
      *
      * @param data Stringified CSV data that is to be imported into Anaplan.
      * @param workspaceId Anaplan workspace ID.
@@ -113,7 +113,7 @@ public class AnaplanConnector {
 	 * hence a check needs to be made to verify if the current connectionStrategy
 	 * exists. If not, re-establish it by calling .openConnection().
 	 *
-	 * {@sample.xml ../../../doc/anaplan-connector.xml.sample anaplan:exportFromModel}
+	 * {@sample.xml ../../../doc/anaplan-connector.xml.sample anaplan:export-from-model}
 	 *
 	 * @param workspaceId Anaplan workspace ID.
 	 * @param modelId Anaplan model ID.
@@ -142,7 +142,7 @@ public class AnaplanConnector {
 	/**
 	 * Deletes data from a model by executing the respective delete action.
 	 *
-	 * {@sample.xml ../../../doc/anaplan-connector.xml.sample anaplan:deleteFromModel}
+	 * {@sample.xml ../../../doc/anaplan-connector.xml.sample anaplan:delete-from-model}
 	 *
 	 * @param workspaceId Anaplan workspace ID.
 	 * @param modelId Anaplan model ID.
@@ -172,15 +172,15 @@ public class AnaplanConnector {
 	 * Runs a specific Anaplan Process, which could be a multitude of actions
 	 * represented as a single Anaplan process.
 	 *
-	 * {@sample.xml ../../../doc/anaplan-connector.xml.sample anaplan:runProcess}
+	 * {@sample.xml ../../../doc/anaplan-connector.xml.sample anaplan:run-process}
 	 *
 	 * @param workspaceId Anaplan workspace ID against which to run the process.
 	 * @param modelId Anaplan model ID against which to run the process.
 	 * @param processId Anaplan process ID
 	 * @return Status response string of running the process, along with any
-	 * 						   failure dump strings as applicable.
-	 * @throws AnaplanConnectionException
-	 * @throws AnaplanOperationException
+	 * 		failure dump strings as applicable.
+	 * @throws AnaplanConnectionException Thrown when if API connection errors out.
+	 * @throws AnaplanOperationException Thrown when the Process operation fails.
 	 */
 	@Processor(friendlyName="Process")
 	public String runProcess(
