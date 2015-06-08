@@ -16,26 +16,18 @@
 
 package com.anaplan.connector.utils;
 
+import com.anaplan.client.*;
+import com.anaplan.connector.MulesoftAnaplanResponse;
+import com.anaplan.connector.connection.AnaplanConnection;
+import com.anaplan.connector.exceptions.AnaplanOperationException;
+import com.google.gson.JsonSyntaxException;
+
 import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
-
-import com.anaplan.client.AnaplanAPIException;
-import com.anaplan.client.CellWriter;
-import com.anaplan.client.Import;
-import com.anaplan.client.Model;
-import com.anaplan.client.ServerFile;
-import com.anaplan.client.Task;
-import com.anaplan.client.TaskResult;
-import com.anaplan.client.TaskStatus;
-import com.anaplan.connector.MulesoftAnaplanResponse;
-import com.anaplan.connector.connection.AnaplanConnection;
-import com.anaplan.connector.exceptions.AnaplanOperationException;
-import com.google.gson.JsonSyntaxException;
 
 
 /**
@@ -49,7 +41,7 @@ public class AnaplanImportOperation extends BaseAnaplanOperation{
 
 	/**
 	 * Constructor
-	 * @param conn
+	 * @param apiConn, Anaplan API connection object.
 	 */
 	public AnaplanImportOperation(AnaplanConnection apiConn) {
 		super(apiConn);
@@ -57,11 +49,12 @@ public class AnaplanImportOperation extends BaseAnaplanOperation{
 
 	/**
 	 * Creates the regex to split CSV lines with provided column-separator and
-	 * delimiter. This is esepcially useful when escape quotes are used for
+	 * delimiter. This is especially useful when escape quotes are used for
 	 * cell values.
 	 *
-	 * @param delimiter
-	 * @return
+	 * @param columnSeparator, Character to separate columns in CSV.
+	 * @param delimiter, Escape character for cell values, usually double-quotes.
+	 * @return Delimiter regex based on provided column-separator and delimiter.
 	 */
 	private static String generateDelimiterRegex(String columnSeparator,
 			String delimiter) {
@@ -74,9 +67,10 @@ public class AnaplanImportOperation extends BaseAnaplanOperation{
 	 * Import Data Parser: splits import data by new-lines, then for each row,
 	 * splits by the provided column-separator and escape delimiter.
 	 *
-	 * @param is
-	 * @param rowCount
-	 * @param columnSeperator
+	 * @param is, Input stream from Mulesoft ESB.
+	 * @param rowCount, Number of rows in import data stream.
+	 * @param columnSeparator, Column separator for CSV data stream.
+	 * @param delimiter, Escape character for cell values, usually double-quotes.
 	 * @return Array of rows properly escaped.
 	 * @throws IOException
 	 */
@@ -111,19 +105,20 @@ public class AnaplanImportOperation extends BaseAnaplanOperation{
 	 * monitor's the status until the import completes successfully and responds
 	 * the status (failed/succeeded) via an AnaplanResponse object.
 	 *
-	 * @param data
-	 * @param model
-	 * @param importId
-	 * @param delimiter
+	 * @param data, InputStream data.
+	 * @param model, Model to import the data to.
+	 * @param importId, Import action ID for import operation.
+	 * @param columnSeparator, Character to separate columns
+	 * @param delimiter, Escape character for cell values.
 	 * @throws AnaplanAPIException
 	 * @throws JsonSyntaxException
 	 * @throws IOException
 	 */
-	private static MulesoftAnaplanResponse runImportCsv(String data, Model model,
-			String importId, String columnSeparator, String delimiter,
-			String logContext)
+	private static MulesoftAnaplanResponse runImportCsv(InputStream data,
+			Model model, String importId, String columnSeparator,
+			String delimiter, String logContext)
 					throws AnaplanAPIException, JsonSyntaxException,
-					IOException {
+						   IOException {
 
 		// 1. Write the provided CSV data to the data-writer.
 
@@ -143,8 +138,7 @@ public class AnaplanImportOperation extends BaseAnaplanOperation{
 			serverFile.setDelimiter(delimiter);
 
 			int rowCount = 0;
-			InputStream is = new ByteArrayInputStream(data.getBytes());
-			List<String[]> rows = parseImportData(is, rowCount, columnSeparator,
+			List<String[]> rows = parseImportData(data, rowCount, columnSeparator,
 					delimiter);
 
 			// get the data-writer and write data to it, i.e. serverFile by
@@ -201,12 +195,16 @@ public class AnaplanImportOperation extends BaseAnaplanOperation{
 	/**
 	 * Imports a model using the provided workspace-ID, model-ID and Import-ID.
 	 *
-	 * @param workspaceId
-	 * @param modelId
-	 * @param importId
+	 * @param data, InputStream data.
+	 * @param workspaceId, Anaplan workspace ID.
+	 * @param modelId, Anaplan Model ID.
+	 * @param importId, Anaplan Import action ID.
+	 * @param columnSeparator, Column separator character for CSV.
+	 * @param delimiter, Escape characters for escaping cell values.
+	 * @return Status message from server of import operation.
 	 * @throws AnaplanOperationException
 	 */
-	public String runImport(String data, String workspaceId, String modelId,
+	public String runImport(InputStream data, String workspaceId, String modelId,
 			String importId, String columnSeparator, String delimiter)
 					throws AnaplanOperationException {
 
@@ -224,8 +222,9 @@ public class AnaplanImportOperation extends BaseAnaplanOperation{
 		try {
 			LogUtil.status(importLogContext, "Starting import: " + importId);
 
-			final MulesoftAnaplanResponse anaplanResponse = runImportCsv(data, model,
-					importId, columnSeparator, delimiter, importLogContext);
+			final MulesoftAnaplanResponse anaplanResponse = runImportCsv(data,
+					model, importId, columnSeparator, delimiter,
+					importLogContext);
 			anaplanResponse.writeImportData(apiConn, importId, importLogContext);
 
 			LogUtil.status(importLogContext, "Import complete: Status: "

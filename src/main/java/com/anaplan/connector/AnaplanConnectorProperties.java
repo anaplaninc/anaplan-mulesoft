@@ -33,6 +33,10 @@ public class AnaplanConnectorProperties {
 
 	private final HashMap<String, String> connectorProperties;
 
+	public AnaplanConnectorProperties() {
+		connectorProperties = new HashMap<String, String>();
+	}
+
 	/**
 	 * @param fieldValues
 	 * 		      List of values to be used for developing the connector
@@ -41,12 +45,9 @@ public class AnaplanConnectorProperties {
 	 * 			  Optionally, any fields which are mandatory, and cannot have
 	 *            null or empty-string values.
 	 */
-	public AnaplanConnectorProperties() {
-		connectorProperties = new HashMap<String, String>();
-	}
-
 	public void setProperties(String[] fieldValues,
-			String... requiredPropertyFields) throws ConnectorPropertiesException {
+							  String... requiredPropertyFields)
+									  throws ConnectorPropertiesException {
 		if (requiredPropertyFields != null) {
 			if (fieldValues.length == requiredPropertyFields.length) {
 				for (int i = 0; i < requiredPropertyFields.length; i++) {
@@ -66,7 +67,7 @@ public class AnaplanConnectorProperties {
 	/**
 	 * Retrieve any required or optional property.
 	 *
-	 * @param propertyField
+	 * @param propertyField, Property key name stored in this object.
 	 * @return value of the given property, or
 	 *         {@value #REQUIRED_PROPERTY_NOT_FOUND}
 	 */
