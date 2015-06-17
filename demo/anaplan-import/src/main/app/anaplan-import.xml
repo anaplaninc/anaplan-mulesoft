@@ -10,7 +10,7 @@ http://www.mulesoft.org/schema/mule/anaplan http://www.mulesoft.org/schema/mule/
 http://www.mulesoft.org/schema/mule/ee/tracking http://www.mulesoft.org/schema/mule/ee/tracking/current/mule-tracking-ee.xsd">
     <anaplan:cert-auth-connection name="Anaplan__Certificate_Authentication" certificatePath="${anaplan.certificatePath}" url="${anaplan.apiUrl}" doc:name="Anaplan: Certificate Authentication"/>
     <file:connector name="File" readFromDirectory="${file.readFromDir}" autoDelete="true" streaming="true" validateConnections="true" doc:name="File"/>
-    <flow name="product-importFlow">
+    <flow name="anaplan-importFlow">
         <file:inbound-endpoint path="${file.readFromDir}" moveToDirectory="${file.moveToDir}" connector-ref="File" responseTimeout="10000" doc:name="File"/>
         <anaplan:import-to-model config-ref="Anaplan__Certificate_Authentication" importId="${anaplan.importId}" modelId="${anaplan.modelId}" workspaceId="${anaplan.workspaceId}" doc:name="Anaplan" columnSeparator="${anaplan.columnSeparator}" delimiter="${anaplan.delimiter}"/>
     </flow>
