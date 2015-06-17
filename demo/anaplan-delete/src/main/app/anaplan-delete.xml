@@ -7,7 +7,7 @@
 http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
 http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
 http://www.mulesoft.org/schema/mule/anaplan http://www.mulesoft.org/schema/mule/anaplan/current/mule-anaplan.xsd">
-    <http:listener-config name="HTTP_Listener_Configuration" host="0.0.0.0" port="8081" doc:name="HTTP Listener Configuration"/>
+    <http:listener-config name="HTTP_Listener_Configuration" host="localhost" port="8081" doc:name="HTTP Listener Configuration"/>
     <anaplan:cert-auth-connection name="Anaplan__Certificate_Authentication" certificatePath="${anaplan.certificatePath}" url="${anaplan.apiUrl}" doc:name="Anaplan: Certificate Authentication"/>
     <flow name="anaplan-deleteFlow">
         <http:listener config-ref="HTTP_Listener_Configuration" path="/" doc:name="HTTP"/>
