@@ -1,41 +1,41 @@
-<!-- BEGIN_INCLUDE(anaplan:config-auth-basic) -->
-	<anaplan:config-auth-basic 
-		name="anaplan-default-auth" 
-		username="someUserName"
-		password="somePassword" />
-<!-- END_INCLUDE(anaplan:config-auth-basic) -->
+<!-- BEGIN_INCLUDE(anaplan:certificate-authentication) -->
+    <anaplan:cert-auth-connection
+        name="Anaplan__Certificate_Authentication"
+        certificatePath="${anaplan.certificatePath}"
+        url="${anaplan.apiUrl}"
+        doc:name="Anaplan: Certificate Authentication"/>
+<!-- END_INCLUDE(anaplan:certificate-authentication) -->
 
-<!-- BEGIN_INCLUDE(anaplan:config-auth-cert) -->
-	<anaplan:config-auth-cert name="anaplan-cert-auth" ... />
-<!-- END_INCLUDE(anaplan:config-auth-cert) -->
+<!-- BEGIN_INCLUDE(anaplan:import-to-model) -->
+	<anaplan:import-to-model
+        config-ref="Anaplan__Certificate_Authentication"
+		workspaceId="Anaplan Workspace UUID"
+		modelId="Anaplan Model UUID"
+		importId="Anaplan Import Action UUID"
+		columnSeparator=","
+		delimiter="'" />
+<!-- END_INCLUDE(anaplan:import-to-model) -->
 
-<!-- BEGIN_INCLUDE(anaplan:importToModel) -->
-	<anaplan:importToModel
-		data="#[header:data]" 
-		workspaceId="#[header:workspaceId]" 
-		modelId="#[header:modelId]" 
-		importId="#[header:importId]" 
-		columnSeparator="#[header:columnSeparator]" 
-		delimiter="#[header:delimiter]" />
-<!-- END_INCLUDE(anaplan:importToModel) -->
+<!-- BEGIN_INCLUDE(anaplan:export-from-model) -->
+	<anaplan:export-from-model
+        config-ref="Anaplan__Certificate_Authentication"
+		workspaceId="Anaplan Workspace UUID"
+		modelId="Anaplan Model UUID"
+		exportId="Anaplan Export action UUID" />
+<!-- END_INCLUDE(anaplan:export-from-model) -->
 
-<!-- BEGIN_INCLUDE(anaplan:exportFromModel) -->
-	<anaplan:exportFromModel
-		workspaceId="#[header:workspaceId]" 
-		modelId="#[header:modelId]" 
-		exportId="#[header:exportId]" />
-<!-- END_INCLUDE(anaplan:exportFromModel) -->
+<!-- BEGIN_INCLUDE(anaplan:delete-from-model) -->
+	<anaplan:delete-from-model
+        config-ref="Anaplan__Certificate_Authentication"
+		workspaceId="Anaplan Workspace UUID"
+		modelId="Anaplan Model UUID"
+		deleteActionId="Anaplan Delete action UUID" />
+<!-- END_INCLUDE(anaplan:delete-from-model) -->
 
-<!-- BEGIN_INCLUDE(anaplan:deleteFromModel) -->
-	<anaplan:executeAction
-		workspaceId="#[header:workspaceId]" 
-		modelId="#[header:modelId]" 
-		actionId="#[header:deleteActionId]" />
-<!-- END_INCLUDE(anaplan:deleteFromModel) -->
-
-<!-- BEGIN_INCLUDE(anaplan:runProcess) -->
-	<anaplan:runProcess
-		workspaceId="#[header:workspaceId]" 
-		modelId="#[header:modelId]" 
-		actionId="#[header:processId]" />
-<!-- END_INCLUDE(anaplan:runProcess) -->
+<!-- BEGIN_INCLUDE(anaplan:run-process) -->
+	<anaplan:run-process
+        config-ref="Anaplan__Certificate_Authentication"
+		workspaceId="#[header:workspaceId]"
+		modelId="#[header:modelId]"
+		processId="#[header:processId]" />
+<!-- END_INCLUDE(anaplan:run-process) -->

@@ -49,7 +49,7 @@ public class AnaplanImportOperation extends BaseAnaplanOperation{
 
 	/**
 	 * Constructor
-	 * @param conn
+	 * @param apiConn Anaplan API Connection object
 	 */
 	public AnaplanImportOperation(AnaplanConnection apiConn) {
 		super(apiConn);
@@ -60,8 +60,9 @@ public class AnaplanImportOperation extends BaseAnaplanOperation{
 	 * delimiter. This is esepcially useful when escape quotes are used for
 	 * cell values.
 	 *
-	 * @param delimiter
-	 * @return
+	 * @param columnSeparator column separator character, should be delimiter
+	 * @param delimiter Escape character
+	 * @return Regex string to be used to parse string data file.
 	 */
 	private static String generateDelimiterRegex(String columnSeparator,
 			String delimiter) {
@@ -74,11 +75,12 @@ public class AnaplanImportOperation extends BaseAnaplanOperation{
 	 * Import Data Parser: splits import data by new-lines, then for each row,
 	 * splits by the provided column-separator and escape delimiter.
 	 *
-	 * @param is
-	 * @param rowCount
-	 * @param columnSeperator
+	 * @param is Input stream object containing import data.
+	 * @param rowCount Number of rows of data
+	 * @param columnSeparator Column separator character.
 	 * @return Array of rows properly escaped.
-	 * @throws IOException
+	 * @throws IOException To capture any exception when reading in data to
+     *                     buffered reader object.
 	 */
 	private static List<String[]> parseImportData(InputStream is, int rowCount,
 			String columnSeparator, String delimiter) throws IOException {
@@ -111,19 +113,18 @@ public class AnaplanImportOperation extends BaseAnaplanOperation{
 	 * monitor's the status until the import completes successfully and responds
 	 * the status (failed/succeeded) via an AnaplanResponse object.
 	 *
-	 * @param data
-	 * @param model
-	 * @param importId
-	 * @param delimiter
-	 * @throws AnaplanAPIException
-	 * @throws JsonSyntaxException
-	 * @throws IOException
+	 * @param data Import CSV data
+	 * @param model Model object to which to import to
+	 * @param importId Import action ID
+	 * @param delimiter Escape character for cell values.
+	 * @throws AnaplanAPIException Thrown when Anaplan API operation fails.
+	 * @throws IOException Thrown when an error is encountered when writing to
+     *                     cell data writer.
 	 */
 	private static MulesoftAnaplanResponse runImportCsv(String data, Model model,
 			String importId, String columnSeparator, String delimiter,
 			String logContext)
-					throws AnaplanAPIException, JsonSyntaxException,
-					IOException {
+					throws AnaplanAPIException, IOException {
 
 		// 1. Write the provided CSV data to the data-writer.
 
@@ -168,11 +169,10 @@ public class AnaplanImportOperation extends BaseAnaplanOperation{
 		final Task task = imp.createTask();
 		final TaskStatus status = AnaplanUtil.runServerTask(task, logContext);
 
-		final StringBuilder taskDetails = new StringBuilder();
-		taskDetails.append(collectTaskLogs(status));
-		taskDetails.append("Import completed successfully: (" + rowsProcessed
-				 + " records processed)");
-		setRunStatusDetails(taskDetails.toString());
+        String taskDetailsMsg = collectTaskLogs(status) +
+                "Import completed successfully: (" + rowsProcessed +
+                " records processed)";
+		setRunStatusDetails(taskDetailsMsg);
 		LogUtil.status(logContext, getRunStatusDetails());
 
 		// 3. Determine execution status and create response.
@@ -201,10 +201,11 @@ public class AnaplanImportOperation extends BaseAnaplanOperation{
 	/**
 	 * Imports a model using the provided workspace-ID, model-ID and Import-ID.
 	 *
-	 * @param workspaceId
-	 * @param modelId
-	 * @param importId
-	 * @throws AnaplanOperationException
+	 * @param workspaceId Anaplan Workspace ID
+	 * @param modelId Anaplan Model ID
+	 * @param importId Anaplan Import ID
+	 * @throws AnaplanOperationException Internal operation exception thrown to
+     *     capture any IOException, JsonSyntaxException or AnaplanAPIException.
 	 */
 	public String runImport(String data, String workspaceId, String modelId,
 			String importId, String columnSeparator, String delimiter)
@@ -226,7 +227,7 @@ public class AnaplanImportOperation extends BaseAnaplanOperation{
 
 			final MulesoftAnaplanResponse anaplanResponse = runImportCsv(data, model,
 					importId, columnSeparator, delimiter, importLogContext);
-			anaplanResponse.writeImportData(apiConn, importId, importLogContext);
+			anaplanResponse.writeImportData(apiConn, importId);
 
 			LogUtil.status(importLogContext, "Import complete: Status: "
 					+ anaplanResponse.getStatus() + ", Response message: "

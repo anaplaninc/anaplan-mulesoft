@@ -48,12 +48,14 @@ public class CertAuthConnectionStrategy extends BaseConnectionStrategy {
 	 * path is provided and the file is loaded into a Java Keystore and loaded
 	 * into a X509Certificate object for use.
 	 *
-	 * @param certificatePath
-	 * @param url
-	 * @param proxyHost
-	 * @param proxyUser
-	 * @param proxyPass
-	 * @throws org.mule.api.ConnectionException
+	 * @param certificatePath Filepath to certificate on local filesystem
+	 * @param url API URL.
+	 * @param proxyHost Proxy username if behind firewall.
+	 * @param proxyUser Proxy username to get through firewall.
+	 * @param proxyPass Proxy password to get through firewall.
+	 * @throws org.mule.api.ConnectionException Whenever the connection to API
+	 * 		fails due to expired certificate or invalid API endpoint or proxy
+     * 	    details.
 	 */
 	@Connect
 	@TestConnectivity

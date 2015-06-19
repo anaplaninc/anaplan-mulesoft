@@ -1,0 +1,43 @@
+= Anaplan Connector for Mulesoft Release Notes 
+26-May-2015
+
+Release Notes for Version 1.1.1 of the Anaplan Connector for Mulesoft. These Release Notes accompany the Anaplan Connector for MuleSoft Guide at https://github.com/anaplaninc/anaplan-mulesoft/raw/develop_3.6/doc/AnaplanConnectorforMuleSoft-Guide.pdf
+
+== Contents
+
+Compatibility Features Fixed in this Release Known Issues Support Resources
+
+== Compatibility 
+
+The Anaplan Connector for Mulesoft is compatible with:
+
+* Mule Version 3.5 and higher
+* Anypoint Studio 5 or higher
+
+== Features 
+
+For building a flow that performs any of the following:
+
+* Export - Exports Lists, Line-Items, Modules from Anaplan.
+* Import - Import Lists, Line-Items, Modules into Anaplan
+* Delete - Execute Action (a delete)
+* Process - contains multiple model-to-model Import actions, or multiple Delete actions
+
+== Fixed in this Release
+
+Release Notes Missing - Release Notes have been added. Anaplan Connector for MuleSoft Guide Did Not Mention Process - The Guide has been updated. ReadMe Did Not Mention Process - The ReadMe has been updated.
+
+== Known Issues 
+
+A Process has the following limitations:
+
+* Multiple imports must be model-to-model rather than from a source or file that is external to Anaplan.
+* Multiple exports are not supported. The workaround for these limitations is to use Anaplan Connect.
+
+== Support Resources
+
+* Anaplan REST API for Integration and User Administration at https://community.anaplan.com/anapedia/integrations/data-integration/anaplan-api-guide 
+
+* Anaplan REST API for Integration and User Administration at http://docs.anaplan.apiary.io/# 
+
+* We welcome enhancement requests and bug reports at https://github.com/anaplaninc/anaplan-mulesoft/issues.
