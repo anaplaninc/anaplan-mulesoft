@@ -23,6 +23,8 @@ Anaplan Connect is a command-line tool for Import, Export, Delete, and Processes
 batch files and allows automated scheduling on the operating system scheduling tool. The Anaplan Connector is an alternative to Anaplan
 Connect, except that for Processes, the Anaplan Connector for Mulesoft is limited to model-to-model Import actions and Delete actions.
 
+NOTE: Demo flows have been added for Import, Export, and Delete. For details, see AnaplanConnectorforMulesoft.PDF, which is available from https://github.com/anaplaninc/anaplan-mulesoft/tree/master/doc
+
 == Mulesoft Prerequisites
 
 - User is familiar with the Mulesoft Anypoint platform.
