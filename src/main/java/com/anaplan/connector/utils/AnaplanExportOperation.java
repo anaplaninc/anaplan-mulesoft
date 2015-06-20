@@ -39,7 +39,7 @@ public class AnaplanExportOperation extends BaseAnaplanOperation {
 
 	/**
 	 * Constructor
-	 * @param apiConn
+	 * @param apiConn Anaplan API connection
 	 */
 	public AnaplanExportOperation(AnaplanConnection apiConn) {
 		super(apiConn);
@@ -48,15 +48,15 @@ public class AnaplanExportOperation extends BaseAnaplanOperation {
 	/**
 	 * Performs the Model export operation.
 	 *
-	 * @param model
-	 * @param exportId
-	 * @param logContext
+	 * @param model Anaplan Model object.
+	 * @param exportId Anaplan Export ID
+	 * @param logContext Export log context
 	 * @return <code>AnaplanResponse</code> object.
-	 * @throws IOException
-	 * @throws AnaplanAPIException
+	 * @throws AnaplanAPIException Thrown when error creating export task, or
+	 *                             running it, or when building the response
 	 */
 	private static MulesoftAnaplanResponse doExport(Model model, String exportId,
-			String logContext) throws IOException, AnaplanAPIException {
+			String logContext) throws AnaplanAPIException {
 
 		final Export exp = model.getExport(exportId);
 		if (exp == null) {
@@ -93,10 +93,10 @@ public class AnaplanExportOperation extends BaseAnaplanOperation {
 	/**
 	 * Exports a model as a CSV using the provided workspace-ID, model-ID and
 	 * the export-ID.
-	 * @param workspaceId
-	 * @param modelId
-	 * @param exportId
-	 * @return
+	 * @param workspaceId Anaplan Workspace ID
+	 * @param modelId Anaplan Model ID
+	 * @param exportId Anaplan Export action ID
+	 * @return Export string message from running export action.
 	 * @throws AnaplanOperationException
 	 */
 	public String runExport(String workspaceId, String modelId, String exportId)
@@ -117,8 +117,7 @@ public class AnaplanExportOperation extends BaseAnaplanOperation {
 		try {
 			final MulesoftAnaplanResponse anaplanResponse = doExport(model,
 					exportId, exportLogContext);
-			response = anaplanResponse.writeExportData(apiConn, exportId,
-					logContext);
+			response = anaplanResponse.writeExportData(apiConn);
 			LogUtil.status(logContext, "Query complete: Status: "
 					+ anaplanResponse.getStatus() + ", Response message: "
 					+ anaplanResponse.getResponseMessage());

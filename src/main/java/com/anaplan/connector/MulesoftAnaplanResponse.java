@@ -52,13 +52,13 @@ public class MulesoftAnaplanResponse implements Serializable {
 
 	/**
 	 * Constructor.
-	 *
-	 * @param responseMessage
-	 * @param status
-	 * @param serverFile
-	 * @param exportMetaData
-	 * @param failureCause
-	 * @param logContext
+     *
+	 * @param responseMessage Response message, usually export data.
+	 * @param status status object.
+	 * @param serverFile ServerFile object returned from API.
+	 * @param exportMetaData Meta data for Export data.
+	 * @param failureCause Any server error during exporting data.
+	 * @param logContext Log context when building responses.
 	 */
 	private MulesoftAnaplanResponse(String responseMessage, OperationStatus status,
 			ServerFile serverFile, ExportMetadata exportMetaData,
@@ -73,45 +73,69 @@ public class MulesoftAnaplanResponse implements Serializable {
 		LogUtil.status(logContext, "created " + this.toString());
 	}
 
+    /** Getters */
+    public OperationStatus getStatus() {
+        return status;
+    }
+
+    public String getResponseMessage() {
+        return responseMessage;
+    }
+
+    public ServerFile getServerFile() {
+        return serverFile;
+    }
+
+    public ExportMetadata getExportMetadata() {
+        return exportMetadata;
+    }
+
+    public String getLogContext() {
+        return logContext;
+    }
+
+    public Throwable getException() {
+        return exception;
+    }
+
 	/**
 	 * Uses the server cell-reader handler to read the server response contents
 	 * and then write it to a string-buffer to be returned as a response.
-	 *
-	 * @param cellReader
-	 * @param isStreaming
-	 * @param logContext
+     *
+	 * @param cellReader CellReader object to write server response.
+	 * @param logContext Log context for write data to the provided cell-reader.
 	 * @return The string response.
-	 * @throws AnaplanAPIException
-	 * @throws IOException
+	 * @throws AnaplanAPIException Exception thrown when reading rows of data.
+	 * @throws IOException Exception thrown when reading rows of data.
 	 */
-	private String writeResponse(CellReader cellReader, boolean isStreaming,
-			String logContext) throws AnaplanAPIException, IOException {
+	private String writeResponse(CellReader cellReader, String logContext)
+            throws AnaplanAPIException, IOException {
 
-		final StringBuffer sb = new StringBuffer();
+		String stringBuffer = "";
 		final String header = cellReader.getWholeHeaderRow() + "\n";
 		LogUtil.debug(logContext, header);
 
 		// write response to string-buffer
-		sb.append(header);
+		stringBuffer += header;
 		String dataLine = cellReader.readWholeDataRow();
 		while (dataLine != null) {
 			dataLine += "\n";
 			LogUtil.trace(logContext, dataLine);
-			sb.append(dataLine);
+			stringBuffer += dataLine;
 			dataLine = cellReader.readWholeDataRow();
 		}
 		LogUtil.debug(logContext, "finished writing file");
-		return sb.toString();
+		return stringBuffer;
 	}
 
 	/**
 	 * Finalizes the result sent back from the server and returns it as a
 	 * string.
-	 *
-	 * @param serverFile
-	 * @param logContext
-	 * @throws IOException
-	 * @throws AnaplanAPIException
+     *
+	 * @param serverFile ServerFile object.
+	 * @param logContext Log context for creating response operation.
+	 * @throws IOException Exception thrown when reading rows of data.
+	 * @throws AnaplanAPIException Exception thrown when reading rows of data.
 	 */
 	private String responseServerFile(ServerFile serverFile, String logContext)
 			throws IOException, AnaplanAPIException {
@@ -123,46 +147,20 @@ public class MulesoftAnaplanResponse implements Serializable {
 			LogUtil.debug(logContext,
 					getExportMetadata().collectExportFileInfo());
 		}
-		return writeResponse(cellReader, true, logContext);
-	}
-
-	public OperationStatus getStatus() {
-		return status;
-	}
-
-	public String getResponseMessage() {
-		return responseMessage;
-	}
-
-	public ServerFile getServerFile() {
-		return serverFile;
-	}
-
-	public ExportMetadata getExportMetadata() {
-		return exportMetadata;
-	}
-
-	public String getLogContext() {
-		return logContext;
-	}
-
-	public Throwable getException() {
-		return exception;
+		return writeResponse(cellReader, logContext);
 	}
 
 	/**
 	 * Writes the import data to Anaplan using the provided Import-ID and
 	 * connStrategy.
-	 *
-	 * @param connStrategy
-	 * @param importId
-	 * @param logContext
-	 * @throws IOException
-	 * @throws AnaplanAPIException
-	 * @throws Throwable
+     *
+	 * @param connection Anaplan API connection object.
+	 * @param importId Import action ID.
+     * @throws AnaplanOperationException When server-file API object fails to import.
+	 * @throws IOException When server-file API object fails to import.
+	 * @throws AnaplanAPIException When server-file API object fails to import.
 	 */
-	public void writeImportData(AnaplanConnection connection, String importId,
-								String logContext)
+	public void writeImportData(AnaplanConnection connection, String importId)
 										throws AnaplanOperationException,
 											   IOException,
 											   AnaplanAPIException {
@@ -185,17 +183,13 @@ public class MulesoftAnaplanResponse implements Serializable {
 	 * Reads the export-data from the registered Serverfile object and emits
 	 * the data as a string into the Mulesoft platform for the next
 	 * connector down the data-flow pipeline.
-	 *
-	 * @param connStrategy
-	 * @param exportId
-	 * @param logContext
-	 * @throws AnaplanAPIException
-	 * @throws IOException
+     *
+	 * @param connection Anaplan API connection object.
+	 * @throws IOException IO exception
+     * @throws AnaplanAPIException
 	 * @throws AnaplanOperationException
-	 * @throws Throwable
 	 */
-	public String writeExportData(AnaplanConnection connection, String exportId,
-								  String logContext)
+	public String writeExportData(AnaplanConnection connection)
 										  throws IOException,
 										  		 AnaplanAPIException,
 										  		 AnaplanOperationException {
@@ -212,31 +206,29 @@ public class MulesoftAnaplanResponse implements Serializable {
 
 	@Override
 	public String toString() {
-		final StringBuilder sb = new StringBuilder();
-		sb.append("AnaplanResponse with status ");
-		sb.append(this.status == null ? "null" : this.status.toString());
+		String strBuffer = "";
+		strBuffer += "AnaplanResponse with status ";
+		strBuffer += this.status == null ? "null" : this.status.toString();
 
-		sb.append("; message: ");
-		sb.append(this.responseMessage == null ? "null" : this.responseMessage);
+		strBuffer += "; message: ";
+		strBuffer += this.responseMessage == null ? "null" : this.responseMessage;
 
-		sb.append("; serverfile ");
-		sb.append(this.serverFile == null ? "null" : this.serverFile.getName());
+		strBuffer += "; serverfile ";
+		strBuffer += this.serverFile == null ? "null" : this.serverFile.getName();
 
-		sb.append("; exportmetadata: ");
-		sb.append(this.exportMetadata == null ? "null" : this.exportMetadata
-				.collectExportFileInfo());
+		strBuffer += "; exportmetadata: ";
+		strBuffer += this.exportMetadata == null ? "null" : this.exportMetadata
+				.collectExportFileInfo();
 
-		return sb.toString();
+		return strBuffer;
 	}
 
 	/**
 	 * Currently logs the error provided in 'reason' and creates a general
-	 * Log4j.error() message.
-	 *
-	 * @param response
-	 * @param request
-	 * @param connStrategy
-	 * @param reason
+     * Log4j.error() message.
+     *
+	 * @param connection Anaplan API connection
+	 * @param reason Reason description for failed response.
 	 */
 	public static void responseFail(AnaplanConnection connection, String reason) {
 		LogUtil.error(connection.getLogContext(), "Aborting operation for all "
@@ -248,12 +240,12 @@ public class MulesoftAnaplanResponse implements Serializable {
 	 * error is unknown and everything needs to be brought to a grinding halt.
 	 * In order to stop the flow, the Throwable is wrapped into a
 	 * AnaplanOperationException.
-	 *
-	 * @param connStrategy
-	 * @param e
-	 * @param reason
-	 * @throws AnaplanOperationException
-	 * @throws Throwable
+     *
+	 * @param connection Anaplan API connection.
+	 * @param e Throwable object containing Failure info
+	 * @param reason Reason for Epic Fail
+	 * @throws AnaplanOperationException Internal operation exception for
+     *      signalling epic fail.
 	 */
 	public static void responseEpicFail(AnaplanConnection connection,
 			Throwable e, String reason) throws AnaplanOperationException {
@@ -272,12 +264,12 @@ public class MulesoftAnaplanResponse implements Serializable {
 	/**
 	 * Success response constructor whenever an export operation succeeds.
 	 *
-	 * @param responseMessage
-	 * @param exportOutput
-	 * @param exportMetadata
-	 * @param logContext
-	 * @return
-	 * @throws IllegalArgumentException
+	 * @param responseMessage Response message from server for succesful export.
+	 * @param exportOutput Export output ServerFile object.
+	 * @param exportMetadata Export metadata.
+	 * @param logContext Log context for successful export.
+	 * @return Response object containing export data and details.
+	 * @throws IllegalArgumentException Thrown if null export output exists.
 	 */
 	public static MulesoftAnaplanResponse exportSuccess(String responseMessage,
 			ServerFile exportOutput, ExportMetadata exportMetadata,
@@ -298,12 +290,12 @@ public class MulesoftAnaplanResponse implements Serializable {
 	 * Failure response constructor for data exports from Anaplan, whenever a
 	 * failure is encountered during a data-export. Most likely thrown due to
 	 * invalid Workspace-ID, Model-ID or Export-action-ID.
-	 *
-	 * @param responseMessage
-	 * @param exportMetadata
-	 * @param cause
-	 * @param logContext
-	 * @return
+     *
+	 * @param responseMessage Response message for export failure.
+	 * @param exportMetadata Metadata for export/
+	 * @param cause Throwable with info regarding export failure.
+	 * @param logContext Log context for this export failures.
+	 * @return Response object containing server details of Export failure.
 	 */
 	public static MulesoftAnaplanResponse exportFailure(String responseMessage,
 			ExportMetadata exportMetadata, Throwable cause, String logContext) {
@@ -313,11 +305,11 @@ public class MulesoftAnaplanResponse implements Serializable {
 
 	/**
 	 * Success response constructor to signal a successful Import operation.
-	 *
-	 * @param responseMessage
-	 * @param logContext
-	 * @param serverFile
-	 * @return
+     *
+	 * @param responseMessage Response message from import success.
+	 * @param logContext Log context for this successful import.
+	 * @param serverFile Object containing details of import.
+	 * @return Response object containing all response details regarding import.
 	 */
 	public static MulesoftAnaplanResponse importSuccess(String responseMessage,
 			String logContext, ServerFile serverFile) {
@@ -329,10 +321,10 @@ public class MulesoftAnaplanResponse implements Serializable {
 	 * Failure response constructor used to signal a failure during an import
 	 * operation into Anaplan, which usually is because of malformed input data.
 	 *
-	 * @param responseMessage
-	 * @param cause
-	 * @param logContext
-	 * @return
+	 * @param responseMessage Response message from Import failure.
+	 * @param cause Throwable with info regarding import failure.
+	 * @param logContext Log context for this import failure.
+	 * @return Response object containing server details of Import failure.
 	 */
 	public static MulesoftAnaplanResponse importFailure(String responseMessage,
 			Throwable cause, String logContext) {
@@ -344,10 +336,10 @@ public class MulesoftAnaplanResponse implements Serializable {
 	 * Response constructor used when an Import operation fails and the server
 	 * provides a failure-dump to help debug.
 	 *
-	 * @param responseMessage
-	 * @param failDump
-	 * @param logContext
-	 * @return
+	 * @param responseMessage Response message from Import failure.
+	 * @param failDump Failure dump log from server for debugging purposes.
+	 * @param logContext Log context for this import failure.
+	 * @return Response object containing server details of import failure.
 	 */
 	public static MulesoftAnaplanResponse importWithFailureDump(String responseMessage,
 			ServerFile failDump, String logContext) {
@@ -360,9 +352,9 @@ public class MulesoftAnaplanResponse implements Serializable {
 	 * Success response constructor to signal a successful generic action
 	 * operation, such as a successful Delete operation or an M2M operation.
 	 *
-	 * @param responseMessage
-	 * @param logContext
-	 * @return
+	 * @param responseMessage Success response message from Execute-Action.
+	 * @param logContext Log context for this execute-action behavior.
+	 * @return Response object containing execute-action success details.
 	 */
 	public static MulesoftAnaplanResponse executeActionSuccess(String responseMessage,
 			String logContext) {
@@ -374,10 +366,10 @@ public class MulesoftAnaplanResponse implements Serializable {
 	 * Failure response constructor from the connector whenever a generic
 	 * execute operation fails.
 	 *
-	 * @param responseMessage
-	 * @param cause
-	 * @param logContext
-	 * @return
+	 * @param responseMessage Failure response message from Execute-Action.
+	 * @param cause Throwable with failed execute action details.
+	 * @param logContext Log context for this execute-action failure.
+	 * @return Response object containing failed execute-action details.
 	 */
 	public static MulesoftAnaplanResponse executeActionFailure(String responseMessage,
 			Throwable cause, String logContext) {
@@ -386,24 +378,27 @@ public class MulesoftAnaplanResponse implements Serializable {
 	}
 
 	/**
-	 *
-	 * @param responseMessage
-	 * @param cause
-	 * @param logContext
-	 * @return
+	 * Success response constructor from the connector whenever a Process operation
+     * succeeds on the server.
+     *
+	 * @param responseMessage Success response message from running Process.
+	 * @param logContext Log context used when creating this response.
+	 * @return Response object containing Process success response details.
 	 */
-	public static MulesoftAnaplanResponse runProcessSuccess(String responseMessage, 
+	public static MulesoftAnaplanResponse runProcessSuccess(String responseMessage,
 			String logContext) {
 		return new MulesoftAnaplanResponse(responseMessage, OperationStatus.SUCCESS,
 				null, null, null, logContext);
 	}
 
 	/**
-	 *
-	 * @param responseMessage
-	 * @param cause
-	 * @param logContext
-	 * @return
+	 * Failure response constructor from the connector whenever a Process
+     * operation fails on the server.
+     *
+	 * @param responseMessage Failure response message from server.
+	 * @param cause Throwable containing failure details.
+	 * @param logContext Log context used when creating this response.
+	 * @return Response object containing Process failure response details.
 	 */
 	public static MulesoftAnaplanResponse runProcessFailure(String responseMessage,
 			Throwable cause, String logContext) {

@@ -62,9 +62,6 @@ public final class LogUtil {
 
 	/**
 	 * Internal message tracing detailed operation execution.
-	 *
-	 * Matches level used by {@link Logger#entering(String, String)} and
-	 * {@link Logger#exiting(String, String)};
 	 */
 	public static final Level INTERNAL_TRACE = Level.TRACE;
 

@@ -33,32 +33,11 @@ public class AnaplanUtil {
 	}
 
 	/**
-	 * @param lines
-	 * @return '\n'-delimited concat of lines, no trailing newline. Returns
-	 *         empty string if lines is null.
-	 */
-	public static String squish(String... lines) {
-		if (lines == null || lines.length == 0) {
-			return "";
-		}
-
-		final StringBuilder sb = new StringBuilder();
-		sb.append(lines[0]);
-
-		for (int l = 1; l < lines.length; ++l) {
-			sb.append("\n");
-			sb.append(lines[l]);
-		}
-
-		return sb.toString();
-	}
-
-	/**
 	 * Prints an array of strings as a string, delimited by "||". This is for
 	 * debug logs only.
 	 *
-	 * @param toprint
-	 * @return
+	 * @param toprint Data array to create debug string with.
+	 * @return Debug output for provided string array.
 	 */
 	public static String debug_output(String[] toprint) {
 		String sb = "";
@@ -75,10 +54,11 @@ public class AnaplanUtil {
 	/**
 	 * Executes an Anaplan task and polls the status until its complete.
 	 *
-	 * @param task
-	 * @param logContext
+	 * @param task Server task object to run.
+	 * @param logContext Log context to be used while running server task.
 	 * @return The status message from the running the task.
-	 * @throws AnaplanAPIException
+	 * @throws AnaplanAPIException API exception thrown whenever server task
+     *      fails.
 	 */
 	public static TaskStatus runServerTask(Task task, String logContext)
 			throws AnaplanAPIException {

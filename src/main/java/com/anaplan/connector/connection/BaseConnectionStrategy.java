@@ -38,7 +38,7 @@ public class BaseConnectionStrategy {
 	/**
 	 * Getter for the AnaplanConnection object, initiated using basic auth
 	 * credentials or certificate.
-	 * @return
+	 * @return Anaplan API connection object.
 	 */
 	public AnaplanConnection getApiConnection() {
 		return apiConn;
@@ -82,7 +82,7 @@ public class BaseConnectionStrategy {
 	 * @throws ConnectionException
 	 */
 	protected synchronized void connectToApi() throws ConnectionException {
-		Service service = null;
+		Service service;
 		// Connect to the Anaplan API.
 		try {
 			service = apiConn.openConnection();

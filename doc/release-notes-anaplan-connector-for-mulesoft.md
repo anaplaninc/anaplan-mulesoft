@@ -1,7 +1,7 @@
 # Anaplan Connector for Mulesoft Release Notes
 30-APRIL-2015
 
-Release Notes for Version 1.1 of the Anaplan Connector for Mulesoft. These Release Notes accompany the [Anaplan Connector for MuleSoft Guide](https://github.com/anaplaninc/anaplan-mulesoft/raw/develop_3.6/doc/AnaplanConnectorforMuleSoft-Guide.pdf)
+Release Notes for Version 1.1.1 of the Anaplan Connector for Mulesoft. These Release Notes accompany the [Anaplan Connector for MuleSoft Guide](https://github.com/anaplaninc/anaplan-mulesoft/raw/develop/doc/AnaplanConnectorforMuleSoft-Guide.pdf)
 
 ## Contents
 

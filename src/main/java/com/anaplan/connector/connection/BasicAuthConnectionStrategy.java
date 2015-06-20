@@ -43,13 +43,14 @@ public class BasicAuthConnectionStrategy extends BaseConnectionStrategy {
 	 * Connect to the Anaplan API via basic authentication using provided
 	 * username and password.
 	 *
-	 * @param username
-	 * @param password
-	 * @param url
-	 * @param proxyHost
-	 * @param proxyUser
-	 * @param proxyPass
-	 * @throws org.mule.api.ConnectionException
+	 * @param username User's username to login to Anaplan API.
+	 * @param password User's password to login to Anaplan API.
+	 * @param url API URL.
+	 * @param proxyHost Proxy URL if behind firewall.
+	 * @param proxyUser Proxy username to get past firewall.
+	 * @param proxyPass Proxy password to get past firewall.
+	 * @throws org.mule.api.ConnectionException Whenever the connection to
+	 * 		Anaplan API fails using provided credentials.
 	 */
 	@Connect
 	@TestConnectivity

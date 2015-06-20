@@ -72,7 +72,7 @@ public class BaseAnaplanOperation {
 	 * Helper method to set internal reference of API connStrategy and service
 	 * parameters.
 	 *
-	 * @param apiConn
+	 * @param apiConn Anaplan API connection object.
 	 */
 	private void setApiConn(AnaplanConnection apiConn) {
 		this.apiConn = apiConn;
@@ -82,9 +82,9 @@ public class BaseAnaplanOperation {
 	/**
 	 * Fetches the workspace using the provided workspace ID.
 	 *
-	 * @param workspaceId
+	 * @param workspaceId Anaplan Workspace ID.
 	 * @return Workspace keyed by provided "workspaceId".
-	 * @throws BaseAnaplanOperationException
+	 * @throws AnaplanOperationException Thrown when failure fetching workspace.
 	 */
 	public Workspace getWorkspace(String workspaceId)
 			throws AnaplanOperationException {
@@ -107,10 +107,10 @@ public class BaseAnaplanOperation {
 	/**
 	 * Fetches the model for the provided workspace and model IDs.
 	 *
-	 * @param workspaceId
-	 * @param modelId
+	 * @param workspaceId Anaplan Workspace ID.
+	 * @param modelId Anaplan Model ID.
 	 * @return Model keyed by the model and workspace IDs.
-	 * @throws BaseAnaplanOperationException
+	 * @throws AnaplanOperationException Thrown when failure fetching model.
 	 */
 	public Model getModel(String workspaceId, String modelId)
 			throws AnaplanOperationException {
@@ -136,10 +136,10 @@ public class BaseAnaplanOperation {
 	 * Simple validation that tries to fetch the workspace and model using
 	 * provided IDs. If any of the operation fails, then an exception is thrown.
 	 *
-	 * @param workspaceId
-	 * @param modelId
-	 * @param exportId
-	 * @throws BaseAnaplanOperationException
+	 * @param workspaceId Anaplan Workspace ID.
+	 * @param modelId Anaplan Model ID.
+	 * @throws AnaplanOperationException Thrown when error is encountered
+	 * 		during fetching Workspace or Model.
 	 */
 	public void validateInput(String workspaceId, String modelId)
 			throws AnaplanOperationException {
@@ -159,7 +159,7 @@ public class BaseAnaplanOperation {
 	 * TaskStatus object.
 	 *
 	 * @param status TaskStatus object containing task details
-	 * @return
+	 * @return Log string delimited by new-line, fetched from TaskStatus object.
 	 */
 	public static String collectTaskLogs(TaskStatus status) {
 		final TaskResult taskResult = status.getResult();
