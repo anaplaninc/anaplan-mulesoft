@@ -1,7 +1,7 @@
 = Anaplan Connector for Mulesoft Release Notes 
 26-May-2015
 
-Release Notes for Version 1.1.1 of the Anaplan Connector for Mulesoft. These Release Notes accompany the Anaplan Connector for MuleSoft Guide at https://github.com/anaplaninc/anaplan-mulesoft/raw/develop_3.6/doc/AnaplanConnectorforMuleSoft-Guide.pdf
+Release Notes for Version 1.1.2 of the Anaplan Connector for Mulesoft. These Release Notes accompany the Anaplan Connector for MuleSoft Guide at https://github.com/anaplaninc/anaplan-mulesoft/raw/master/doc/AnaplanConnectorforMuleSoft-Guide.pdf
 
 == Contents
 
@@ -25,7 +25,8 @@ For building a flow that performs any of the following:
 
 == Fixed in this Release
 
-Release Notes Missing - Release Notes have been added. Anaplan Connector for MuleSoft Guide Did Not Mention Process - The Guide has been updated. ReadMe Did Not Mention Process - The ReadMe has been updated.
+06-Aug-2015 - Bug-fix for anaplan-connect and dependency resolution.
+26-May-2015 - Release Notes Missing - Release Notes have been added. Anaplan Connector for MuleSoft Guide Did Not Mention Process - The Guide has been updated. ReadMe Did Not Mention Process - The ReadMe has been updated.
 
 == Known Issues 
 
