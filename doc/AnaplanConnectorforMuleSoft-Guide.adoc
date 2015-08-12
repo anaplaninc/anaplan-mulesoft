@@ -226,7 +226,4 @@ What follows is a simple example that contains multiple Delete actions.
 7. Select your Flow, and on the Run menu, click Run As > Mule Application. This puts the Flow in the "deployed" state.
 8. To run the Flow, refresh a browser that is set to http://localhost:8081/
 9. Watch the Flow run in the Anypoint Studio Console, which displays the name of the Process within Anaplan.
-10. Refresh your browser that is still pointing at http://localhost:8081 to see the outcome message, which displays the name of the Process within Anaplan.
-
-
-
+10. Refresh the browser that is still pointing at http://localhost:8081 to see the outcome message, which displays the name of the Process within Anaplan.
