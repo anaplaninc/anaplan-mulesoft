@@ -74,7 +74,7 @@ public class AnaplanImportOperation extends BaseAnaplanOperation{
 	        String delimiter) throws IOException {
 
 		List<String> cellTokens;
-		List<String[]> rows = new ArrayList<String[]>();
+		List<String[]> rows = new ArrayList<>();
 
 		if (columnSeparator.length() > 1) {
             throw new IllegalArgumentException(
