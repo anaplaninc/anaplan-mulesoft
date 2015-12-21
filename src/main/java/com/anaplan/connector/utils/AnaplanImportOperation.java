@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import com.anaplan.client.AnaplanAPIException;
@@ -36,6 +37,10 @@ import com.anaplan.connector.MulesoftAnaplanResponse;
 import com.anaplan.connector.connection.AnaplanConnection;
 import com.anaplan.connector.exceptions.AnaplanOperationException;
 import com.google.gson.JsonSyntaxException;
+
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVParser;
+import org.apache.commons.csv.CSVRecord;
 
 
 /**
@@ -56,52 +61,45 @@ public class AnaplanImportOperation extends BaseAnaplanOperation{
 	}
 
 	/**
-	 * Creates the regex to split CSV lines with provided column-separator and
-	 * delimiter. This is esepcially useful when escape quotes are used for
-	 * cell values.
-	 *
-	 * @param columnSeparator column separator character, should be delimiter
-	 * @param delimiter Escape character
-	 * @return Regex string to be used to parse string data file.
-	 */
-	private static String generateDelimiterRegex(String columnSeparator,
-			String delimiter) {
-		return columnSeparator.trim() + "(?=([^\\" + delimiter.trim() + "]*\\" +
-			   delimiter.trim() + "[^\\" + delimiter.trim() + "]*\\" +
-			   delimiter.trim() + ")*[^\\" + delimiter.trim() + "]*$)";
-	}
-
-	/**
 	 * Import Data Parser: splits import data by new-lines, then for each row,
 	 * splits by the provided column-separator and escape delimiter.
 	 *
-	 * @param is Input stream object containing import data.
-	 * @param rowCount Number of rows of data
+	 * @param data Data String.
 	 * @param columnSeparator Column separator character.
 	 * @return Array of rows properly escaped.
 	 * @throws IOException To capture any exception when reading in data to
      *                     buffered reader object.
 	 */
-	private static List<String[]> parseImportData(InputStream is, int rowCount,
-			String columnSeparator, String delimiter) throws IOException {
-		String line;
-		String[] cellTokens;
+	private static List<String[]> parseImportData(String data, String columnSeparator,
+	        String delimiter) throws IOException {
+
+		List<String> cellTokens;
 		List<String[]> rows = new ArrayList<String[]>();
-		BufferedReader reader = new BufferedReader(new InputStreamReader(is));
-		String delimRegex = generateDelimiterRegex(columnSeparator, delimiter);
-		while ((line = reader.readLine()) != null) {
-			// trim all quotes
-			cellTokens = line.split(delimRegex);
-			for (int i = 0; i < cellTokens.length; i++)
-				cellTokens[i] = cellTokens[i].replaceAll("^\"|\"$", "");
-			// append header and rows
-			if (rowCount == 0) {
-				HEADER = cellTokens;
-			} else {
-				rows.add(cellTokens);
-			}
-			rowCount++;
-		}
+
+		if (columnSeparator.length() > 1) {
+            throw new IllegalArgumentException(
+                    "Multi-character Column-Separator not supported!");
+        }
+
+        if (delimiter.length() > 1) {
+            throw new IllegalArgumentException("Multi-character Text Delimiter "
+                    + "string not supported!");
+        }
+
+        CSVFormat csvFormat = CSVFormat.RFC4180
+                .withDelimiter(columnSeparator.charAt(0))
+                .withQuote(delimiter.charAt(0));
+
+        CSVParser csvParser = CSVParser.parse(data, csvFormat);
+        for (CSVRecord record : csvParser.getRecords()) {
+            Iterator<String> cellIter = record.iterator();
+            cellTokens = new ArrayList<>();
+            while (cellIter.hasNext()) {
+                cellTokens.add(cellIter.next());
+            }
+            rows.add(cellTokens.toArray(new String[cellTokens.size()]));
+        }
+
 		return rows;
 	}
 
@@ -143,22 +141,17 @@ public class AnaplanImportOperation extends BaseAnaplanOperation{
 			serverFile.setSeparator(columnSeparator);
 			serverFile.setDelimiter(delimiter);
 
-			int rowCount = 0;
-			InputStream is = new ByteArrayInputStream(data.getBytes());
-			List<String[]> rows = parseImportData(is, rowCount, columnSeparator,
-					delimiter);
+			List<String[]> rows = parseImportData(data, columnSeparator, delimiter);
 
 			// get the data-writer and write data to it, i.e. serverFile by
 			// reference
 			final CellWriter dataWriter = serverFile.getUploadCellWriter();
-			dataWriter.writeHeaderRow(HEADER);
+			dataWriter.writeHeaderRow(rows.get(0));
 			LogUtil.status(logContext, "import header is:\n"
-					+ AnaplanUtil.debug_output(HEADER));
+					+ AnaplanUtil.debug_output(rows.get(0)));
 
 			for (String[] row : rows) {
 				dataWriter.writeDataRow(row);
-				LogUtil.trace(logContext, rowsProcessed + "-"
-						+ AnaplanUtil.debug_output(row));
 				++rowsProcessed;
 			}
 			dataWriter.close();
@@ -227,7 +220,6 @@ public class AnaplanImportOperation extends BaseAnaplanOperation{
 
 			final MulesoftAnaplanResponse anaplanResponse = runImportCsv(data, model,
 					importId, columnSeparator, delimiter, importLogContext);
-			anaplanResponse.writeImportData(apiConn, importId);
 
 			LogUtil.status(importLogContext, "Import complete: Status: "
 					+ anaplanResponse.getStatus() + ", Response message: "
