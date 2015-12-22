@@ -1,9 +1,9 @@
 = Anaplan Connector for MuleSoft
 
 == Overview
-The Anaplan Connector for Mulesoft allows you to create solutions that can extract, transform, and load (ETL) data from a source system into
-Anaplan. Mulesoft provides an Eclipse-based graphical environment, Anypoint Studio, for designing and configuring integration solutions with
-Mulesoft's library of more than one hundred Connectors to other applications, such as Workday, Salesforce.com, and SAP.
+
+The Anaplan Connector for Mulesoft allows you to create solutions that can extract, transform, and load (ETL) data from a source system into Anaplan. MuleSoft, Inc. provides an Eclipse-based graphical environment, Anypoint Studio, for designing and configuring integration solutions with Mulesoft's library of more than one hundred Connectors to other applications, such as Workday, Salesforce.com, and SAP. 
+
 The Anaplan Connector for Mulesoft can be used for import, export, and delete actions in an orchestration of services that Mulesoft calls a Flow. For example, the Flow you build might:
 
 - Import data into Anaplan from a database, Salesforce.com, or a CSV file
@@ -12,167 +12,218 @@ The Anaplan Connector for Mulesoft can be used for import, export, and delete ac
 - Delete obsolete data
 - Perform a model-to-model import
 
-You will configure the Anaplan Connector with credentials to connect to a data source and perform operations. With the Anaplan Connector for
-Mulesoft, you can build Anypoint flows that work with:
+You configure the Anaplan Connector with credentials to connect to a data source and perform operations. With the Anaplan Connector for Mulesoft, you build Anypoint flows that work with:
 
 - Anaplan Lists
 - Anaplan Modules
 - Anaplan User Access
 
-Anaplan Connect is a command-line tool for Import, Export, Delete, and Processes (combinations of Imports, Exports, and/or Deletes) that uses
-batch files and allows automated scheduling on the operating system scheduling tool. The Anaplan Connector is an alternative to Anaplan
-Connect, except that for Processes, the Anaplan Connector for Mulesoft is limited to model-to-model Import actions and Delete actions.
-
-NOTE: Demo flows have been added for Import, Export, and Delete. For details, see AnaplanConnectorforMulesoft.PDF, which is available from https://github.com/anaplaninc/anaplan-mulesoft/tree/master/doc
+Note: Anaplan Connect is a command-line tool for Import, Export, Delete, and Processes (combinations of Imports, Exports, and/or Deletes) that uses batch files and allows automated scheduling on the operating system scheduling tool. The Anaplan Connector is an alternative to Anaplan Connect, except that for Processes, the Anaplan Connector for Mulesoft is limited to model-to-model Import actions and Delete actions.
 
 == Mulesoft Prerequisites
 
-- User is familiar with the Mulesoft Anypoint platform.
-- Have an installation of Mulesoft's Anypoint Studio, which is the development environment for building an integration solution with the
-Anaplan Connector for MuleSoft. Anypoint Studio is available for download at http://www.mulesoft.com/platform/mule-studio.
+- familiarity with the Mulesoft Anypoint platform.
+- an installation of Mulesoft's Anypoint Studio, which is the development environment for building an integration solution with the Anaplan Connector for MuleSoft.  Anypoint Studio is available for download at http://www.mulesoft.com/platform/mule-studio. 
 
-== Anaplan Prerequisites
+== Anaplan Prerequisites for the Demos
 
-- Know about the Anaplan actions – import, export, process, and delete – which are explained at https://community.anaplan.com/anapedia/around-the-platform/settings-tab/actions
-- Have verified that Anaplan already has the actions that your Mule Flow will automate.
-- For Authentication, already have an Anaplan username/password, or a Certificate, which is explained at https://community.anaplan.com/anapedia/getting-started/end-user/certificates
-- Ensure that the Anaplan model you are working with does not assume that the data is coming from a particular integration. For example, some Anaplan models have an internal integration with Salesforce.com and therefore will not work with the Mulesoft integration if Salesforce is used as a source.
+We provide Mulesoft demo projects for import, export, and delete. These demo projects can be a starting point for your Mulesoft projects.
 
-== Installation
+- You know about the Anaplan actions (import, export, process, and delete) which are explained at https://community.anaplan.com/anapedia/around-the-platform/settings-tab/actions
+- You have verified that your Anaplan model already has the actions that your Mule Flow will automate.
 
-To set up Anypoint Studio and the execution environment, follow the instructions listed in "Setup Environment". Skip to "Install Anaplan Connector"
-if you already have your environment setup:
+Note: The Anaplan model you are working with does not assume that the data is coming from a particular integration. For example, some Anaplan models have an internal integration with Salesforce.com and therefore will not work with the Mulesoft integration if Salesforce is used as a source.
+    You know the values for the Variables for Authentication and Configuration for the demo you want to use. Each demo contains a configuration file named mule-app.properties.
 
-1. Setup Environment
+=== export demo mule-app.properties file
 
-- Install:
-* Java 7
-* Maven
-* Anypoint Studio
+anaplan.username=
+anaplan.password=
+anaplan.certificatePath=
+anaplan.apiUrl=https://api.anaplan.com
+anaplan.workspaceId=
+anaplan.modelId=
+anaplan.exportId=
 
-- Download Anypoint Studio and install it.
+=== import demo mule-app.properties file
 
-- Configure Maven:
-* Click Anypoint Studio > Preferences > Anypoint Studio > Maven Settings.
-* Click Browse to locate the folder where you installed Maven.
-* Click Test Maven Configuration and when you see the green checkmark, click OK.
+anaplan.username=
+anaplan.password=
+anaplan.certificatePath=
+anaplan.apiUrl=https://api.anaplan.com
+anaplan.workspaceId=
+anaplan.modelId=
+anaplan.importId=
+anaplan.columnSeparator=,
+anaplan.delimiter=\\"
+file.readFromDir=
+file.moveToDir=
 
-- Install the DevKit Plugin:
-* Click Install New Software.
-* Click Work with > Anypoint Addons Update Site > Anypoint Devkit Plugin.
-* Click Next, Finish, and restart Studio
+=== delete demo mule-app.properties file
 
-2. Install the Anaplan Connector
+anaplan.username=
+anaplan.password=
+anaplan.certificatePath=
+anaplan.apiUrl=https://api.anaplan.com
+anaplan.workspaceId=
+anaplan.modelId=
+anaplan.deleteActionId=
 
-a. Go to the Github page, https://github.com/anaplaninc/anaplan-mulesoft, and either clone the project or download the zip of the project. 
-  +
-image:images/a.png[]   
-b. In Anypoint Studio, click File > Import.
- +
-image:images/b.png[]
-c. In the Import dialog, expand Anypoint Studio > Anypoint Connector Project from External Location.
-d. Click Next, click Browse, and open the project where you unzipped it.
-e. Note that anaplan-connector appear in the Package Explorer pane.
-f. Right-click the project, Anypoint Connector > Install or Update.
-g. Follow the wizard to install the connector, ignore the warning about "unsigned content" and restart Anypoint Studio when
-prompted.
-Thats it! The Anaplan Connector is now installed.
-h. To verify the installation, on the Anypoint Studio menu, open the About Anypoint Studio dialog:
-i. Click the Installation Details button.
-Anaplan Connector (Mule 3.5.0+) appears as installed software:
+== Setting up the Environment
+
+1. Install the following:
+- Java 7 
+- Apache Maven
+
+2. Download Anypoint Studio and install it.
+
+3. Configure Maven:
+- Click Anypoint Studio > Preferences > Anypoint Studio > Maven Settings. 
+- Click Browse to locate the folder where you installed Maven. 
+- Click Test Maven Configuration and when you see the green checkmark, click OK. 
+
+4. Install the Anypoint DevKit Plugin: 
+- From the Anypoint Studio Help menu, click Install New Software.
+- Click Work with > Anypoint Addons Update Site > Anypoint Devkit Plugin.
+- Click Next, Finish, and restart Studio
+
+== Installing the Anaplan Connector
+
+Install the Anaplan connector, which is documented at the Mulesoft Anypoint Exchange at https://www.mulesoft.com/exchange#!/anaplan-integration-connector and can be installed in either of two ways.
+
+Note: Your version of Anypoint Studio might be slightly different than what is described below.
+
+=== Option 1: From Anypoint Studio (Recommended for most users)
+
+1. Help -> Install New Software
+2. Click the "Work with" drop-down arrow on the right, and click Anypoint Connectors Update Site.
+3. In the Search field, type anaplan. 
+4. Note that Anaplan Connector appears under Community.
+5. Select the Anaplan Connector checkbox, and click Next:
+6. Follow the instructions as the wizard installs the connector.
+7. Click the Installation Details button.
+8. Verify that Anaplan Connector (Mule 3.5.0+) appears as installed software.
+9. To verify the installation, on the Anypoint Studio menu, open the About Anypoint Studio dialog: 
+
+=== Option 2: From GitHub (for Advanced users only)
+
+1. Go to https://github.com/anaplaninc/anaplan-mulesoft and get the downloadable zip named anaplan-mulesoft-master.zip.
+2. In Anypoint Studio, click File > Import. 
+3. In the Import dialog, select Anypoint Studio > Anypoint Connector Project from External Location.
+4. Click Next, click Browse, and open the project where you unzipped it.
+5. Note that anaplan-connector appears in the Package Explorer pane. 
+6. Right-click the project, Anypoint Connector > Install or Update. 
+7. Follow the wizard to install the connector, ignore the warning about "unsigned content", and restart Anypoint Studio when prompted.  
+
+== Installing the Demo Flows
+
+The Demo flows are inside the "Demo" folder that is part of the downloadable zip described above in "Option 2: From GitHub". 
+
+1. In Anypoint Studio, on the File menu, click Import, and select Anypoint Studio Project from External Location.
+2. In the Mule Import dialog, navigate to the Project root of one of the demo projects, such as anaplan-export, and make sure that Copy project into workspace is selected.
+3. You can now install another demo project. There are three demo projects, one for delete, one for import, and one for export.
+
+== Variables for Authentication and Configuration
+
+1. In your browser, navigate to https://github.com/anaplaninc/anaplan-mulesoft and download the zip. 
+2. Extract the zip file, and notice that it contains a subdirectory named "demo" that contains the demos for delete, export, and import.
+3. In Anypoint Studio, click File > Open, and navigate to the mule-app.properties file for each of the demos:
+a. demo/anaplan-delete/src/main/app/mule-app.properties/mule-app.properties
+b. demo/anaplan-export/src/main/app/mule-app.properties/mule-app.properties
+c. demo/anaplan-import/src/main/app/mule-app.properties/mule-app.properties
+4. Provide values for the variables in the mule-app.properties file you want to configure, and click File > Save. 
+
+Note:
+The default delimiter is double-quotes, which is specified by anaplan.delimiter= \\"
+-- To specify single quote ('), use anaplan.delimiter=\\'
+-- To specify pipe (|), use anaplan.delimiter=\\|
+
+You are now ready for Configuring Authentication: Basic or Certificate.
+
+== Configuring Authentication: Basic or Certificate
+
+To set up Authentication for an Export, Import, Execution Action (for a Delete action), or a Process, you perform the following steps. 
+
+1. Click the "Add" that looks like a green plus sign (+).
+2. In the Choose Global Type dialog, click either Basic Authentication (username, password) or Certificate Authentication.
+3. If you clicked Basic Authentication, populate the Username and Password fields, click Test Connection to verify that the credentials work, then click OK.
+4. If you clicked Certificate Authentication, in the Certificate Path field, click the "..." button to navigate to the certificate, then click Test Connection to verify that the credentials work, then click OK.
+
+== Testing the Connection to the Anaplan API Server
+
+The variables for Authentication allow the flow to connect to the Anaplan API Server. To test this, from Anypoint Studio, in the Demo flow, double-click the Anaplan connector, then edit the configuration. In the Global Element Properties dialog, click Test Connection and verify that "Test connection successful" displays.
 
 == Export
-You can create a Flow that exports a List, Module, or a set of Users, from Anaplan into another data-source, such as a CSV file or
-Salesforce.com.
+
+You can run the Demo flow, or create your own Flow that exports a List, Module, or a set of Users, from Anaplan into another data-source, such as a CSV file or Salesforce.com.
+
 Let's start with a simple example.
 
 1. In Anypoint Studio, on the File menu, click New > Mule Project.
-2. Enter the project name and check "Use Maven" if you wish to maven-ize this flow project. Click Finish.
-3. In the Message Flow tab, build your flow by dropping Connectors into the Anypoint Studio Flow area as shown below: 
-
-In this example, we configured the HTTP connector to listen on localhost:8081 to initiate the Anaplan export. The output from the
-connector is:
-- sent to a File that contains the exported data
-- also piped back to the HTTP connector to build a HTTP response so that we can view the results
-4. To configure the Anaplan connector, double-click the Anaplan connector icon on the flow, which will bring up a configuration panel:
-5. Configure the File connector with the following:
-a. Path to the directory where you want the export file.
-b. Name of the export file.
-6. Set up the Anaplan authentication configuration, by clicking the "+" button next to the "Connector Configuration" field. See Basic or Certificate Authentication for details on setting up a Username/Password based authentication or a Certificate based authentication.
-7. Save your Flow (Command-s on Mac, or Ctrl + s on Windows).
-8. Make sure your Flow tab is active.
-9. On the Run menu, click Run As > Mule Application.
-10. Note that the console indicates the Flow is deployed.
-11. Execute the Flow by opening a browser to http://localhost:8081.
-12. Verify that the output of the Export displays on the HTML page:
-13. Verify the contents of the file with the exported data.
+2. Enter the project name and check "Use Maven" if you want to Apache Maven to build this flow project. Click Finish.
+3. In the Message Flow tab, build your flow by dropping Connectors into the Anypoint Studio Flow area. In this example, we configure the HTTP connector to listen on localhost:8081 to initiate the Anaplan export. The output from the connector is piped back to the HTTP connector to build a HTTP response so that we can view the results.
+4. To configure the Anaplan connector, double-click the Anaplan connector icon on the flow, which will bring up a configuration panel.
+5. Set up the Anaplan authentication configuration, by clicking the green "+" button next to the "Connector Configuration" field.
+Note: For details on setting up a Username/Password based authentication or a Certificate based authentication, see Configuring Authentication: Basic or Certificate.
+6. Save your Flow (Command-s on Mac, or Ctrl + s on Windows).
+7. Make sure your Flow tab is active.
+8. On the Run menu, click Run As > Mule Application.
+9. Verify that the console indicates the Flow is deployed.
+10. Execute the Flow by opening a browser to http://localhost:8081.
+11. Verify that the output of the Export displays on the HTML page:
+12. You are now ready to build a flow that exports to a file, if that is your goal.
 
 == Import
-You can create a Flow that imports from another data-source, such as a CSV file or Workday, into Anaplan.
+
+You can run the Demo flow, or create your own Flow that imports from another data-source, such as a .csv file or Workday, into Anaplan.
+
 Let's start with a simple example.
 
 1. In Anypoint Studio, on the File menu, click New > Mule Project, and proceed though the dialogs.
-2. On the Anypoint Studio Message Flow tab, build your flow by dropping Connectors into the Anypoint Studio Flow area.
-This example imports a .csv file from a directory your specify, brings the data into a List in Anaplan, and moves the .csv file to another
-directory that you specify.
+2. On the Anypoint Studio Message Flow tab, build your flow by dropping Connectors into the Anypoint Studio Flow area. This example imports a .csv file from a directory you specify, brings the data into a List in Anaplan, and moves the .csv file to another directory that you specify.
 3. Configure the File connector with the following:
-a. Path to the directory that holds the .csv file.
-*Important!*: Make sure the directory contains exactly one (1) import file and no other files because the Flow will attempt to
-operate on all files in this original directory.
-b. Move to Directory that receives the file after the import completes. This empties the original Path directory.
-*Important!*: Whenever a file is added to the Path directory, the flow automatically runs again.
-4. Set the Anaplan Authentication. See BasicorCertificateAuthentication.
+- Path to the directory that holds the .csv file.
+- Move to Directory that receives the file after the import completes. This empties the original Path directory.
+4. Set the Anaplan Authentication. See Configuring Authentication: Basic or Certificate.
 5. Configure the Anaplan connector for the Import Operation, and specify the Import name or ID, the Model name or ID, and the Workspace name or ID.
-6. Select your Flow,
-and, on the Run menu, click Run As > Mule Application.
-7. Note that the Console indicates the result:
+6. Select your Flow, and on the Run menu, click Run As > Mule Application.
+7. Note that the Console indicates the result.
 8. To verify the Import, look at the model inside Anaplan. For example, if you imported into a List, that List now shows the imported data.
 
-[NOTE]
-By default, the Flow automatically runs again each time a file appears in the original Path directory. If you want to prevent this
-automatic triggering, go to Anypoint Studio Console and click the red square.
+IMPORTANT: Make sure the directory contains exactly one (1) import file and no other files because the Flow will attempt to operate on all files in this original directory.
 
+IMPORTANT: Whenever a file is added to the Path directory, the flow automatically runs again. If you want to prevent this automatic triggering, go to Anypoint Studio Console and click the red square.
+ 
 == Delete
 
+You can run the Demo flow, or create your own Flow for a Delete action.
+
 1. In Anypoint Studio, on the File menu, click New > Mule Project.
-2. In the Message Flow tab, build your flow by dropping Connectors into the Anypoint Studio Flow area.
+2. In the Message Flow tab, build your flow by dropping Connectors into the Anypoint Studio Flow area. 
 3. Double-click the Anaplan connector.
-4. Set the Anaplan Authentication. See BasicorCertificateAuthentication.
+4. Set the Anaplan Authentication. See Configuring Authentication: Basic or Certificate.
 5. For Operation, choose Delete, then supply the name or ID of the action, model, and workspace.
 6. Save your Flow.
-7. Select your Flow, and, on the Run menu, click Run As > Mule Application.
-This puts the Flow in the "deployed" state.
+7. Select your Flow, and on the Run menu, click Run As > Mule Application. This puts the Flow in the "deployed" state.
 8. To run the Flow, refresh a browser that is set to http://localhost:8081/
 9. Watch the Flow run in the Anypoint Studio Console.
 10. Refresh your browser that is still pointing at http://localhost:8081 to see the outcome message.
 
 == Process
+
 A Process is an ordered set of multiple actions in a single container.
 
-[NOTE]
-*Important!*: The set can contain model-to-model Import and/or Delete actions. If you want a process for multiple Import actions that are not
-model-to-model, or for multiple export actions, use Anaplan Connect.
+IMPORTANT: The set can contain model-to-model Import and/or Delete actions. If you want a process for multiple Import actions that are not model-to-model, or for multiple export actions, use Anaplan Connect.
 
 What follows is a simple example that contains multiple Delete actions.
 
 1. In Anypoint Studio, on the File menu, click New > Mule Project.
 2. In the Message Flow tab, build your flow by dropping Connectors into the Anypoint Studio Flow area. 
 3. Double-click the Anaplan connector.
-4. Set the Anaplan Authentication. See Basic or Certificate Authentication.
+4. Set the Anaplan Authentication. In general, we recommend using Certificate Authentication because it is more secure than Basic Authentication. See Configuring Authentication: Basic or Certificate. 
 5. For Operation, choose Process, then supply the name or ID of the action, model, and workspace.
 6. Save your Flow.
-7. Select your Flow, and, on the Run menu, click Run As > Mule Application.
-This puts the Flow in the "deployed" state.
+7. Select your Flow, and on the Run menu, click Run As > Mule Application. This puts the Flow in the "deployed" state.
 8. To run the Flow, refresh a browser that is set to http://localhost:8081/
 9. Watch the Flow run in the Anypoint Studio Console, which displays the name of the Process within Anaplan.
-10. Refresh your browser that is still pointing at http://localhost:8081 to see the outcome message, which displays the name of the Process within Anaplan.
-
-
-== Basic or Certificate Authentication
-To set up Authentication for an Export, Import, Execution Action (for a Delete action), or a Process, you perform the following steps.
-
-1. Click the "+" button:
-2. In the Choose Global Type dialog, click either Basic Authentication (username, password) or Certificate Authentication.
-- If you clicked Basic Authentication, populate the Username and Password fields, click Test Connection to verify that the
-credentials work, then click OK.
-- If you clicked Certificate Authentication, in the Certificate Path field, click the "..." button to navigate to the certificate, then click Test Connection to verify that the credentials work, then click OK.
+10. Refresh the browser that is still pointing at http://localhost:8081 to see the outcome message, which displays the name of the Process within Anaplan.
