@@ -73,7 +73,7 @@ public class AnaplanImportOperation extends BaseAnaplanOperation{
 	private static List<String[]> parseImportData(String data, String columnSeparator,
 	        String delimiter) throws IOException {
 
-		List<String> cellTokens;
+		String[] cellTokens;
 		List<String[]> rows = new ArrayList<>();
 
 		if (columnSeparator.length() > 1) {
@@ -91,13 +91,16 @@ public class AnaplanImportOperation extends BaseAnaplanOperation{
                 .withQuote(delimiter.charAt(0));
 
         CSVParser csvParser = CSVParser.parse(data, csvFormat);
+        int cellIdx;
         for (CSVRecord record : csvParser.getRecords()) {
             Iterator<String> cellIter = record.iterator();
-            cellTokens = new ArrayList<>();
+            cellTokens = new String[record.size()];
+            cellIdx = 0;
             while (cellIter.hasNext()) {
-                cellTokens.add(cellIter.next());
+                cellTokens[cellIdx] = cellIter.next();
+                cellIdx++;
             }
-            rows.add(cellTokens.toArray(new String[cellTokens.size()]));
+            rows.add(cellTokens);
         }
 
 		return rows;
