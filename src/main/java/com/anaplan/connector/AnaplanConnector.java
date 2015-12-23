@@ -79,8 +79,8 @@ public class AnaplanConnector {
      * @param workspaceId Anaplan workspace ID.
      * @param modelId Anaplan model ID.
      * @param importId Action ID of the Import operation.
-     * @param columnSeparator Cell escape values defaults to double-quotes.
-     * @param delimiter Column delimiter defaults to comma
+     * @param columnSeparator Column separator, defaults to comma.
+     * @param delimiter Cell escape values, defaults to double-quotes.
      * @return Status message from running the Import operation.
      * @throws AnaplanConnectionException When an error occurs during
      * 									  authentication
