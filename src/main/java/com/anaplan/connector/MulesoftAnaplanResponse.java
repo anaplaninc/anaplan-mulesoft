@@ -146,10 +146,6 @@ public class MulesoftAnaplanResponse implements Serializable {
             throw new AnaplanAPIException("Response is empty: " + getStatus());
         }
         final CellReader cellReader = serverFile.getDownloadCellReader();
-//		if (getExportMetadata() != null) {
-//			LogUtil.debug(logContext,
-//					getExportMetadata().collectExportFileInfo());
-//		}
         return writeResponse(cellReader, logContext);
     }
 
