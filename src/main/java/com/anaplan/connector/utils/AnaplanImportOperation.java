@@ -16,11 +16,7 @@
 
 package com.anaplan.connector.utils;
 
-import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -97,8 +93,7 @@ public class AnaplanImportOperation extends BaseAnaplanOperation{
             cellTokens = new String[record.size()];
             cellIdx = 0;
             while (cellIter.hasNext()) {
-                cellTokens[cellIdx] = cellIter.next();
-                cellIdx++;
+                cellTokens[cellIdx++] = cellIter.next();
             }
             rows.add(cellTokens);
         }
