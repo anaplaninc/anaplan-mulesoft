@@ -25,11 +25,13 @@ import com.anaplan.client.ExportMetadata;
 import com.anaplan.client.ServerFile;
 import com.anaplan.connector.connection.AnaplanConnection;
 import com.anaplan.connector.exceptions.AnaplanOperationException;
+import com.anaplan.connector.utils.AnaplanUtil;
 import com.anaplan.connector.utils.LogUtil;
 import com.anaplan.connector.utils.OperationStatus;
 import com.anaplan.connector.utils.UserMessages;
 
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVPrinter;
 
 
 /**
@@ -101,34 +103,89 @@ public class MulesoftAnaplanResponse implements Serializable {
     }
 
     /**
+     * Determine the appropriate CSVFormat to be used based on provided
+     * column-separator and delimiter.
+     * @return CSVFormat.RFC4180 or CSVFormat.TDF.
+     */
+    public CSVFormat getCsvFormat(String columnSeparator, String textDelimiter)
+            throws AnaplanOperationException {
+        switch (columnSeparator) {
+            case ",":
+                return CSVFormat.RFC4180
+                        .withDelimiter(columnSeparator.charAt(0))
+                        .withQuote(textDelimiter.charAt(0));
+            case "\t":
+                return CSVFormat.TDF
+                        .withDelimiter(columnSeparator.charAt(0));
+            default:
+                throw new AnaplanOperationException("Only commas and tabs are " +
+                        "supported column-separators!");
+        }
+    }
+
+    /**
      * Uses the server cell-reader handler to read the server response contents
      * and then write it to a string-buffer to be returned as a response.
      *
-     * @param cellReader CellReader object to write server response.
+     * @param serverFile Server-File object that contains details of export.
      * @param logContext Log context for write data to the provided cell-reader.
      * @return The string response.
-     * @throws AnaplanAPIException Exception thrown when reading rows of data.
-     * @throws IOException Exception thrown when reading rows of data.
+     * @throws AnaplanOperationException Exception thrown when reading rows of data.
      */
-    private String writeResponse(CellReader cellReader, String logContext)
-            throws AnaplanAPIException, IOException {
+    private String writeResponse(ServerFile serverFile, String logContext)
+            throws AnaplanOperationException {
 
-        StringBuilder sb = new StringBuilder();
-        final String header = StringUtils.join(cellReader.getHeaderRow(), ',');
-        sb.append(header);
-        LogUtil.debug(logContext, header);
-
-        String dataLine = StringUtils.join(cellReader.readDataRow(), ',');
-
-        String[] dataLineArr;
-        while (dataLine != null) {
-            sb.append("\n").append(dataLine);
-            dataLineArr = cellReader.readDataRow();
-            dataLine = (dataLineArr == null) ? null
-                    : StringUtils.join(dataLineArr, ',');
+        String[] dataRow;
+        String separator = serverFile.getSeparator();
+        String delimiter = serverFile.getDelimiter();
+        separator = (separator == null) ? "," : separator;
+        if (separator.equals(",") && delimiter == null) {
+            delimiter = "\"";  // only for CSVs, not TSVs
         }
+
+        CellReader cellReader;
+        CSVPrinter csvPrinter;
+        try {
+            cellReader = serverFile.getDownloadCellReader();
+            csvPrinter = new CSVPrinter(new StringBuilder(), getCsvFormat(
+                    separator, delimiter));
+        } catch (AnaplanAPIException e) {
+            throw new AnaplanOperationException("Error fetching Cell-reader:", e);
+        } catch (IOException f) {
+            throw new AnaplanOperationException("Error fetching CSV Printer!");
+        }
+
+        // write the header
+        try {
+            dataRow = cellReader.getHeaderRow();
+            csvPrinter.printRecord(dataRow);
+        } catch (AnaplanAPIException | IOException e) {
+            throw new AnaplanOperationException("Error fetching header:", e);
+        }
+        LogUtil.debug(logContext, AnaplanUtil.debugOutput(dataRow));
+
+        // write the data-rows
+        try {
+            dataRow = cellReader.readDataRow();
+            while (dataRow != null) {
+                csvPrinter.printRecord(dataRow);
+                dataRow = cellReader.readDataRow();
+            }
+        } catch (AnaplanAPIException | IOException e) {
+            throw new AnaplanOperationException("Error fetching data-rows!", e);
+        }
+
+        // wrap up
         LogUtil.debug(logContext, "finished writing file");
-        return sb.toString();
+        try {
+            csvPrinter.flush();
+            csvPrinter.close();
+            cellReader.close();
+        } catch (AnaplanAPIException | IOException e) {
+            throw new AnaplanOperationException("Error closing resource:");
+        }
+
+        return csvPrinter.getOut().toString();
     }
 
     /**
@@ -137,16 +194,14 @@ public class MulesoftAnaplanResponse implements Serializable {
      *
      * @param serverFile ServerFile object.
      * @param logContext Log context for creating response operation.
-     * @throws IOException Exception thrown when reading rows of data.
-     * @throws AnaplanAPIException Exception thrown when reading rows of data.
+     * @throws AnaplanOperationException Exception thrown when reading rows of data.
      */
     private String responseServerFile(ServerFile serverFile, String logContext)
-            throws IOException, AnaplanAPIException {
+            throws AnaplanOperationException {
         if (serverFile == null) {
-            throw new AnaplanAPIException("Response is empty: " + getStatus());
+            throw new AnaplanOperationException("Response is empty: " + getStatus());
         }
-        final CellReader cellReader = serverFile.getDownloadCellReader();
-        return writeResponse(cellReader, logContext);
+        return writeResponse(serverFile, logContext);
     }
 
     /**
@@ -158,6 +213,7 @@ public class MulesoftAnaplanResponse implements Serializable {
      * @throws AnaplanOperationException When server-file API object fails to import.
      * @throws IOException When server-file API object fails to import.
      * @throws AnaplanAPIException When server-file API object fails to import.
+     * @deprecated
      */
     public void writeImportData(AnaplanConnection connection, String importId)
             throws AnaplanOperationException,
@@ -184,14 +240,10 @@ public class MulesoftAnaplanResponse implements Serializable {
      * connector down the data-flow pipeline.
      *
      * @param connection Anaplan API connection object.
-     * @throws IOException IO exception
-     * @throws AnaplanAPIException
      * @throws AnaplanOperationException
      */
     public String writeExportData(AnaplanConnection connection)
-            throws IOException,
-            AnaplanAPIException,
-            AnaplanOperationException {
+            throws AnaplanOperationException {
         if (getStatus() != OperationStatus.SUCCESS) {
             if (getException() == null) {
                 responseFail(connection, getResponseMessage());

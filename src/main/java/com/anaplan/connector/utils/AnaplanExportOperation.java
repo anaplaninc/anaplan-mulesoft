@@ -16,8 +16,6 @@
 
 package com.anaplan.connector.utils;
 
-import java.io.IOException;
-
 import com.anaplan.client.AnaplanAPIException;
 import com.anaplan.client.Export;
 import com.anaplan.client.Model;
@@ -122,8 +120,6 @@ public class AnaplanExportOperation extends BaseAnaplanOperation {
 					+ anaplanResponse.getStatus() + ", Response message: "
 					+ anaplanResponse.getResponseMessage());
 
-		} catch (IOException e) {
-			throw new AnaplanOperationException(e.getMessage(), e);
 		} catch (AnaplanAPIException e) {
 			throw new AnaplanOperationException(e.getMessage(), e);
 		} finally {

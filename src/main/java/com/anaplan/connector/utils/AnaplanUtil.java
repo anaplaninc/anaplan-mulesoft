@@ -39,7 +39,7 @@ public class AnaplanUtil {
      * @param toprint Data array to create debug string with.
      * @return Debug output for provided string array.
      */
-    public static String debug_output(String[] toprint) {
+    public static String debugOutput(String[] toprint) {
         StringBuilder sb = new StringBuilder();
         for (String s : toprint) {
             sb.append(s + "||");

@@ -146,7 +146,7 @@ public class AnaplanImportOperation extends BaseAnaplanOperation{
 			final CellWriter dataWriter = serverFile.getUploadCellWriter();
 			dataWriter.writeHeaderRow(rows.get(0));
 			LogUtil.status(logContext, "import header is:\n"
-					+ AnaplanUtil.debug_output(rows.get(0)));
+					+ AnaplanUtil.debugOutput(rows.get(0)));
 
 			for (String[] row : rows) {
 				dataWriter.writeDataRow(row);
