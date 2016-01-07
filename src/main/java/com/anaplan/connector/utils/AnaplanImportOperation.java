@@ -142,7 +142,7 @@ public class AnaplanImportOperation extends BaseAnaplanOperation{
 	 */
 	private static MulesoftAnaplanResponse runImportCsv(String data,
                                                         Model model,
-			                                            String importId,
+                                                        String importId,
                                                         String columnSeparator,
                                                         String delimiter,
                                                         String logContext)
@@ -245,7 +245,7 @@ public class AnaplanImportOperation extends BaseAnaplanOperation{
 	public String runImport(String data,
                             String workspaceId,
                             String modelId,
-			                String importId,
+                            String importId,
                             String columnSeparator,
                             String delimiter) throws AnaplanOperationException {
 
