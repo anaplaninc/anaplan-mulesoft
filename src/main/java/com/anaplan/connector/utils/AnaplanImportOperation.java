@@ -57,14 +57,22 @@ public class AnaplanImportOperation extends BaseAnaplanOperation{
      */
     public static CSVFormat getCsvFormat(String columnSeparator, String textDelimiter)
             throws AnaplanOperationException {
+
+        if (columnSeparator.isEmpty()) {
+            throw new AnaplanOperationException("Column-Separator " +
+                    "needs to be specified!");
+        }
+
         switch (columnSeparator) {
             case ",":
+                if (textDelimiter.isEmpty()) {
+                    throw new AnaplanOperationException("Text-Delimiter " +
+                            "needs to be specified!");
+                }
                 return CSVFormat.RFC4180
                         .withDelimiter(columnSeparator.charAt(0))
                         .withQuote(textDelimiter.charAt(0));
-            // Mulesoft flow fails to run with \t, if you specify it in the
-            // properties file, so use \\t.
-            case "\\t":
+            case "\t":
                 return CSVFormat.TDF;
             default:
                 throw new AnaplanOperationException("Only commas and tabs are " +
