@@ -1,7 +1,8 @@
 package com.anaplan.connector.utils;
 
+
 /**
- * Created by spondonsaha on 1/7/16.
+ * Delimiter constants.
  */
 public final class Delimiters {
 
