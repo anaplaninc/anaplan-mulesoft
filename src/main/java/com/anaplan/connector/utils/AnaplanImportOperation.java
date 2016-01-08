@@ -64,7 +64,8 @@ public class AnaplanImportOperation extends BaseAnaplanOperation{
         }
 
         switch (columnSeparator) {
-            case ",":
+
+            case Delimiters.COMMA:
                 if (textDelimiter.isEmpty()) {
                     throw new AnaplanOperationException("Text-Delimiter " +
                             "needs to be specified!");
@@ -72,8 +73,10 @@ public class AnaplanImportOperation extends BaseAnaplanOperation{
                 return CSVFormat.RFC4180
                         .withDelimiter(columnSeparator.charAt(0))
                         .withQuote(textDelimiter.charAt(0));
-            case "\t":
+
+            case Delimiters.TAB:
                 return CSVFormat.TDF;
+
             default:
                 throw new AnaplanOperationException("Only commas and tabs are " +
                         "supported column-separators!");
@@ -98,7 +101,7 @@ public class AnaplanImportOperation extends BaseAnaplanOperation{
 	private static List<String[]> parseImportData(String data, String columnSeparator,
 	        String delimiter) throws AnaplanOperationException {
 
-        if (columnSeparator.length() > 1 && !columnSeparator.equals("\\t")) {
+        if (columnSeparator.length() > 1 && !columnSeparator.equals(Delimiters.TAB)) {
             throw new IllegalArgumentException(
                     "Multi-character Column-Separator not supported!");
         }

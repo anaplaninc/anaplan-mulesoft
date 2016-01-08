@@ -16,6 +16,7 @@
 
 package com.anaplan.connector;
 
+import com.anaplan.connector.utils.*;
 import org.mule.api.annotations.ConnectionStrategy;
 import org.mule.api.annotations.Connector;
 import org.mule.api.annotations.Processor;
@@ -27,10 +28,6 @@ import org.mule.api.annotations.param.Payload;
 import com.anaplan.connector.connection.BaseConnectionStrategy;
 import com.anaplan.connector.exceptions.AnaplanConnectionException;
 import com.anaplan.connector.exceptions.AnaplanOperationException;
-import com.anaplan.connector.utils.AnaplanDeleteOperation;
-import com.anaplan.connector.utils.AnaplanExportOperation;
-import com.anaplan.connector.utils.AnaplanImportOperation;
-import com.anaplan.connector.utils.AnaplanProcessOperation;
 
 
 /**
@@ -93,8 +90,10 @@ public class AnaplanConnector {
 			@FriendlyName("Workspace name or ID") String workspaceId,
 		    @FriendlyName("Model name or ID") String modelId,
 		    @FriendlyName("Import name or ID") String importId,
-			@FriendlyName("Column separator") @Default(",") String columnSeparator,
-			@FriendlyName("Delimiter") @Default("\"") String delimiter)
+			@FriendlyName("Column separator")
+			@Default(Delimiters.COMMA) String columnSeparator,
+			@FriendlyName("Delimiter")
+			@Default(Delimiters.ESCAPE_CHARACTER) String delimiter)
 		    		throws AnaplanConnectionException,
 		    			   AnaplanOperationException {
 		// validate API connectionStrategy
