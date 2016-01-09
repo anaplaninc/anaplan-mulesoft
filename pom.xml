@@ -126,7 +126,7 @@
         <repository>
             <id>anaplan.mvn.repo</id>
             <name>Anaplan Github Maven Repo</name>
-            <url>http://anaplaninc.github.io/mvn-repos/</url>
+            <url>http://anaplaninc.github.io/mvn-repo-ac/</url>
         </repository>
     </distributionManagement>
 
