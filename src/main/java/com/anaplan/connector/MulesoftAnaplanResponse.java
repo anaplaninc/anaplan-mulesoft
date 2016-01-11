@@ -104,6 +104,9 @@ public class MulesoftAnaplanResponse implements Serializable {
      * Uses the server cell-reader handler to read the server response contents
      * and then write it to a string-buffer to be returned as a response.
      *
+     * TODO: Use CSVPrinter to create the response. Check
+     * DO_NOT_REBASE_writeResponseOptimization for suggested changes.
+     *
      * @param cellReader CellReader object to write server response.
      * @param logContext Log context for write data to the provided cell-reader.
      * @return The string response.
@@ -146,10 +149,6 @@ public class MulesoftAnaplanResponse implements Serializable {
             throw new AnaplanAPIException("Response is empty: " + getStatus());
         }
         final CellReader cellReader = serverFile.getDownloadCellReader();
-//		if (getExportMetadata() != null) {
-//			LogUtil.debug(logContext,
-//					getExportMetadata().collectExportFileInfo());
-//		}
         return writeResponse(cellReader, logContext);
     }
 
