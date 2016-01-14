@@ -37,37 +37,40 @@ Note: The Anaplan model you are working with does not assume that the data is co
 
 === export demo mule-app.properties file
 
-anaplan.username=
-anaplan.password=
-anaplan.certificatePath=
-anaplan.apiUrl=https://api.anaplan.com
-anaplan.workspaceId=
-anaplan.modelId=
-anaplan.exportId=
+- anaplan.username=
+- anaplan.password=
+- anaplan.certificatePath=
+- anaplan.apiUrl=https://api.anaplan.com
+- anaplan.workspaceId=
+- anaplan.modelId=
+- anaplan.exportId=
 
 === import demo mule-app.properties file
 
-anaplan.username=
-anaplan.password=
-anaplan.certificatePath=
-anaplan.apiUrl=https://api.anaplan.com
-anaplan.workspaceId=
-anaplan.modelId=
-anaplan.importId=
-anaplan.columnSeparator=,
-anaplan.delimiter=\\"
-file.readFromDir=
-file.moveToDir=
+- anaplan.username=
+- anaplan.password=
+- anaplan.certificatePath=
+- anaplan.apiUrl=https://api.anaplan.com
+- anaplan.workspaceId=
+- anaplan.modelId=
+- anaplan.importId=
+- anaplan.columnSeparator=,
+- anaplan.delimiter="
+- file.readFromDir=
+- file.moveToDir=
+
+- Note: For a tab-separated file, use
+anaplan.columSeparator=\\t
 
 === delete demo mule-app.properties file
 
-anaplan.username=
-anaplan.password=
-anaplan.certificatePath=
-anaplan.apiUrl=https://api.anaplan.com
-anaplan.workspaceId=
-anaplan.modelId=
-anaplan.deleteActionId=
+- anaplan.username=
+- anaplan.password=
+- anaplan.certificatePath=
+- anaplan.apiUrl=https://api.anaplan.com
+- anaplan.workspaceId=
+- anaplan.modelId=
+- anaplan.deleteActionId=
 
 == Setting up the Environment
 
