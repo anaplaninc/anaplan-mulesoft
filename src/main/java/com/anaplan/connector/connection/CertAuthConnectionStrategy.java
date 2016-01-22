@@ -16,6 +16,8 @@
 
 package com.anaplan.connector.connection;
 
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.mule.api.annotations.Connect;
 import org.mule.api.annotations.TestConnectivity;
 import org.mule.api.annotations.components.ConnectionManagement;
@@ -23,8 +25,6 @@ import org.mule.api.annotations.display.Path;
 import org.mule.api.annotations.param.ConnectionKey;
 import org.mule.api.annotations.param.Default;
 import org.mule.api.annotations.param.Optional;
-
-import com.anaplan.connector.utils.LogUtil;
 
 
 /**
@@ -42,6 +42,9 @@ import com.anaplan.connector.utils.LogUtil;
 		friendlyName="Certificate Authentication",
 		configElementName="cert-auth-connection")
 public class CertAuthConnectionStrategy extends BaseConnectionStrategy {
+
+    private static Logger logger = LogManager.getLogger(
+            CertAuthConnectionStrategy.class.getName());
 
 	/**
 	 * Connect to the Anaplan API using an issued certificate. The certificate
@@ -67,8 +70,7 @@ public class CertAuthConnectionStrategy extends BaseConnectionStrategy {
 			@Optional @Default("") String proxyPass)
 					throws org.mule.api.ConnectionException {
 
-		LogUtil.status(getClass().toString(),
-				"Initiating certificate connection...");
+		logger.info("Initiating certificate connection...");
 
 		if (apiConn == null) {
 			// create the connection strategy using certificate path.

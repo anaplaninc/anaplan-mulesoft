@@ -1,4 +1,4 @@
-package com.anaplan.connector.automation.functional;
+package com.anaplan.connector.functional;
 
 import static org.junit.Assert.*;
 
@@ -11,11 +11,10 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mule.tools.devkit.ctf.junit.AbstractTestCase;
 
-public class ExportFromModelTestCases extends
-        AbstractTestCase<AnaplanConnector> {
+public class ExportFromModelTestCases extends AbstractTestCase<AnaplanConnector> {
 
     public ExportFromModelTestCases() {
-        super(AnaplanConnector.class);
+        super();
     }
 
     @Before

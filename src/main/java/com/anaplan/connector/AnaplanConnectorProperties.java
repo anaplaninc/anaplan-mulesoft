@@ -20,7 +20,8 @@ package com.anaplan.connector;
 import java.util.HashMap;
 
 import com.anaplan.connector.exceptions.ConnectorPropertiesException;
-import com.anaplan.connector.utils.LogUtil;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 
 
 /**
@@ -30,6 +31,9 @@ import com.anaplan.connector.utils.LogUtil;
  * methods only added for String as this is all we are currently using.
  */
 public class AnaplanConnectorProperties {
+
+	private static final Logger logger = LogManager.getLogger(
+            AnaplanConnectorProperties.class.getName());
 
 	private final HashMap<String, String> connectorProperties;
 
@@ -62,8 +66,7 @@ public class AnaplanConnectorProperties {
 						+ "lengths!!");
 			}
 		}
-		LogUtil.trace(getClass().getSimpleName(),
-				" creating anaplan properties: " + this.toString());
+        logger.trace("creating anaplan properties: " + this.toString());
 	}
 
 	/**
@@ -73,8 +76,7 @@ public class AnaplanConnectorProperties {
 	 * @return value of the given property.
 	 */
 	public String getStringProperty(String propertyField) {
-		LogUtil.trace(getClass().getSimpleName(), "getStringProperty("
-				+ propertyField + ")");
+        logger.trace("getStringProperty(" + propertyField + ")");
 		return connectorProperties.get(propertyField);
 	}
 }

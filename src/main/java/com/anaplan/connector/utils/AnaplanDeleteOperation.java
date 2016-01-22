@@ -25,6 +25,8 @@ import com.anaplan.client.TaskStatus;
 import com.anaplan.connector.MulesoftAnaplanResponse;
 import com.anaplan.connector.connection.AnaplanConnection;
 import com.anaplan.connector.exceptions.AnaplanOperationException;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 
 
 /**
@@ -32,6 +34,9 @@ import com.anaplan.connector.exceptions.AnaplanOperationException;
  * @author spondonsaha
  */
 public class AnaplanDeleteOperation extends BaseAnaplanOperation {
+
+	private static Logger logger = LogManager.getLogger(
+            AnaplanDeleteOperation.class.getName());
 
 	/**
 	 * Constructor.
@@ -49,39 +54,36 @@ public class AnaplanDeleteOperation extends BaseAnaplanOperation {
 	 *
 	 * @param model Anaplan Model object.
 	 * @param actionId Anaplan Delete action ID.
-	 * @param logContext Log context for delete operation logs.
 	 * @return Response object containing details of executing delete.
 	 * @throws AnaplanAPIException Thrown when errors at talkng to API.
 	 */
 	private static MulesoftAnaplanResponse runDeleteAction(Model model,
-			String actionId, String logContext) throws AnaplanAPIException {
+			String actionId) throws AnaplanAPIException {
 
 		final Action action = model.getAction(actionId);
 
 		if (action == null) {
 			final String msg = UserMessages.getMessage("invalidAction",
 					actionId);
-			return MulesoftAnaplanResponse.executeActionFailure(msg, null,
-					logContext);
+			return MulesoftAnaplanResponse.executeActionFailure(msg, null);
 		}
 
 		final Task task = action.createTask();
-		final TaskStatus status = AnaplanUtil.runServerTask(task,logContext);
+		final TaskStatus status = AnaplanUtil.runServerTask(task);
 
 		if (status.getTaskState() == TaskStatus.State.COMPLETE &&
 		    status.getResult().isSuccessful()) {
 
-			LogUtil.status(logContext, "Action executed successfully.");
+			logger.info("Action executed successfully.");
 
 			// Collect all the status details for running the action.
 			setRunStatusDetails(collectTaskLogs(status));
 
 			return MulesoftAnaplanResponse.executeActionSuccess(
-					status.getTaskState().name(),
-					logContext);
+					status.getTaskState().name());
 		} else {
 			return MulesoftAnaplanResponse.executeActionFailure("Execute Action Failed",
-					null, logContext);
+					null);
 		}
 	}
 
@@ -97,13 +99,11 @@ public class AnaplanDeleteOperation extends BaseAnaplanOperation {
 	 */
 	public String runDeleteAction(String workspaceId, String modelId,
 			String deleteActionId) throws AnaplanOperationException {
-		final String logContext = apiConn.getLogContext();
-		final String exportLogContext = logContext + " [" + deleteActionId + "]";
 
-		LogUtil.status(logContext, "<< Starting Delete-Action >>");
-		LogUtil.status(logContext, "Workspace-ID: " + workspaceId);
-		LogUtil.status(logContext, "Model-ID: " + modelId);
-		LogUtil.status(logContext, "Delete Action ID: " + deleteActionId);
+		logger.info("<< Starting Delete-Action >>");
+		logger.info("Workspace-ID: " + workspaceId);
+		logger.info("Model-ID: " + modelId);
+		logger.info("Delete Action ID: " + deleteActionId);
 
 		// validate that workspace, model and export-ID are valid.
 		validateInput(workspaceId, modelId);
@@ -111,8 +111,8 @@ public class AnaplanDeleteOperation extends BaseAnaplanOperation {
 		// run the export
 		try {
 			final MulesoftAnaplanResponse anaplanResponse = runDeleteAction(model,
-					deleteActionId, exportLogContext);
-			LogUtil.status(logContext, "Action complete: Status: "
+					deleteActionId);
+			logger.info("Action complete: Status: "
 					+ anaplanResponse.getStatus() + ", Response message: "
 					+ anaplanResponse.getResponseMessage());
 
@@ -123,7 +123,7 @@ public class AnaplanDeleteOperation extends BaseAnaplanOperation {
 		}
 
 		String statusMsg = "[" + deleteActionId + "] completed successfully!";
-		LogUtil.status(exportLogContext, statusMsg);
+		logger.info(statusMsg);
 		return statusMsg + "\n\n" + getRunStatusDetails();
 	}
 }

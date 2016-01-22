@@ -26,6 +26,8 @@ import com.anaplan.client.TaskStatus;
 import com.anaplan.client.Workspace;
 import com.anaplan.connector.connection.AnaplanConnection;
 import com.anaplan.connector.exceptions.AnaplanOperationException;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 
 
 /**
@@ -35,6 +37,9 @@ import com.anaplan.connector.exceptions.AnaplanOperationException;
  * @author spondonsaha
  */
 public class BaseAnaplanOperation {
+
+	private static Logger logger = LogManager.getLogger(
+			BaseAnaplanOperation.class.getName());
 
 	protected AnaplanConnection apiConn;
 	protected Service service;
@@ -146,10 +151,8 @@ public class BaseAnaplanOperation {
 
 		// validate workspace and model
 		getModel(workspaceId, modelId);
-		LogUtil.status(apiConn.getLogContext(),
-				"Workspace ID is valid: " + workspaceId);
-		LogUtil.status(apiConn.getLogContext(),
-				"Model ID is valid: " + modelId);
+		logger.info("Workspace ID is valid: " + workspaceId);
+        logger.info("Model ID is valid: " + modelId);
 		// validate export ID
 		// TODO: Fetch JSON response for list of export-IDs, then validate
 	}

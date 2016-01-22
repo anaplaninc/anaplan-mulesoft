@@ -1,4 +1,4 @@
-package com.anaplan.connector.automation.functional;
+package com.anaplan.connector.functional;
 
 import static org.junit.Assert.*;
 
@@ -30,10 +30,10 @@ public class RunProcessTestCases extends AbstractTestCase<AnaplanConnector> {
     @Test
     public void verify() throws AnaplanConnectionException,
             AnaplanOperationException {
-        java.lang.String expected = null;
-        java.lang.String workspaceId = null;
-        java.lang.String modelId = null;
-        java.lang.String processId = null;
+        String expected = null;
+        String workspaceId = null;
+        String modelId = null;
+        String processId = null;
         assertEquals(
                 getConnector().runProcess(workspaceId, modelId, processId),
                 expected);

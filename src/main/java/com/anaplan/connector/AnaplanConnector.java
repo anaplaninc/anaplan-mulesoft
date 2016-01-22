@@ -17,11 +17,11 @@
 package com.anaplan.connector;
 
 import com.anaplan.connector.utils.*;
+import org.mule.api.annotations.Config;
 import org.mule.api.annotations.ConnectionStrategy;
 import org.mule.api.annotations.Connector;
 import org.mule.api.annotations.Processor;
 import org.mule.api.annotations.display.FriendlyName;
-import org.mule.api.annotations.display.Icons;
 import org.mule.api.annotations.param.Default;
 import org.mule.api.annotations.param.Payload;
 
@@ -37,9 +37,8 @@ import com.anaplan.connector.exceptions.AnaplanOperationException;
  * @author MuleSoft, Inc.
  * @author Spondon Saha.
  */
-@Icons(connectorLarge="../../../icons/anaplan-connector-48x32-logo.png",
-	   connectorSmall="../../../icons/anaplan-connector-16x16.png")
-@Connector(name="anaplan", schemaVersion="1.0", friendlyName="Anaplan")
+@Connector(name="anaplan", schemaVersion="3.6", friendlyName="Anaplan",
+           minMuleVersion="3.6")
 public class AnaplanConnector {
 
 	private static AnaplanExportOperation exporter;
@@ -47,7 +46,7 @@ public class AnaplanConnector {
 	private static AnaplanDeleteOperation deleter;
 	private static AnaplanProcessOperation processRunner;
 
-	@ConnectionStrategy
+	@Config
 	private BaseConnectionStrategy connectionStrategy;
 
 	/**

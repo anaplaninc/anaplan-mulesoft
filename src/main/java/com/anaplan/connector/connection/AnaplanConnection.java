@@ -41,8 +41,9 @@ import com.anaplan.client.Workspace;
 import com.anaplan.connector.AnaplanConnectorProperties;
 import com.anaplan.connector.exceptions.AnaplanConnectionException;
 import com.anaplan.connector.exceptions.ConnectorPropertiesException;
-import com.anaplan.connector.utils.LogUtil;
 import com.anaplan.connector.utils.UserMessages;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 
 
 /**
@@ -53,6 +54,9 @@ import com.anaplan.connector.utils.UserMessages;
  * context from {@link #getLogContext()}.
  */
 public class AnaplanConnection {
+
+	private static final Logger logger = LogManager.getLogger(
+            AnaplanConnection.class.getName());
 
 	private static final String USERNAME_FIELD = "username";
 	private static final String PASSWORD_FIELD = "password";
@@ -80,7 +84,7 @@ public class AnaplanConnection {
      *      their credentials if using this connector behind a firewall.
 	 */
 	public AnaplanConnection(boolean isCertificate, String... credentials) {
-		LogUtil.debug("NOTICE: ", credentials[0] + " @ " + credentials[2]);
+		logger.debug("NOTICE: " + credentials[0] + " @ " + credentials[2]);
 		this.isCertificate = isCertificate;
 		connectionConfig = new AnaplanConnectorProperties();
 		try {
@@ -92,11 +96,10 @@ public class AnaplanConnection {
 						PASSWORD_FIELD, URL_FIELD, URL_PROXY, URL_PROXY_USER,
 						URL_PROXY_PASS);
 		} catch (ConnectorPropertiesException e) {
-			LogUtil.error(getLogContext(),
-					"Could not set connector properties!"
+			logger.error(getLogContext() + ": Could not set connector properties!"
 							+ e.getStackTrace().toString());
 		}
-		LogUtil.status(getLogContext(), "Stored connection properties!");
+		logger.info(getLogContext() + ": Stored connection properties!");
 	}
 
 	/**
@@ -131,8 +134,8 @@ public class AnaplanConnection {
 					.generateCertificate(buffStream);
 			if (cert instanceof X509Certificate) {
 				x509 = (X509Certificate) cert;
-				LogUtil.status(getLogContext(), "Certificate VALID!");
-				LogUtil.debug(getLogContext(), x509.toString());
+				logger.info(getLogContext() + ": Certificate VALID!");
+				logger.debug(getLogContext() + ": " + x509.toString());
 			}
 		} catch (CertificateException e) {
 			throw new AnaplanConnectionException(
@@ -165,18 +168,18 @@ public class AnaplanConnection {
      *      or any or the required properties.
 	 */
 	private Service cacheService() throws AnaplanConnectionException {
-		LogUtil.debug(getLogContext(), "trying Anaplan service connection...");
+		logger.debug(getLogContext() + ": trying Anaplan service connection...");
 
 		final String apiUrl = connectionConfig.getStringProperty(URL_FIELD);
 		Service service = null;
-		LogUtil.warning(getLogContext(), "API Url: " + apiUrl);
+        logger.warn(getLogContext() + ": API Url: " + apiUrl);
 		try {
 			service = new Service(new URI(apiUrl));
 		} catch (URISyntaxException e) {
 			closeConnection();
 
 			final String msg = UserMessages.getMessage("invalidApiUri", apiUrl);
-			LogUtil.error(getLogContext(), msg, e);
+			logger.error(getLogContext() + ": " + msg, e);
 			throw new AnaplanConnectionException(msg, e);
 		}
 		// fetch all stored credentials and properties
@@ -203,25 +206,25 @@ public class AnaplanConnection {
 				if (proxyUser != null && !proxyUser.isEmpty()) {
 					service.setProxyCredentials(new Credentials(proxyUser,
 							proxyPass, null, null));
-					LogUtil.debug(getLogContext(), "Proxy server configured");
+					logger.debug(getLogContext() + ": Proxy server configured");
 				}
 			}
 		} catch (AnaplanAPIException e) {
 			closeConnection();
 			final String msg = UserMessages.getMessage("apiConnectFail",
 					e.getMessage());
-			LogUtil.error(getLogContext(), msg, e);
+			logger.error(getLogContext() + ": " + msg, e);
 			throw new AnaplanConnectionException(msg, e);
 		} catch (URISyntaxException e) {
 			closeConnection();
 			final String msg = UserMessages.getMessage("apiConnectFail",
 					e.getMessage());
-			LogUtil.error(getLogContext(), msg, e);
+			logger.error(getLogContext() + ": " + msg, e);
 			throw new AnaplanConnectionException(msg, e);
 		}
 
-		LogUtil.debug(getLogContext(),
-				"Anaplan service connection information cached");
+		logger.debug(getLogContext() + ": Anaplan service connection " +
+                "information cached");
 
 		// validate username/password credentials by pulling workspaces for user
 		List<Workspace> availableWorkspaces = null;
@@ -230,7 +233,7 @@ public class AnaplanConnection {
 		} catch (AnaplanAPIException e) {
 			closeConnection();
 
-			LogUtil.error(getLogContext(), e.getMessage(), e);
+			logger.error(getLogContext() + e.getMessage(), e);
 
 			if (e.getMessage() == null
 					|| !e.getMessage().toLowerCase().contains("credentials")) {
@@ -246,13 +249,13 @@ public class AnaplanConnection {
 
 		if (availableWorkspaces == null || availableWorkspaces.isEmpty()) {
 			final String msg = UserMessages.getMessage("accessFail");
-			LogUtil.error(getLogContext(), msg + " (availableWorkspaces="
+			logger.error(getLogContext() + msg + " (availableWorkspaces="
 					+ availableWorkspaces + ")");
 			throw new AnaplanConnectionException(msg);
 		}
 
-		LogUtil.debug(getLogContext(),
-				"Anaplan service connection validated successfully");
+		logger.debug(getLogContext() + ": Anaplan service connection " +
+                "validated successfully");
 
 		openConnection = service;
 
@@ -272,13 +275,13 @@ public class AnaplanConnection {
 	 *             With user-friendly message if the model cannot be opened.
 	 */
 	public Service openConnection() throws AnaplanConnectionException {
-		LogUtil.status(getLogContext(), "Establishing connection....");
+		logger.info(getLogContext() + ": Establishing connection....");
 		if (openConnection == null) {
-			LogUtil.status(getLogContext(), "No new connection found, "
+			logger.info(getLogContext() + ": No new connection found, "
 					+ "establishing new connection!");
 			return cacheService();
 		} else {
-			LogUtil.status(getLogContext(), "Connection exists, returning "
+			logger.info(getLogContext() + ": Connection exists, returning "
 					+ "cached connection!");
 			return this.openConnection;
 		}
@@ -301,7 +304,7 @@ public class AnaplanConnection {
 			openConnection.close();
 		}
 		openConnection = null;
-		LogUtil.status(getLogContext(), "Connection closed.");
+		logger.info(getLogContext() + ": Connection closed.");
 	}
 
 	/**

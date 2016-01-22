@@ -37,6 +37,8 @@ import com.google.gson.JsonSyntaxException;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 
 
 /**
@@ -45,6 +47,9 @@ import org.apache.commons.csv.CSVRecord;
  * @author spondonsaha
  */
 public class AnaplanImportOperation extends BaseAnaplanOperation{
+
+    private static Logger logger = LogManager.getLogger(
+            AnaplanImportOperation.class.getName());
 
 	public AnaplanImportOperation(AnaplanConnection apiConn) {
 		super(apiConn);
@@ -155,8 +160,7 @@ public class AnaplanImportOperation extends BaseAnaplanOperation{
                                                         Model model,
                                                         String importId,
                                                         String columnSeparator,
-                                                        String delimiter,
-                                                        String logContext)
+                                                        String delimiter)
             throws AnaplanOperationException {
 
 		// 1. Write the provided CSV data to the data-writer.
@@ -171,7 +175,7 @@ public class AnaplanImportOperation extends BaseAnaplanOperation{
         }
         if (imp == null) {
 			final String msg = "Invalid import!";
-			return MulesoftAnaplanResponse.importFailure(msg, null, logContext);
+			return MulesoftAnaplanResponse.importFailure(msg, null);
 		}
 
 		ServerFile serverFile;
@@ -190,8 +194,8 @@ public class AnaplanImportOperation extends BaseAnaplanOperation{
                 // reference
                 final CellWriter dataWriter = serverFile.getUploadCellWriter();
                 dataWriter.writeHeaderRow(rows.get(0));
-                LogUtil.status(logContext, "import header is:\n"
-                        + AnaplanUtil.debugOutput(rows.get(0)));
+                logger.info("import header is:\n" + AnaplanUtil.debugOutput(
+                        rows.get(0)));
 
                 for (String[] row : rows) {
                     dataWriter.writeDataRow(row);
@@ -210,7 +214,7 @@ public class AnaplanImportOperation extends BaseAnaplanOperation{
 		TaskStatus status;
         try {
             task = imp.createTask();
-            status = AnaplanUtil.runServerTask(task, logContext);
+            status = AnaplanUtil.runServerTask(task);
         } catch (AnaplanAPIException e) {
             throw new AnaplanOperationException("Error running Import action:", e);
         }
@@ -219,27 +223,27 @@ public class AnaplanImportOperation extends BaseAnaplanOperation{
                 "Import completed successfully: (" + rowsProcessed +
                 " records processed)";
 		setRunStatusDetails(taskDetailsMsg);
-		LogUtil.status(logContext, getRunStatusDetails());
+		logger.info(getRunStatusDetails());
 
 		// 3. Determine execution status and create response.
 
 		final TaskResult taskResult = status.getResult();
 		if (taskResult.isFailureDumpAvailable()) {
-			LogUtil.status(logContext, UserMessages.getMessage("failureDump"));
+			logger.info(UserMessages.getMessage("failureDump"));
 			final ServerFile failDump = taskResult.getFailureDump();
 
 			return MulesoftAnaplanResponse.importWithFailureDump(
 					UserMessages.getMessage("importBadData", importId),
-					failDump, logContext);
+					failDump);
 		} else {
-			LogUtil.status(logContext, UserMessages.getMessage("noFailureDump"));
+			logger.info(UserMessages.getMessage("noFailureDump"));
 
 			if (taskResult.isSuccessful()) {
 				return MulesoftAnaplanResponse.importSuccess(getRunStatusDetails(),
-						logContext, serverFile);
+						serverFile);
 			} else {
 				return MulesoftAnaplanResponse.importFailure(getRunStatusDetails(),
-						null, logContext);
+						null);
 			}
 		}
 	}
@@ -261,23 +265,23 @@ public class AnaplanImportOperation extends BaseAnaplanOperation{
                             String delimiter) throws AnaplanOperationException {
 
 		final String importLogContext = apiConn.getLogContext() + " ["
-				+ importId + "]";
+				+ importId + "]: ";
 
-		LogUtil.status(apiConn.getLogContext(), "<< Starting import >>");
-		LogUtil.status(apiConn.getLogContext(), "Workspace-ID: " + workspaceId);
-		LogUtil.status(apiConn.getLogContext(), "Model-ID: " + modelId);
-		LogUtil.status(apiConn.getLogContext(), "Import-ID: " + importId);
+		logger.info("<< Starting import >>");
+        logger.info("Workspace-ID: " + workspaceId);
+        logger.info("Model-ID: " + modelId);
+        logger.info("Import-ID: " + importId);
 
 		// validate workspace-ID and model-ID are valid, else throw exception
 		validateInput(workspaceId, modelId);
 
 		try {
-			LogUtil.status(importLogContext, "Starting import: " + importId);
+            logger.info(importLogContext + "Starting import: " + importId);
 
 			final MulesoftAnaplanResponse anaplanResponse = runImportCsv(data, model,
-					importId, columnSeparator, delimiter, importLogContext);
+					importId, columnSeparator, delimiter);
 
-			LogUtil.status(importLogContext, "Import complete: Status: "
+			logger.info(importLogContext + "Import complete: Status: "
 					+ anaplanResponse.getStatus() + ", Response message: "
 					+ anaplanResponse.getResponseMessage());
 
@@ -288,7 +292,7 @@ public class AnaplanImportOperation extends BaseAnaplanOperation{
 		}
 
 		String statusMsg = "[" + importId + "] ran successfully!";
-		LogUtil.status(importLogContext, statusMsg);
+		logger.info(importLogContext + statusMsg);
 		return statusMsg + "\n\n" + getRunStatusDetails();
 	}
 }

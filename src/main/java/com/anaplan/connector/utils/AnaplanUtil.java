@@ -19,6 +19,8 @@ package com.anaplan.connector.utils;
 import com.anaplan.client.AnaplanAPIException;
 import com.anaplan.client.Task;
 import com.anaplan.client.TaskStatus;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 
 
 /**
@@ -27,6 +29,8 @@ import com.anaplan.client.TaskStatus;
  * @author spondonsaha
  */
 public class AnaplanUtil {
+
+    private static Logger logger = LogManager.getLogger(AnaplanUtil.class.getName());
 
     private AnaplanUtil() {
         // static-only
@@ -56,26 +60,23 @@ public class AnaplanUtil {
      * Executes an Anaplan task and polls the status until its complete.
      *
      * @param task Server task object to run.
-     * @param logContext Log context to be used while running server task.
      * @return The status message from the running the task.
      * @throws AnaplanAPIException API exception thrown whenever server task
      *      fails.
      */
-    public static TaskStatus runServerTask(Task task, String logContext)
+    public static TaskStatus runServerTask(Task task)
             throws AnaplanAPIException {
         TaskStatus status = task.getStatus();
-        LogUtil.error(logContext, "TASK STATUS: " + status.getTaskState().toString());
+        logger.error("TASK STATUS: " + status.getTaskState().toString());
         while (status.getTaskState() != TaskStatus.State.COMPLETE
                 && status.getTaskState() != TaskStatus.State.CANCELLED) {
 
             // if busy, nap and check again after 1 second
             try {
                 Thread.sleep(1000);
-                LogUtil.debug(logContext, "Running Task = "
-                        + task.getStatus().getProgress());
+                logger.debug("Running Task = " + task.getStatus().getProgress());
             } catch (InterruptedException e) {
-                LogUtil.error(logContext,
-                        "Task interrupted!\n" + e.getMessage());
+                logger.error("Task interrupted!\n" + e.getMessage());
             }
             status = task.getStatus();
         }

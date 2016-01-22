@@ -16,6 +16,8 @@
 
 package com.anaplan.connector.connection;
 
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.mule.api.annotations.Connect;
 import org.mule.api.annotations.TestConnectivity;
 import org.mule.api.annotations.components.ConnectionManagement;
@@ -23,9 +25,6 @@ import org.mule.api.annotations.display.Password;
 import org.mule.api.annotations.param.ConnectionKey;
 import org.mule.api.annotations.param.Default;
 import org.mule.api.annotations.param.Optional;
-
-import com.anaplan.connector.utils.LogUtil;
-
 
 /**
  * Basic connection strategy to authenticate the Anaplan user via provided
@@ -38,6 +37,9 @@ import com.anaplan.connector.utils.LogUtil;
 		friendlyName="Basic Authentication",
 		configElementName="basic-auth-connection")
 public class BasicAuthConnectionStrategy extends BaseConnectionStrategy {
+
+	private static Logger logger = LogManager.getLogger(
+            BasicAuthConnectionStrategy.class.getName());
 
 	/**
 	 * Connect to the Anaplan API via basic authentication using provided
@@ -63,7 +65,7 @@ public class BasicAuthConnectionStrategy extends BaseConnectionStrategy {
 			@Optional @Password @Default("") String proxyPass)
 					throws org.mule.api.ConnectionException {
 
-		LogUtil.status(getClass().toString(), "Initiating basic connection...");
+		logger.info("Initiating basic connection...");
 
 		if (apiConn == null) {
 			// create the connStrategy object using credentials provided.

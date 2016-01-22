@@ -24,6 +24,8 @@ import com.anaplan.client.TaskStatus;
 import com.anaplan.connector.MulesoftAnaplanResponse;
 import com.anaplan.connector.connection.AnaplanConnection;
 import com.anaplan.connector.exceptions.AnaplanOperationException;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 
 
 /**
@@ -31,6 +33,9 @@ import com.anaplan.connector.exceptions.AnaplanOperationException;
  * @author spondonsaha
  */
 public class AnaplanProcessOperation extends BaseAnaplanOperation {
+
+	private static Logger logger = LogManager.getLogger(
+            AnaplanProcessOperation.class.getName());
 
 	/**
 	 * Constructor.
@@ -47,39 +52,37 @@ public class AnaplanProcessOperation extends BaseAnaplanOperation {
 	 *
 	 * @param model Anaplan Model object.
 	 * @param processId Anaplan Process ID.
-	 * @param logContext Log context for Process operations.
 	 * @return Anaplan response object with execution details.
 	 * @throws AnaplanAPIException thrown if fetching the process or creating the task
 	 *                             to run the process is met with failure.
 	 */
-	private MulesoftAnaplanResponse runProcessTask(Model model, String processId,
-			String logContext) throws AnaplanAPIException {
+	private MulesoftAnaplanResponse runProcessTask(Model model, String processId)
+            throws AnaplanAPIException {
 
 		final Process process = model.getProcess(processId);
 
 		if (process == null) {
 			final String msg = UserMessages.getMessage("invalidProcess",
 					processId);
-			return MulesoftAnaplanResponse.runProcessFailure(msg, null, logContext);
+			return MulesoftAnaplanResponse.runProcessFailure(msg, null);
 		}
 
 		final Task task = process.createTask();
-		final TaskStatus status = AnaplanUtil.runServerTask(task, logContext);
+		final TaskStatus status = AnaplanUtil.runServerTask(task);
 
 		if (status.getTaskState() == TaskStatus.State.COMPLETE &&
 			status.getResult().isSuccessful()) {
 
-			LogUtil.status(logContext, "Process ran successfully!");
+            logger.info("Process ran successfully!");
 
 			// Collect all the status details of running the action
 			setRunStatusDetails(collectTaskLogs(status));
 
 			return MulesoftAnaplanResponse.runProcessSuccess(
-					status.getTaskState().name(),
-					logContext);
+					status.getTaskState().name());
 		} else {
 			return MulesoftAnaplanResponse.runProcessFailure("Run Process failed!",
-					null, logContext);
+					null);
 		}
 	}
 
@@ -95,22 +98,20 @@ public class AnaplanProcessOperation extends BaseAnaplanOperation {
 	 */
 	public String runProcess(String workspaceId, String modelId,
 			String processId) throws AnaplanOperationException {
-		final String processLogContext = apiConn.getLogContext() + "["
-			+ processId + "]";
 
-		LogUtil.status(apiConn.getLogContext(), "<< Starting Process >>");
-		LogUtil.status(apiConn.getLogContext(), "Workspace-ID: " + workspaceId);
-		LogUtil.status(apiConn.getLogContext(), "Model-ID: " + modelId);
-		LogUtil.status(apiConn.getLogContext(), "Process-ID: " + processId);
+        logger.info("<< Starting Process >>");
+        logger.info("Workspace-ID: " + workspaceId);
+        logger.info("Model-ID: " + modelId);
+        logger.info("Process-ID: " + processId);
 
 		// validate workspace-ID and model-ID are valid, else throw exception.
 		validateInput(workspaceId, modelId);
 
 		try {
-			LogUtil.status(processLogContext, "Starting process: "+ processId);
+            logger.info("Starting process: "+ processId);
 			final MulesoftAnaplanResponse anaplanResponse = runProcessTask(model,
-					processId, processLogContext);
-			LogUtil.status(processLogContext, "Process ran successfully:"
+					processId);
+            logger.info("Process ran successfully:"
 					+ anaplanResponse.getStatus() + ", Response message: "
 					+ anaplanResponse.getResponseMessage());
 		} catch (AnaplanAPIException e) {
@@ -120,7 +121,7 @@ public class AnaplanProcessOperation extends BaseAnaplanOperation {
 		}
 
 		String statusMsg = "[" + processId + "] completed successfully!";
-		LogUtil.status(processLogContext, statusMsg);
+        logger.info(statusMsg);
 		return statusMsg + "\n\n" + getRunStatusDetails();
 	}
 }

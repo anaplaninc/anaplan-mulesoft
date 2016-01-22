@@ -1,4 +1,4 @@
-package com.anaplan.connector.automation.functional;
+package com.anaplan.connector.functional;
 
 import static org.junit.Assert.*;
 
