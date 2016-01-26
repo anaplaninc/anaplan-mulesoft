@@ -17,30 +17,21 @@
     <url>http://anaplaninc.github.io/mvn-repos</url>
 
     <properties>
-        <mockito.version>1.8.2</mockito.version>
-        <gson.version>2.2.2</gson.version>
         <category>Community</category>
         <licensePath>LICENSE.md</licensePath>
         <devkit.studio.package.skip>false</devkit.studio.package.skip>
-        <github.global.server>github</github.global.server>
         <eclipse.runtime.version>2.1.0</eclipse.runtime.version>
+        <github.global.server>github</github.global.server>
+        <mule.modules.list.version>1.1</mule.modules.list.version>
         <anaplan.connect.version>1.3.6</anaplan.connect.version>
-        <com.google.code.gson.version>2.2.2</com.google.code.gson.version>
-        <commons.codec.version>1.6</commons.codec.version>
-        <commons.logging.version>1.1.1</commons.logging.version>
         <org.apache.logging.log4j.version>2.5</org.apache.logging.log4j.version>
-        <org.apache.httpcomponents.fluent-hc.version>4.2.5</org.apache.httpcomponents.fluent-hc.version>
-        <org.apache.httpcomponents.httpclient.version>4.2.5</org.apache.httpcomponents.httpclient.version>
-        <org.apache.httpcomponents.httpclient-cache.version>4.2.5</org.apache.httpcomponents.httpclient-cache.version>
-        <org.apache.httpcomponents.httpcore.version>4.2.4</org.apache.httpcomponents.httpcore.version>
-        <org.apache.httpcomponents.httpmime.version>4.2.5</org.apache.httpcomponents.httpmime.version>
         <org.apache.commons.commons-lang3.version>3.4</org.apache.commons.commons-lang3.version>
         <org.apache.commons.commons-csv.version>1.2</org.apache.commons.commons-csv.version>
         <org.apache.commons.io.version>1.3.2</org.apache.commons.io.version>
-        <maven.compiler.plugin.version>3.5</maven.compiler.plugin.version>
         <junit4.version>4.12</junit4.version>
         <powermock.version>1.6.2</powermock.version>
-        <mule.modules.list.version>1.1</mule.modules.list.version>
+        <mockito.version>1.10.19</mockito.version>
+        <maven.compiler.plugin.version>3.5</maven.compiler.plugin.version>
     </properties>
 
     <dependencies>
@@ -55,41 +46,6 @@
             <groupId>com.anaplan.client</groupId>
             <artifactId>anaplan-connect</artifactId>
             <version>${anaplan.connect.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.google.code.gson</groupId>
-            <artifactId>gson</artifactId>
-            <version>${com.google.code.gson.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>commons-codec</groupId>
-            <artifactId>commons-codec</artifactId>
-            <version>${commons.codec.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>fluent-hc</artifactId>
-            <version>${org.apache.httpcomponents.fluent-hc.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>httpclient</artifactId>
-            <version>${org.apache.httpcomponents.httpclient.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>httpclient-cache</artifactId>
-            <version>${org.apache.httpcomponents.httpclient-cache.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>httpcore</artifactId>
-            <version>${org.apache.httpcomponents.httpcore.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>httpmime</artifactId>
-            <version>${org.apache.httpcomponents.httpmime.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>
@@ -123,12 +79,6 @@
             <groupId>org.powermock</groupId>
             <artifactId>powermock-api-mockito</artifactId>
             <version>${powermock.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.12</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
