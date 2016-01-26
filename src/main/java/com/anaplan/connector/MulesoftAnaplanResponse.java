@@ -16,9 +16,6 @@
 
 package com.anaplan.connector;
 
-import java.io.IOException;
-import java.io.Serializable;
-
 import com.anaplan.client.AnaplanAPIException;
 import com.anaplan.client.CellReader;
 import com.anaplan.client.ExportMetadata;
@@ -27,10 +24,12 @@ import com.anaplan.connector.connection.AnaplanConnection;
 import com.anaplan.connector.exceptions.AnaplanOperationException;
 import com.anaplan.connector.utils.OperationStatus;
 import com.anaplan.connector.utils.UserMessages;
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
+
+import java.io.IOException;
+import java.io.Serializable;
 
 
 /**

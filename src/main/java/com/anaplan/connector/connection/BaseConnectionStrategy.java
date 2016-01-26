@@ -119,8 +119,7 @@ public class BaseConnectionStrategy {
 			if (apiConn.getConnection() == null) {
 				apiConn.openConnection();
 			} else {
-				logger.info(apiConn.getLogContext() + ": Connection to API " +
-                        "exists. Proceeding...");
+				logger.info("Connection to API exists. Proceeding...");
 			}
 		} else {
 			throw new AnaplanConnectionException(

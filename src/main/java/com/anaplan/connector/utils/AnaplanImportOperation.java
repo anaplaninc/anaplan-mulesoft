@@ -16,29 +16,21 @@
 
 package com.anaplan.connector.utils;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
-import com.anaplan.client.AnaplanAPIException;
-import com.anaplan.client.CellWriter;
-import com.anaplan.client.Import;
-import com.anaplan.client.Model;
-import com.anaplan.client.ServerFile;
-import com.anaplan.client.Task;
-import com.anaplan.client.TaskResult;
-import com.anaplan.client.TaskStatus;
+import com.anaplan.client.*;
 import com.anaplan.connector.MulesoftAnaplanResponse;
 import com.anaplan.connector.connection.AnaplanConnection;
 import com.anaplan.connector.exceptions.AnaplanOperationException;
 import com.google.gson.JsonSyntaxException;
-
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 
 /**
@@ -264,9 +256,6 @@ public class AnaplanImportOperation extends BaseAnaplanOperation{
                             String columnSeparator,
                             String delimiter) throws AnaplanOperationException {
 
-		final String importLogContext = apiConn.getLogContext() + " ["
-				+ importId + "]: ";
-
 		logger.info("<< Starting import >>");
         logger.info("Workspace-ID: " + workspaceId);
         logger.info("Model-ID: " + modelId);
@@ -276,12 +265,12 @@ public class AnaplanImportOperation extends BaseAnaplanOperation{
 		validateInput(workspaceId, modelId);
 
 		try {
-            logger.info(importLogContext + "Starting import: " + importId);
+            logger.info("Starting import: " + importId);
 
 			final MulesoftAnaplanResponse anaplanResponse = runImportCsv(data, model,
 					importId, columnSeparator, delimiter);
 
-			logger.info(importLogContext + "Import complete: Status: "
+			logger.info("Import complete: Status: "
 					+ anaplanResponse.getStatus() + ", Response message: "
 					+ anaplanResponse.getResponseMessage());
 
@@ -292,7 +281,7 @@ public class AnaplanImportOperation extends BaseAnaplanOperation{
 		}
 
 		String statusMsg = "[" + importId + "] ran successfully!";
-		logger.info(importLogContext + statusMsg);
+		logger.info(statusMsg);
 		return statusMsg + "\n\n" + getRunStatusDetails();
 	}
 }

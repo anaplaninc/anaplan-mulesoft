@@ -5,15 +5,12 @@ import com.anaplan.client.transport.AnaplanAPITransportException;
 import com.anaplan.client.transport.ApacheHttpProvider;
 import com.anaplan.client.transport.TransportProvider;
 import com.anaplan.client.transport.TransportProviderFactory;
-import com.anaplan.connector.AnaplanConnector;
 import com.anaplan.connector.connection.AnaplanConnection;
-import com.anaplan.connector.connection.CertAuthConnectionStrategy;
 import org.apache.commons.io.IOUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
-import org.mule.tools.devkit.ctf.junit.AbstractTestCase;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
@@ -22,21 +19,22 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.PropertyResourceBundle;
+import java.util.ResourceBundle;
 
-/**
- * Created by spondonsaha on 1/19/16.
- */
+
 @RunWith(PowerMockRunner.class)
+@PowerMockIgnore("javax.management.*")
 @PrepareForTest({
         AnaplanConnection.class,
-        CertAuthConnectionStrategy.class,
         ApacheHttpProvider.class,
         Service.class,
         TransportProvider.class,
-        TransportProviderFactory.class})
-public class BaseUnitTestDriver { // extends AbstractTestCase<AnaplanConnector> {
+        TransportProviderFactory.class,
+        URI.class})
+public abstract class BaseUnitTestDriver {
 
     private static Map<String, byte[]> fixtures = new HashMap<>();
     protected TransportProvider mockTransportProvider;
@@ -44,36 +42,31 @@ public class BaseUnitTestDriver { // extends AbstractTestCase<AnaplanConnector> 
     protected TransportProviderFactory mockTransportProviderFactory;
     protected ResourceBundle properties;
     protected Service mockService;
-    protected URI mockServiceUri;
+    protected URI serviceUri;
     protected static final String sampleProperties = "sample.properties";
-    protected static final String certificatePath = "sample.cert";
     protected static final String workspacesResponseFile = "workspaces_response.json";
-    protected String workspacesResponse;
+    protected byte[] workspacesResponse;
     protected String apiUrl;
-
-
-//    public BaseUnitTestDriver() {
-//        super(AnaplanConnector.class);
-//    }
+    private static final String workspaceUrlPathToken = "/1/3/workspaces/";  // API v1.3
 
     @Before
     public void setUpBase() {
-        apiUrl = properties.getString("anaplan.apiUrl");
         configStream = getClass().getClassLoader().getResourceAsStream(sampleProperties);
         try {
             properties = new PropertyResourceBundle(getClass().getClassLoader()
                     .getResourceAsStream(sampleProperties));
-            mockServiceUri = PowerMockito.spy(new URI(apiUrl));
             properties = new PropertyResourceBundle(configStream);
-            workspacesResponse = new String(getFixture(workspacesResponseFile));
+            apiUrl = properties.getString("anaplan.apiUrl");
+            serviceUri = new URI(apiUrl);
+            workspacesResponse = getFixture(workspacesResponseFile);
             mockTransportProvider = Mockito.mock(ApacheHttpProvider.class);
             mockTransportProviderFactory = Mockito.mock(TransportProviderFactory.class);
-            mockService = Mockito.mock(Service.class);
+            mockService = PowerMockito.spy(new Service(serviceUri));
             PowerMockito.whenNew(URI.class)
                         .withArguments(apiUrl)
-                        .thenReturn(mockServiceUri);
+                        .thenReturn(serviceUri);
             PowerMockito.whenNew(Service.class)
-                        .withArguments(mockServiceUri)
+                        .withArguments(serviceUri)
                         .thenReturn(mockService);
             recordActionsFetchMockTransportProvider();
             recordActionsFetchMockWorkspaces();
@@ -111,6 +104,11 @@ public class BaseUnitTestDriver { // extends AbstractTestCase<AnaplanConnector> 
         return fixtures.get(fixtureName);
     }
 
+    /**
+     * Helper method to mock out fetching of Transport-Provider (eg:
+     * ApacheHTTPProvider, etc.)
+     * @throws AnaplanAPITransportException
+     */
     protected void recordActionsFetchMockTransportProvider()
             throws AnaplanAPITransportException {
         PowerMockito.mockStatic(TransportProviderFactory.class);
@@ -121,12 +119,37 @@ public class BaseUnitTestDriver { // extends AbstractTestCase<AnaplanConnector> 
                     .createDefaultProvider();
     }
 
+    /**
+     * Helper method that mocks out API call to fetch list of workspaces.
+     * @throws AnaplanAPITransportException
+     * @throws IOException
+     */
     protected void recordActionsFetchMockWorkspaces()
             throws AnaplanAPITransportException, IOException {
-        String path = "/1/3";  // always depending on API v1.3
         PowerMockito.doReturn(workspacesResponse)
                     .when(mockTransportProvider)
-                    .get(path + "/workspaces/", "application/json");
+                    .get(workspaceUrlPathToken, "application/json");
+    }
+
+    /**
+     * Helper method that mocks out the behavior to always throw an
+     * AnaplanAPIException whenever fetching list of workspaces trying to
+     * validate the API connection.
+     * @throws AnaplanAPITransportException
+     * @throws IOException
+     */
+    protected void recordActionsFetchMockWorkspaceFail()
+            throws AnaplanAPITransportException, IOException {
+        PowerMockito.doThrow(new AnaplanAPITransportException("Test exception"))
+                    .when(mockTransportProvider)
+                    .get(workspaceUrlPathToken, "application/json");
+    }
+
+    protected void recordActionsFetchWorkspacesEmptyResult()
+            throws AnaplanAPITransportException, IOException {
+        PowerMockito.doReturn(IOUtils.toByteArray("[]"))
+                    .when(mockTransportProvider)
+                    .get(workspaceUrlPathToken, "application/json");
     }
 
 }
