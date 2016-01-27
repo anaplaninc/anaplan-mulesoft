@@ -32,6 +32,7 @@
         <powermock.version>1.6.2</powermock.version>
         <mockito.version>1.10.19</mockito.version>
         <maven.compiler.plugin.version>3.5</maven.compiler.plugin.version>
+        <coveralls.io.version>4.1.0</coveralls.io.version>
     </properties>
 
     <dependencies>
@@ -119,6 +120,14 @@
                 <configuration>
                     <source>${jdk.version}</source>
                     <target>${jdk.version}</target>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.eluder.coveralls</groupId>
+                <artifactId>coveralls-maven-plugin</artifactId>
+                <version>${coveralls.io.version}</version>
+                <configuration>
+                    <repoToken>ZDO6lFjwnyGgAH6l9yJnGHy9uuY7hZp2D</repoToken>
                 </configuration>
             </plugin>
         </plugins>
