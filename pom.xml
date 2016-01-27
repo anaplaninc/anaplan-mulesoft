@@ -142,17 +142,14 @@
                     <!-- aggregated reports for multi-module projects -->
                     <aggregate>true</aggregate>
                     <instrumentation>
-                        <excludes>
-                            <exclude>com/anaplan/connector/adapter/*.class</exclude>
-                            <exclude>com/anaplan/connector/adapters/*.class</exclude>
-                            <exclude>com/anaplan/connector/agents/*.class</exclude>
-                            <exclude>com/anaplan/connector/config/*.class</exclude>
-                            <exclude>com/anaplan/connector/connectivity/*.class</exclude>
-                            <exclude>com/anaplan/connector/devkit/*.class</exclude>
-                            <exclude>com/anaplan/connector/pooling/*.class</exclude>
-                            <exclude>com/anaplan/connector/processors/*.class</exclude>
-                            <exclude>org/mule/tooling/ui/contribution/*.class</exclude>
-                        </excludes>
+                        <includes>
+                            <include>com/anaplan/connector/connection/*.class</include>
+                            <include>com/anaplan/connector/exceptions/*.class</include>
+                            <include>com/anaplan/connector/utils/*.class</include>
+                            <include>com/anaplan/connector/AnaplanConnector.class</include>
+                            <include>com/anaplan/connector/AnaplanConnectorProperties.class</include>
+                            <include>com/anaplan/connector/MulesoftAnaplanResponse.class</include>
+                        </includes>
                     </instrumentation>
                 </configuration>
             </plugin>
