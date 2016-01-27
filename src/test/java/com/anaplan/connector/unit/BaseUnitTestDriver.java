@@ -193,6 +193,13 @@ public abstract class BaseUnitTestDriver {
                 .get(uriToken, "application/json");
     }
 
+    protected void recordActionsTaskResultSuccess() {
+        PowerMockito.doReturn(TaskStatus.State.COMPLETE).when(mockStatus)
+                .getTaskState();
+        PowerMockito.doReturn(mockTaskResult).when(mockStatus).getResult();
+        PowerMockito.doReturn(true).when(mockTaskResult).isSuccessful();
+    }
+
     protected void recordActionsFetchMockItems(String entityName,
                                                String fixtureName)
                                                     throws Exception {

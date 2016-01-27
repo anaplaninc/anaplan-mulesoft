@@ -1,7 +1,6 @@
 package com.anaplan.connector.unit;
 
 import com.anaplan.client.Export;
-import com.anaplan.client.TaskStatus;
 import com.anaplan.connector.utils.AnaplanExportOperation;
 import org.junit.Before;
 import org.junit.Test;
@@ -37,13 +36,6 @@ public class ExportOperationUnitTestCases extends BaseUnitTestDriver {
                     .get(modelUrlPathToken + "/exports", contentType);
     }
 
-    private void recordActionsExportTaskResultSuccess() {
-        PowerMockito.doReturn(TaskStatus.State.COMPLETE).when(mockStatus)
-                    .getTaskState();
-        PowerMockito.doReturn(mockTaskResult).when(mockStatus).getResult();
-        PowerMockito.doReturn(true).when(mockTaskResult).isSuccessful();
-    }
-
     private void recordActionsGetExportMetadata() throws Exception {
         PowerMockito.doReturn("{}".getBytes())
                     .when(mockTransportProvider)
@@ -66,7 +58,7 @@ public class ExportOperationUnitTestCases extends BaseUnitTestDriver {
         recordActionsFetchMockExports();
         recordActionsFetchMockItems("files", filesResponseFile);
         recordActionsRunServerTask(exportUrlPathToken);
-        recordActionsExportTaskResultSuccess();
+        recordActionsTaskResultSuccess();
         recordActionsGetExportMetadata();
         recordActionsGetDownloadStream();
 
