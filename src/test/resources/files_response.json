@@ -1,6 +1,6 @@
 [
   {
-    "id": "serverFileId",
+    "id": "serverFileIdForImport",
     "name": "File 0",
     "chunkCount": 1,
     "delimiter": "",
@@ -11,7 +11,7 @@
     "separator": "\t"
   },
   {
-    "id": "113000000027",
+    "id": "exportId",
     "name": "File 1",
     "chunkCount": 2,
     "delimiter": "\"",

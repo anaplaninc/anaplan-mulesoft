@@ -29,7 +29,7 @@ public class ImportToModelTestCases extends AbstractTestCase<AnaplanConnector> {
         System.out.println("Done here!!!!!");
 
 //        assertEquals(
-//                getConnector().importToModel(IOU sampleFileData, workspaceId, modelId,
+//                getConnector().importToModel(IOU sampleDataFile, workspaceId, modelId,
 //                        importId, columnSeparator, delimiter), expected);
     }
 

@@ -1,13 +1,12 @@
 package com.anaplan.connector.unit;
 
-import com.anaplan.client.Model;
-import com.anaplan.client.Service;
-import com.anaplan.client.Workspace;
+import com.anaplan.client.*;
 import com.anaplan.client.transport.AnaplanAPITransportException;
 import com.anaplan.client.transport.ApacheHttpProvider;
 import com.anaplan.client.transport.TransportProvider;
 import com.anaplan.client.transport.TransportProviderFactory;
 import com.anaplan.connector.connection.AnaplanConnection;
+import com.anaplan.connector.utils.AnaplanUtil;
 import org.apache.commons.io.IOUtils;
 import org.junit.After;
 import org.junit.Before;
@@ -37,7 +36,11 @@ import java.util.ResourceBundle;
         TransportProviderFactory.class,
         URI.class,
         Workspace.class,
-        Model.class})
+        Model.class,
+        AnaplanUtil.class,
+        Credentials.class,
+        TaskStatus.class,
+        TaskResult.class})
 public abstract class BaseUnitTestDriver {
 
     private static Map<String, byte[]> fixtures = new HashMap<>();
@@ -47,12 +50,19 @@ public abstract class BaseUnitTestDriver {
     protected static ResourceBundle properties;
     protected Service mockService;
     protected URI serviceUri;
+    protected AnaplanConnection mockAnaplanConnection;
     protected static final String sampleProperties = "test.properties";
     protected static final String workspacesResponseFile = "workspaces_response.json";
     protected static final String modelsResponseFile = "models_response.json";
-    protected static final String sampleDataFile = "sample_data.csv";
+    protected static final String sampleDataFilePath = "sample_data.csv";
+    protected String sampleDataFile;
     protected byte[] workspacesResponse;
     protected String apiUrl;
+    protected static final String contentType = "application/json";
+    protected static final String createTaskResponseFile = "createTask_response.json";
+    protected static final String filesResponseFile = "files_response.json";
+    protected TaskStatus mockStatus;
+    protected TaskResult mockTaskResult;
 
     static {
         configStream = BaseUnitTestDriver.class.getClassLoader()
@@ -77,15 +87,18 @@ public abstract class BaseUnitTestDriver {
             "anaplan.modelId");
     protected static final String certificatePath = properties.getString(
             "certificate.path");
-    protected static final String testUsername = properties.getString("anaplan.username");
 
     @Before
     public void setUpBase() {
         try {
+            sampleDataFile = new String(getFixture(sampleDataFilePath));
+            mockAnaplanConnection = Mockito.mock(AnaplanConnection.class);
             apiUrl = properties.getString("anaplan.apiUrl");
             serviceUri = new URI(apiUrl);
             workspacesResponse = getFixture(workspacesResponseFile);
             mockTransportProvider = Mockito.mock(ApacheHttpProvider.class);
+            mockStatus = Mockito.mock(TaskStatus.class);
+            mockTaskResult = Mockito.mock(TaskResult.class);
             mockTransportProviderFactory = Mockito.mock(TransportProviderFactory.class);
             mockService = PowerMockito.spy(new Service(serviceUri));
             PowerMockito.whenNew(URI.class)
@@ -106,6 +119,9 @@ public abstract class BaseUnitTestDriver {
         Mockito.reset(mockTransportProvider);
         Mockito.reset(mockTransportProviderFactory);
         Mockito.reset(mockService);
+        Mockito.reset(mockAnaplanConnection);
+        Mockito.reset(mockStatus);
+        Mockito.reset(mockTaskResult);
     }
 
     /**
@@ -128,6 +144,13 @@ public abstract class BaseUnitTestDriver {
             fixtures.put(fixtureName, streamBytes);
         }
         return fixtures.get(fixtureName);
+    }
+
+    protected void setupMockConnection() throws Exception {
+        PowerMockito.doReturn(mockService)
+                .when(mockAnaplanConnection)
+                .getConnection();
+        mockService.setServiceCredentials(Mockito.mock(Credentials.class));
     }
 
     protected void recordActionsFetchMockTransportProvider()
@@ -176,5 +199,17 @@ public abstract class BaseUnitTestDriver {
         PowerMockito.doReturn(getFixture(fixtureName))
                 .when(mockTransportProvider)
                 .get(modelUrlPathToken + "/" + entityName, "application/json");
+    }
+
+    protected void recordActionsRunServerTask(String urlPathToken)
+            throws Exception {
+        String taskParamsJson = "{\"localeName\":\"en_US\"}";
+        PowerMockito.doReturn(getFixture(createTaskResponseFile))
+                    .when(mockTransportProvider)
+                    .post(urlPathToken + "/tasks", taskParamsJson.getBytes(),
+                          contentType, contentType);
+        PowerMockito.mockStatic(AnaplanUtil.class);
+        Mockito.when(AnaplanUtil.runServerTask(Mockito.any(Task.class)))
+               .thenReturn(mockStatus);
     }
 }

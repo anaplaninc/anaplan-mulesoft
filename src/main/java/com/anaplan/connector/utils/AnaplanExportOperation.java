@@ -16,19 +16,14 @@
 
 package com.anaplan.connector.utils;
 
-import java.io.IOException;
-
-import com.anaplan.client.AnaplanAPIException;
-import com.anaplan.client.Export;
-import com.anaplan.client.Model;
-import com.anaplan.client.ServerFile;
-import com.anaplan.client.Task;
-import com.anaplan.client.TaskStatus;
+import com.anaplan.client.*;
 import com.anaplan.connector.MulesoftAnaplanResponse;
 import com.anaplan.connector.connection.AnaplanConnection;
 import com.anaplan.connector.exceptions.AnaplanOperationException;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
+
+import java.io.IOException;
 
 
 /**
@@ -59,7 +54,8 @@ public class AnaplanExportOperation extends BaseAnaplanOperation {
 	 * @throws AnaplanAPIException Thrown when error creating export task, or
 	 *                             running it, or when building the response
 	 */
-	private static MulesoftAnaplanResponse doExport(Model model, String exportId) throws AnaplanAPIException {
+	private static MulesoftAnaplanResponse doExport(Model model, String exportId)
+			throws AnaplanAPIException {
 
 		final Export exp = model.getExport(exportId);
 		if (exp == null) {

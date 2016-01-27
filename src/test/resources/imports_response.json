@@ -2,7 +2,7 @@
   {
     "id": "importId",
     "name": "List 0 from File 0",
-    "importDataSourceId": "serverFileId",
+    "importDataSourceId": "serverFileIdForImport",
     "importType": "HIERARCHY_DATA"
   },
   {
