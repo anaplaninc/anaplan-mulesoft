@@ -1,4 +1,6 @@
 language: java
-script: mvn clean test -Dtest=UnitTestSuite
+script: mvn clean test -Dtest=UnitTestSuite jacoco:report coveralls:report
 jdk:
     - oraclejdk7
+after_success:
+    - mvn clean test -Dtest=UnitTestSuite jacoco:report coveralls:report

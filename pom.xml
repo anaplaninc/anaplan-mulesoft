@@ -33,6 +33,7 @@
         <mockito.version>1.10.19</mockito.version>
         <maven.compiler.plugin.version>3.5</maven.compiler.plugin.version>
         <coveralls.io.version>4.1.0</coveralls.io.version>
+        <jacoco.maven.plugin.version>0.7.5.201505241946</jacoco.maven.plugin.version>
     </properties>
 
     <dependencies>
@@ -122,6 +123,7 @@
                     <target>${jdk.version}</target>
                 </configuration>
             </plugin>
+            <!-- For Coveralls.io, requires coveralls and JaCoCo plugins -->
             <plugin>
                 <groupId>org.eluder.coveralls</groupId>
                 <artifactId>coveralls-maven-plugin</artifactId>
@@ -129,6 +131,19 @@
                 <configuration>
                     <repoToken>ZDO6lFjwnyGgAH6l9yJnGHy9uuY7hZp2D</repoToken>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>${jacoco.maven.plugin.version}</version>
+                <executions>
+                    <execution>
+                        <id>prepare-agent</id>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
