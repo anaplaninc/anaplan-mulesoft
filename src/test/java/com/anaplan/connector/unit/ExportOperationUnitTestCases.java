@@ -15,7 +15,7 @@ import static org.junit.Assert.assertEquals;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({Export.class})
-public class ExportOperationTestCases extends BaseUnitTestDriver {
+public class ExportOperationUnitTestCases extends BaseUnitTestDriver {
 
     private static final String exportsResponseFile = "exports_response.json";
     private static final String exportFileChunksResponseFile = "export_fileChunks_response.json";

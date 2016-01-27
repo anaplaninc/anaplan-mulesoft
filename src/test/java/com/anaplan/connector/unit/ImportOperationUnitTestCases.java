@@ -14,7 +14,7 @@ import java.io.OutputStream;
 
 
 @RunWith(PowerMockRunner.class)
-public class ImportOperationTestCases extends BaseUnitTestDriver {
+public class ImportOperationUnitTestCases extends BaseUnitTestDriver {
 
     private static final String importId = properties.getString(
             "anaplan.importId");
