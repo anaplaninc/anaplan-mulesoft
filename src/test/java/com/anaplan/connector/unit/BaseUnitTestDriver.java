@@ -1,6 +1,8 @@
 package com.anaplan.connector.unit;
 
+import com.anaplan.client.Model;
 import com.anaplan.client.Service;
+import com.anaplan.client.Workspace;
 import com.anaplan.client.transport.AnaplanAPITransportException;
 import com.anaplan.client.transport.ApacheHttpProvider;
 import com.anaplan.client.transport.TransportProvider;
@@ -33,29 +35,53 @@ import java.util.ResourceBundle;
         Service.class,
         TransportProvider.class,
         TransportProviderFactory.class,
-        URI.class})
+        URI.class,
+        Workspace.class,
+        Model.class})
 public abstract class BaseUnitTestDriver {
 
     private static Map<String, byte[]> fixtures = new HashMap<>();
     protected TransportProvider mockTransportProvider;
-    private InputStream configStream;
+    private static InputStream configStream;
     protected TransportProviderFactory mockTransportProviderFactory;
-    protected ResourceBundle properties;
+    protected static ResourceBundle properties;
     protected Service mockService;
     protected URI serviceUri;
-    protected static final String sampleProperties = "sample.properties";
+    protected static final String sampleProperties = "test.properties";
     protected static final String workspacesResponseFile = "workspaces_response.json";
+    protected static final String modelsResponseFile = "models_response.json";
+    protected static final String sampleDataFile = "sample_data.csv";
     protected byte[] workspacesResponse;
     protected String apiUrl;
-    private static final String workspaceUrlPathToken = "/1/3/workspaces/";  // API v1.3
+
+    static {
+        configStream = BaseUnitTestDriver.class.getClassLoader()
+                .getResourceAsStream(sampleProperties);
+        try {
+            properties = new PropertyResourceBundle(
+                    BaseUnitTestDriver.class.getClassLoader()
+                            .getResourceAsStream(sampleProperties));
+            properties = new PropertyResourceBundle(configStream);
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to load properties!");
+        }
+    }
+
+    protected static final String workspaceUrlPathToken = properties.getString(
+            "workspace.urlPathToken");  // API v1.3
+    protected static final String modelUrlPathToken = properties.getString(
+            "model.urlPathToken");
+    protected static final String workspaceId = properties.getString(
+            "anaplan.workspaceId");
+    protected static final String modelId = properties.getString(
+            "anaplan.modelId");
+    protected static final String certificatePath = properties.getString(
+            "certificate.path");
+    protected static final String testUsername = properties.getString("anaplan.username");
 
     @Before
     public void setUpBase() {
-        configStream = getClass().getClassLoader().getResourceAsStream(sampleProperties);
         try {
-            properties = new PropertyResourceBundle(getClass().getClassLoader()
-                    .getResourceAsStream(sampleProperties));
-            properties = new PropertyResourceBundle(configStream);
             apiUrl = properties.getString("anaplan.apiUrl");
             serviceUri = new URI(apiUrl);
             workspacesResponse = getFixture(workspacesResponseFile);
@@ -104,11 +130,6 @@ public abstract class BaseUnitTestDriver {
         return fixtures.get(fixtureName);
     }
 
-    /**
-     * Helper method to mock out fetching of Transport-Provider (eg:
-     * ApacheHTTPProvider, etc.)
-     * @throws AnaplanAPITransportException
-     */
     protected void recordActionsFetchMockTransportProvider()
             throws AnaplanAPITransportException {
         PowerMockito.mockStatic(TransportProviderFactory.class);
@@ -119,11 +140,6 @@ public abstract class BaseUnitTestDriver {
                     .createDefaultProvider();
     }
 
-    /**
-     * Helper method that mocks out API call to fetch list of workspaces.
-     * @throws AnaplanAPITransportException
-     * @throws IOException
-     */
     protected void recordActionsFetchMockWorkspaces()
             throws AnaplanAPITransportException, IOException {
         PowerMockito.doReturn(workspacesResponse)
@@ -131,13 +147,6 @@ public abstract class BaseUnitTestDriver {
                     .get(workspaceUrlPathToken, "application/json");
     }
 
-    /**
-     * Helper method that mocks out the behavior to always throw an
-     * AnaplanAPIException whenever fetching list of workspaces trying to
-     * validate the API connection.
-     * @throws AnaplanAPITransportException
-     * @throws IOException
-     */
     protected void recordActionsFetchMockWorkspaceFail()
             throws AnaplanAPITransportException, IOException {
         PowerMockito.doThrow(new AnaplanAPITransportException("Test exception"))
@@ -152,4 +161,20 @@ public abstract class BaseUnitTestDriver {
                     .get(workspaceUrlPathToken, "application/json");
     }
 
+    protected void recordActionsFetchMockModels() throws Exception {
+        String uriToken = workspaceUrlPathToken
+                + properties.getString("anaplan.workspaceId")
+                + "/models";
+        PowerMockito.doReturn(getFixture(modelsResponseFile))
+                .when(mockTransportProvider)
+                .get(uriToken, "application/json");
+    }
+
+    protected void recordActionsFetchMockItems(String entityName,
+                                               String fixtureName)
+                                                    throws Exception {
+        PowerMockito.doReturn(getFixture(fixtureName))
+                .when(mockTransportProvider)
+                .get(modelUrlPathToken + "/" + entityName, "application/json");
+    }
 }

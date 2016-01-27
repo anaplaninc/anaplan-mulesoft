@@ -1,0 +1,24 @@
+[
+  {
+    "id": "serverFileId",
+    "name": "File 0",
+    "chunkCount": 1,
+    "delimiter": "",
+    "encoding": "UTF-8",
+    "firstDataRow": 2,
+    "format": "txt",
+    "headerRow": 1,
+    "separator": "\t"
+  },
+  {
+    "id": "113000000027",
+    "name": "File 1",
+    "chunkCount": 2,
+    "delimiter": "\"",
+    "encoding": "ISO-8859-1",
+    "firstDataRow": 2,
+    "format": "txt",
+    "headerRow": 1,
+    "separator": ","
+  }
+]

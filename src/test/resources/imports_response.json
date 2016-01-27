@@ -1,0 +1,14 @@
+[
+  {
+    "id": "importId",
+    "name": "List 0 from File 0",
+    "importDataSourceId": "serverFileId",
+    "importType": "HIERARCHY_DATA"
+  },
+  {
+    "id": "112000000033",
+    "name": "Module 0 from File 0",
+    "importDataSourceId": "113000000028",
+    "importType": "HIERARCHY_DATA"
+  }
+]

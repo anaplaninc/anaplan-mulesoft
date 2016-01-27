@@ -6,8 +6,6 @@ import com.anaplan.client.Workspace;
 import com.anaplan.connector.connection.AnaplanConnection;
 import com.anaplan.connector.connection.BasicAuthConnectionStrategy;
 import com.anaplan.connector.connection.CertAuthConnectionStrategy;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -31,22 +29,8 @@ import static org.junit.Assert.fail;
         Service.class})
 public class ConnectionUnitTestCases extends BaseUnitTestDriver {
 
-    private String sampleFileData;
-    protected static final String certificatePath = "src/test/resources/sampleX509.cer";
-    private static final String sampleDataFile = "sample_data.csv";
-    private AnaplanConnection anaplanConnection;
     @Rule
     private ExpectedException expectedEx = ExpectedException.none();
-
-
-    @Before
-    public void setUp() throws Exception {
-        sampleFileData = new String(getFixture(sampleDataFile));
-    }
-
-    @After
-    public void tearDown() {
-    }
 
     /**
      * Helper method that validates the connection by fetching list of user's
