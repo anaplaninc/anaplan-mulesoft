@@ -1,19 +1,16 @@
 package com.anaplan.connector.unit;
 
 import com.anaplan.connector.utils.AnaplanProcessOperation;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.powermock.api.mockito.PowerMockito;
-import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import static org.junit.Assert.assertEquals;
 
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({})
 public class ProcessOperationUnitTestCases extends BaseUnitTestDriver {
 
     private static final String processesResponseFile = "processes_response.json";
@@ -25,11 +22,6 @@ public class ProcessOperationUnitTestCases extends BaseUnitTestDriver {
     @Before
     public void setUp() throws Exception {
         setupMockConnection();
-    }
-
-    @After
-    public void tearDown() {
-
     }
 
     private void recordActionsFetchMockProcesses() throws Exception {
