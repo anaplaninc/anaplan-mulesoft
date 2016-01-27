@@ -1,5 +1,7 @@
 # Anaplan Anypoint Connector
 
+[![Build Status](https://travis-ci.org/anaplaninc/anaplan-mulesoft.svg?branch=master)](https://travis-ci.org/anaplaninc/anaplan-mulesoft)
+
 For building a flow that does an Export from Anaplan, Import to Anaplan, Delete Action, or Process (multiple model-to-model Import actions, or multiple Delete actions).
 
 # Mule supported versions
