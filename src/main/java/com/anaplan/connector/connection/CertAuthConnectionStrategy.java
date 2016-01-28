@@ -16,8 +16,9 @@
 
 package com.anaplan.connector.connection;
 
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.mule.api.annotations.Connect;
 import org.mule.api.annotations.TestConnectivity;
 import org.mule.api.annotations.components.ConnectionManagement;

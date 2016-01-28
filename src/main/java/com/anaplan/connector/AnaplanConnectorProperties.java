@@ -17,11 +17,11 @@
 package com.anaplan.connector;
 
 
-import java.util.HashMap;
-
 import com.anaplan.connector.exceptions.ConnectorPropertiesException;
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import java.util.HashMap;
 
 
 /**
@@ -66,7 +66,7 @@ public class AnaplanConnectorProperties {
 						+ "lengths!!");
 			}
 		}
-        logger.trace("creating anaplan properties: " + this.toString());
+		logger.trace("creating anaplan properties: {}", this);
 	}
 
 	/**
@@ -76,7 +76,7 @@ public class AnaplanConnectorProperties {
 	 * @return value of the given property.
 	 */
 	public String getStringProperty(String propertyField) {
-        logger.trace("getStringProperty(" + propertyField + ")");
+		logger.trace("getStringProperty({})", propertyField);
 		return connectorProperties.get(propertyField);
 	}
 }

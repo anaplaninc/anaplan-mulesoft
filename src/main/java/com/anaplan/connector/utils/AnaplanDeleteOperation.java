@@ -17,16 +17,12 @@
 package com.anaplan.connector.utils;
 
 
-import com.anaplan.client.Action;
-import com.anaplan.client.AnaplanAPIException;
-import com.anaplan.client.Model;
-import com.anaplan.client.Task;
-import com.anaplan.client.TaskStatus;
+import com.anaplan.client.*;
 import com.anaplan.connector.MulesoftAnaplanResponse;
 import com.anaplan.connector.connection.AnaplanConnection;
 import com.anaplan.connector.exceptions.AnaplanOperationException;
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 
 /**
@@ -101,9 +97,9 @@ public class AnaplanDeleteOperation extends BaseAnaplanOperation {
 			String deleteActionId) throws AnaplanOperationException {
 
 		logger.info("<< Starting Delete-Action >>");
-		logger.info("Workspace-ID: " + workspaceId);
-		logger.info("Model-ID: " + modelId);
-		logger.info("Delete Action ID: " + deleteActionId);
+		logger.info("Workspace-ID: {}", workspaceId);
+		logger.info("Model-ID: {}", modelId);
+		logger.info("Delete Action ID: {}", deleteActionId);
 
 		// validate that workspace, model and export-ID are valid.
 		validateInput(workspaceId, modelId);
@@ -112,9 +108,9 @@ public class AnaplanDeleteOperation extends BaseAnaplanOperation {
 		try {
 			final MulesoftAnaplanResponse anaplanResponse = runDeleteAction(model,
 					deleteActionId);
-			logger.info("Action complete: Status: "
-					+ anaplanResponse.getStatus() + ", Response message: "
-					+ anaplanResponse.getResponseMessage());
+			logger.info("Action complete: Status: {}, Response message: {}",
+					anaplanResponse.getStatus(),
+					anaplanResponse.getResponseMessage());
 
 		} catch (AnaplanAPIException e) {
 			throw new AnaplanOperationException(e.getMessage(), e);

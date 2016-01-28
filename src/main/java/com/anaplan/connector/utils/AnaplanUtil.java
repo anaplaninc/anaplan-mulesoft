@@ -19,8 +19,8 @@ package com.anaplan.connector.utils;
 import com.anaplan.client.AnaplanAPIException;
 import com.anaplan.client.Task;
 import com.anaplan.client.TaskStatus;
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 
 /**
@@ -67,16 +67,16 @@ public class AnaplanUtil {
     public static TaskStatus runServerTask(Task task)
             throws AnaplanAPIException {
         TaskStatus status = task.getStatus();
-        logger.error("TASK STATUS: " + status.getTaskState().toString());
+        logger.info("TASK STATUS: {}", status.getTaskState());
         while (status.getTaskState() != TaskStatus.State.COMPLETE
                 && status.getTaskState() != TaskStatus.State.CANCELLED) {
 
             // if busy, nap and check again after 1 second
             try {
                 Thread.sleep(1000);
-                logger.debug("Running Task = " + task.getStatus().getProgress());
+                logger.debug("Running Task = {}", task.getStatus().getProgress());
             } catch (InterruptedException e) {
-                logger.error("Task interrupted!\n" + e.getMessage());
+                logger.error("Task interrupted!\n{}", e.getMessage());
             }
             status = task.getStatus();
         }

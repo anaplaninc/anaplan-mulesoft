@@ -20,8 +20,8 @@ import com.anaplan.client.*;
 import com.anaplan.connector.MulesoftAnaplanResponse;
 import com.anaplan.connector.connection.AnaplanConnection;
 import com.anaplan.connector.exceptions.AnaplanOperationException;
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
 
@@ -103,9 +103,9 @@ public class AnaplanExportOperation extends BaseAnaplanOperation {
         String response;
 
 		logger.info("<< Starting export >>");
-		logger.info("Workspace-ID: " + workspaceId);
-        logger.info("Model-ID: " + modelId);
-        logger.info("Export-ID: " + exportId);
+		logger.info("Workspace-ID: {}", workspaceId);
+		logger.info("Model-ID: {}", modelId);
+		logger.info("Export-ID: {}", exportId);
 
 		// validate that workspace, model and export-ID are valid.
 		validateInput(workspaceId, modelId);
@@ -115,9 +115,9 @@ public class AnaplanExportOperation extends BaseAnaplanOperation {
 			final MulesoftAnaplanResponse anaplanResponse = doExport(model,
 					exportId);
 			response = anaplanResponse.writeExportData(apiConn);
-            logger.info("Query complete: Status: "
-					+ anaplanResponse.getStatus() + ", Response message: "
-					+ anaplanResponse.getResponseMessage());
+            logger.info("Query complete: Status: {}, Response message: {}",
+					anaplanResponse.getStatus(),
+					anaplanResponse.getResponseMessage());
 
 		} catch (IOException | AnaplanAPIException e) {
 			throw new AnaplanOperationException(e.getMessage(), e);
@@ -125,7 +125,7 @@ public class AnaplanExportOperation extends BaseAnaplanOperation {
 			apiConn.closeConnection();
 		}
 
-        logger.info("[" + exportId + "] ran successfully!");
+        logger.info("[{}] ran successfully!", exportId);
 		return response;
 	}
 }

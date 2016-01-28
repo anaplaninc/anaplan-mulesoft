@@ -24,8 +24,8 @@ import com.google.gson.JsonSyntaxException;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
 import java.text.MessageFormat;
@@ -188,7 +188,7 @@ public class AnaplanImportOperation extends BaseAnaplanOperation{
             // reference
             final CellWriter dataWriter = serverFile.getUploadCellWriter();
             dataWriter.writeHeaderRow(rows.get(0));
-            logger.info("import header is:\n" + AnaplanUtil.debugOutput(
+            logger.info("import header is:\n{}", AnaplanUtil.debugOutput(
                     rows.get(0)));
 
             for (String[] row : rows) {
@@ -257,23 +257,23 @@ public class AnaplanImportOperation extends BaseAnaplanOperation{
                             String delimiter) throws AnaplanOperationException {
 
 		logger.info("<< Starting import >>");
-        logger.info("Workspace-ID: " + workspaceId);
-        logger.info("Model-ID: " + modelId);
-        logger.info("Import-ID: " + importId);
+        logger.info("Workspace-ID: {}", workspaceId);
+        logger.info("Model-ID: {}", modelId);
+        logger.info("Import-ID: {}", importId);
 
 		// validate workspace-ID and model-ID are valid, else throw exception
 		validateInput(workspaceId, modelId);
 
 		MulesoftAnaplanResponse anaplanResponse = null;
 		try {
-            logger.info("Starting import: " + importId);
+            logger.info("Starting import: {}", importId);
 
 			anaplanResponse = runImportCsv(data, model, importId, columnSeparator,
 					delimiter);
 
-			logger.info("Import complete: Status: "
-					+ anaplanResponse.getStatus() + ", Response message: "
-					+ anaplanResponse.getResponseMessage());
+			logger.info("Import complete: Status: {}, Response message: {}",
+					anaplanResponse.getStatus(),
+					anaplanResponse.getResponseMessage());
 
 		} catch (JsonSyntaxException e) {
 			MulesoftAnaplanResponse.responseEpicFail(apiConn, e, null);
@@ -315,7 +315,7 @@ public class AnaplanImportOperation extends BaseAnaplanOperation{
 				break;
 			case FAILURE:
 				throw new AnaplanOperationException(
-						MessageFormat.format("Operation failed!\n{0}",
+						MessageFormat.format("Operation failed!\n{}",
 								anaplanResponse.getResponseMessage()));
 			default:
 				throw new AnaplanOperationException(

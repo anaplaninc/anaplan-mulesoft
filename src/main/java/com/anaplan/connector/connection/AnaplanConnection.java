@@ -31,8 +31,8 @@ import com.anaplan.connector.AnaplanConnectorProperties;
 import com.anaplan.connector.exceptions.AnaplanConnectionException;
 import com.anaplan.connector.exceptions.ConnectorPropertiesException;
 import com.anaplan.connector.utils.UserMessages;
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.BufferedInputStream;
 import java.io.FileInputStream;
@@ -80,7 +80,7 @@ public class AnaplanConnection {
      *      their credentials if using this connector behind a firewall.
 	 */
 	public AnaplanConnection(boolean isCertificate, String... credentials) {
-		logger.debug("NOTICE: " + credentials[0] + " @ " + credentials[2]);
+		logger.debug("NOTICE: {} @ {}", credentials[0], credentials[2]);
 		this.isCertificate = isCertificate;
 		connectionConfig = new AnaplanConnectorProperties();
 		try {
@@ -92,8 +92,7 @@ public class AnaplanConnection {
 						PASSWORD_FIELD, URL_FIELD, URL_PROXY, URL_PROXY_USER,
 						URL_PROXY_PASS);
 		} catch (ConnectorPropertiesException e) {
-			logger.error("Could not set connector properties!"
-							+ e.getStackTrace().toString());
+			logger.error("Could not set connector properties!", e);
 		}
 		logger.info("Stored connection properties!");
 	}
@@ -165,7 +164,7 @@ public class AnaplanConnection {
 
 		final String apiUrl = connectionConfig.getStringProperty(URL_FIELD);
 		Service service;
-        logger.debug("API Url: " + apiUrl);
+        logger.debug("API Url: {}", apiUrl);
 		try {
 			service = new Service(new URI(apiUrl));
 		} catch (URISyntaxException e) {
@@ -233,7 +232,7 @@ public class AnaplanConnection {
 
 		if (availableWorkspaces == null || availableWorkspaces.isEmpty()) {
 			final String msg = UserMessages.getMessage("accessFail");
-			logger.error(msg + " (availableWorkspaces=" + availableWorkspaces + ")");
+			logger.error("{} (availableWorkspaces={})", msg, availableWorkspaces);
 			throw new AnaplanConnectionException(msg);
 		}
 

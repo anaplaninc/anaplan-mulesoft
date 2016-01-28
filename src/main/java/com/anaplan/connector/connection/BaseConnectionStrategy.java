@@ -16,16 +16,16 @@
 
 package com.anaplan.connector.connection;
 
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
+
+import com.anaplan.client.Service;
+import com.anaplan.connector.exceptions.AnaplanConnectionException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.mule.api.ConnectionException;
 import org.mule.api.ConnectionExceptionCode;
 import org.mule.api.annotations.ConnectionIdentifier;
 import org.mule.api.annotations.Disconnect;
 import org.mule.api.annotations.ValidateConnection;
-
-import com.anaplan.client.Service;
-import com.anaplan.connector.exceptions.AnaplanConnectionException;
 
 
 /**

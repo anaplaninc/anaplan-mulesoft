@@ -25,8 +25,8 @@ import com.anaplan.connector.exceptions.AnaplanOperationException;
 import com.anaplan.connector.utils.OperationStatus;
 import com.anaplan.connector.utils.UserMessages;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -72,7 +72,7 @@ public class MulesoftAnaplanResponse implements Serializable {
         this.exportMetadata = exportMetaData;
         this.exception = failureCause;
 
-        logger.info("Created " + this.toString());
+        logger.info("Created {}", this);
     }
 
     /** Getters */
@@ -114,7 +114,7 @@ public class MulesoftAnaplanResponse implements Serializable {
         StringBuilder sb = new StringBuilder();
         final String header = StringUtils.join(cellReader.getHeaderRow(), ',');
         sb.append(header);
-        logger.debug(header);
+        logger.debug("{}", header);
 
         String dataLine = StringUtils.join(cellReader.readDataRow(), ',');
 
@@ -163,8 +163,8 @@ public class MulesoftAnaplanResponse implements Serializable {
         if (getServerFile() != null) {
             responseServerFile(getServerFile());
         } else if (getStatus() == OperationStatus.SUCCESS) {
-            logger.info(UserMessages.getMessage("importSuccess", importId) +
-                    ": " + getResponseMessage());
+            logger.info("{}: {}", UserMessages.getMessage(
+					"importSuccess", importId), getResponseMessage());
         } else {
             if (getException() == null) {
                 responseFail(connection, getResponseMessage());
@@ -223,7 +223,8 @@ public class MulesoftAnaplanResponse implements Serializable {
      * @param reason Reason description for failed response.
      */
     public static void responseFail(AnaplanConnection connection, String reason) {
-        logger.error("Aborting operation for all documents in request: " + reason);
+        logger.error("Aborting operation for all documents in request: {}",
+				reason);
     }
 
     /**
@@ -265,7 +266,7 @@ public class MulesoftAnaplanResponse implements Serializable {
             ServerFile exportOutput, ExportMetadata exportMetadata)
                     throws IllegalArgumentException {
         if (exportOutput == null) {
-            logger.error("Discarding response for task: " + responseMessage);
+            logger.error("Discarding response for task: {}", responseMessage);
             throw new IllegalArgumentException("Output cannot be null for a " +
                     "successful export");
         } else {

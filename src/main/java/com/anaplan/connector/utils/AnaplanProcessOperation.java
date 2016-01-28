@@ -16,16 +16,13 @@
 
 package com.anaplan.connector.utils;
 
-import com.anaplan.client.AnaplanAPIException;
-import com.anaplan.client.Model;
+import com.anaplan.client.*;
 import com.anaplan.client.Process;
-import com.anaplan.client.Task;
-import com.anaplan.client.TaskStatus;
 import com.anaplan.connector.MulesoftAnaplanResponse;
 import com.anaplan.connector.connection.AnaplanConnection;
 import com.anaplan.connector.exceptions.AnaplanOperationException;
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 
 /**
@@ -99,21 +96,21 @@ public class AnaplanProcessOperation extends BaseAnaplanOperation {
 	public String runProcess(String workspaceId, String modelId,
 			String processId) throws AnaplanOperationException {
 
-        logger.info("<< Starting Process >>");
-        logger.info("Workspace-ID: " + workspaceId);
-        logger.info("Model-ID: " + modelId);
-        logger.info("Process-ID: " + processId);
+		logger.info("<< Starting Process >>");
+		logger.info("Workspace-ID: {}", workspaceId);
+		logger.info("Model-ID: {}", modelId);
+		logger.info("Process-ID: {}", processId);
 
 		// validate workspace-ID and model-ID are valid, else throw exception.
 		validateInput(workspaceId, modelId);
 
 		try {
-            logger.info("Starting process: "+ processId);
+            logger.info("Starting process: {}", processId);
 			final MulesoftAnaplanResponse anaplanResponse = runProcessTask(model,
 					processId);
-            logger.info("Process ran successfully:"
-					+ anaplanResponse.getStatus() + ", Response message: "
-					+ anaplanResponse.getResponseMessage());
+            logger.info("Process ran successfully: {}, Response message: {}",
+					anaplanResponse.getStatus(),
+					anaplanResponse.getResponseMessage());
 		} catch (AnaplanAPIException e) {
 			throw new AnaplanOperationException(e.getMessage(), e);
 		} finally {
