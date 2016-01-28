@@ -17,7 +17,7 @@ import static org.junit.Assert.assertEquals;
 public class ExportOperationUnitTestCases extends BaseUnitTestDriver {
 
     private static final String exportsResponseFile = "exports_response.json";
-    private static final String exportFileChunksResponseFile = "export_fileChunks_response.json";
+    private static final String exportFileChunksResponseFile = "fileChunks_response.json";
     private static final String exportUrlPathToken = properties.getString(
             "export.urlPathToken");
     private static final String exportId = properties.getString(

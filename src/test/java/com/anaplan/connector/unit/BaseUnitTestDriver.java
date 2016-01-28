@@ -10,6 +10,8 @@ import com.anaplan.connector.utils.AnaplanUtil;
 import org.apache.commons.io.IOUtils;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
+import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.powermock.api.mockito.PowerMockito;
@@ -63,6 +65,9 @@ public abstract class BaseUnitTestDriver {
     protected static final String filesResponseFile = "files_response.json";
     protected TaskStatus mockStatus;
     protected TaskResult mockTaskResult;
+    @Rule
+    protected ExpectedException expectedEx = ExpectedException.none();
+
 
     static {
         configStream = BaseUnitTestDriver.class.getClassLoader()

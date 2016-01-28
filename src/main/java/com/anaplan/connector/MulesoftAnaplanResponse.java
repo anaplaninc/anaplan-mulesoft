@@ -29,6 +29,7 @@ import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.Serializable;
 
 
@@ -382,4 +383,34 @@ public class MulesoftAnaplanResponse implements Serializable {
         return new MulesoftAnaplanResponse(responseMessage, OperationStatus.FAILURE,
                 null, null, cause);
     }
+
+	/**
+	 * Fetches dump file contents from Server response if any, otherwise returns
+	 * an empty string.
+	 *
+	 * TODO: Move this to Anaplan-Connect.
+	 *
+	 * @return Response message from Dump-file.
+	 */
+	public String getDumpFileContents() {
+		StringBuilder dumpFileContents = new StringBuilder();
+		if (this.serverFile != null) {
+			InputStream dumpFileStream;
+			try {
+				dumpFileStream = serverFile.getDownloadStream();
+				if (dumpFileStream != null) {
+					byte[] buffer = new byte[5];
+					int read;
+					do {
+						if ((read = dumpFileStream.read(buffer)) > 0) {
+							dumpFileContents.append(new String(buffer));
+						}
+					} while (read != -1);
+				}
+			} catch (IOException | AnaplanAPIException e) {
+				logger.info("No Dump file found. Proceeding...");
+			}
+		}
+		return dumpFileContents.toString();
+	}
 }

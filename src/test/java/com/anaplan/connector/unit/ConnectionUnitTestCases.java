@@ -6,9 +6,7 @@ import com.anaplan.client.Workspace;
 import com.anaplan.connector.connection.AnaplanConnection;
 import com.anaplan.connector.connection.BasicAuthConnectionStrategy;
 import com.anaplan.connector.connection.CertAuthConnectionStrategy;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
@@ -17,9 +15,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
 
 @RunWith(PowerMockRunner.class)
@@ -28,9 +24,6 @@ import static org.junit.Assert.fail;
         BasicAuthConnectionStrategy.class,
         Service.class})
 public class ConnectionUnitTestCases extends BaseUnitTestDriver {
-
-    @Rule
-    private ExpectedException expectedEx = ExpectedException.none();
 
     /**
      * Helper method that validates the connection by fetching list of user's

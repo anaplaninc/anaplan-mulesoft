@@ -28,6 +28,7 @@ import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
 import java.io.IOException;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -166,38 +167,38 @@ public class AnaplanImportOperation extends BaseAnaplanOperation{
             throw new AnaplanOperationException("Error fetching Import action:", e);
         }
         if (imp == null) {
-			final String msg = "Invalid import!";
-			return MulesoftAnaplanResponse.importFailure(msg, null);
+			throw new AnaplanOperationException(MessageFormat.format("Invalid " +
+					"import ID provided: {0}", importId));
 		}
 
 		ServerFile serverFile;
         try {
             serverFile = model.getServerFile(imp.getSourceFileId());
-            if (serverFile != null) {
-
-                // set the column-separator and delimiter for the input
-                serverFile.setSeparator(columnSeparator);
-                serverFile.setDelimiter(delimiter);
-
-                List<String[]> rows = parseImportData(data, columnSeparator,
-                        delimiter);
-
-                // get the data-writer and write data to it, i.e. serverFile by
-                // reference
-                final CellWriter dataWriter = serverFile.getUploadCellWriter();
-                dataWriter.writeHeaderRow(rows.get(0));
-                logger.info("import header is:\n" + AnaplanUtil.debugOutput(
-                        rows.get(0)));
-
-                for (String[] row : rows) {
-                    dataWriter.writeDataRow(row);
-                    ++rowsProcessed;
-                }
-                dataWriter.close();
+            if (serverFile == null) {
+                throw new AnaplanOperationException("Could not fetch server-file!");
             }
+            // set the column-separator and delimiter for the input
+            serverFile.setSeparator(columnSeparator);
+            serverFile.setDelimiter(delimiter);
+
+            List<String[]> rows = parseImportData(data, columnSeparator,
+                    delimiter);
+
+            // get the data-writer and write data to it, i.e. serverFile by
+            // reference
+            final CellWriter dataWriter = serverFile.getUploadCellWriter();
+            dataWriter.writeHeaderRow(rows.get(0));
+            logger.info("import header is:\n" + AnaplanUtil.debugOutput(
+                    rows.get(0)));
+
+            for (String[] row : rows) {
+                dataWriter.writeDataRow(row);
+                ++rowsProcessed;
+            }
+            dataWriter.close();
         } catch (AnaplanAPIException | IOException e) {
-            throw new AnaplanOperationException("Error fetching server-file " +
-                    "and writing data to it:", e);
+            throw new AnaplanOperationException("Error encountered while " +
+                    "importing data: ", e);
         }
 
 		// 2. Create the task that will import the data to the server.
@@ -223,7 +224,6 @@ public class AnaplanImportOperation extends BaseAnaplanOperation{
 		if (taskResult.isFailureDumpAvailable()) {
 			logger.info(UserMessages.getMessage("failureDump"));
 			final ServerFile failDump = taskResult.getFailureDump();
-
 			return MulesoftAnaplanResponse.importWithFailureDump(
 					UserMessages.getMessage("importBadData", importId),
 					failDump);
@@ -264,11 +264,12 @@ public class AnaplanImportOperation extends BaseAnaplanOperation{
 		// validate workspace-ID and model-ID are valid, else throw exception
 		validateInput(workspaceId, modelId);
 
+		MulesoftAnaplanResponse anaplanResponse = null;
 		try {
             logger.info("Starting import: " + importId);
 
-			final MulesoftAnaplanResponse anaplanResponse = runImportCsv(data, model,
-					importId, columnSeparator, delimiter);
+			anaplanResponse = runImportCsv(data, model, importId, columnSeparator,
+					delimiter);
 
 			logger.info("Import complete: Status: "
 					+ anaplanResponse.getStatus() + ", Response message: "
@@ -280,8 +281,48 @@ public class AnaplanImportOperation extends BaseAnaplanOperation{
 			apiConn.closeConnection();
 		}
 
-		String statusMsg = "[" + importId + "] ran successfully!";
-		logger.info(statusMsg);
-		return statusMsg + "\n\n" + getRunStatusDetails();
+		if (anaplanResponse == null) {
+			throw new AnaplanOperationException("Error fetching response:");
+		} else {
+			return createResponse(anaplanResponse);
+		}
 	}
+
+	/**
+	 * Creating response based on operation status.
+	 * TODO: Move this to Anaplan-Connect
+	 * @param anaplanResponse Anaplan response containing API response details.
+	 * @throws AnaplanOperationException
+	 */
+	private String createResponse(MulesoftAnaplanResponse anaplanResponse)
+			throws AnaplanOperationException {
+
+		// validate import to Anaplan
+		OperationStatus os = anaplanResponse.getStatus();
+		String responseMessage;
+		switch (os) {
+			case SUCCESS:
+				responseMessage = MessageFormat.format("Import ran " +
+						"successfully: {0}",
+						anaplanResponse.getResponseMessage());
+				break;
+			case APPLICATION_ERROR:
+				responseMessage = MessageFormat.format("Operation ran " +
+						"successfully but with warnings!\nResponse Message:\n" +
+						"{0}\nDump File contents:\n{1}",
+						anaplanResponse.getResponseMessage(),
+						anaplanResponse.getDumpFileContents());
+				break;
+			case FAILURE:
+				throw new AnaplanOperationException(
+						MessageFormat.format("Operation failed!\n{0}",
+								anaplanResponse.getResponseMessage()));
+			default:
+				throw new AnaplanOperationException(
+						"Could not determine run status of " + "Anaplan Import!");
+		}
+		logger.info(responseMessage);
+		return responseMessage;
+	}
+
 }

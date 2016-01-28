@@ -11,6 +11,17 @@
     "separator": "\t"
   },
   {
+    "id": "dumpFileIdForImport",
+    "name": "Dump file for Import with importId",
+    "chunkCount": 1,
+    "delimiter": "",
+    "encoding": "UTF-8",
+    "firstDataRow": 2,
+    "format": "txt",
+    "headerRow": 1,
+    "separator": ","
+  },
+  {
     "id": "exportId",
     "name": "File 1",
     "chunkCount": 2,
