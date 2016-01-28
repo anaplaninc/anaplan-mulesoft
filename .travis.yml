@@ -1,0 +1,8 @@
+language:
+    - java
+script:
+    - mvn clean test -Dtest=UnitTestSuite
+jdk:
+    - oraclejdk7
+after_success:
+    - mvn clean test -Dtest=UnitTestSuite cobertura:cobertura coveralls:report

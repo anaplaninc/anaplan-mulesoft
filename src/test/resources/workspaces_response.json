@@ -1,0 +1,18 @@
+[
+  {
+    "guid": "testWorkspaceNameOrId",
+    "name": "Workspace A"
+  },
+  {
+    "guid": "8a81948849b9c4e2014a30802f5a02e4",
+    "name": "Workspace B"
+  },
+  {
+    "guid": "8a81948844c715b401452aee2e6b4015",
+    "name": "Workspace C"
+  },
+  {
+    "guid": "8a81948846e4f0bf01471239562c5966",
+    "name": "Workspace D"
+  }
+]

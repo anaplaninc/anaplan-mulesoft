@@ -1,0 +1,24 @@
+,Parent,Code,Product Leasing,Product Services,Product Wholesale
+"Text, With, Comma",Services,B014,false,false,false
+"""Hello"", world",Services,B015,false,true,false
+Repair,Services,B016,false,false,false
+Services,All Products,P04,false,true,false
+All Products,,,true,true,true
+Mono Silicone Hard,,B01,true,false,false
+Poly Silicone Hard,,B02,true,false,false
+String Ribbon Hard,,B03,true,false,false
+Building Integrated Hard,,B04,true,false,false
+Hybrid Hard,,B05,true,false,false
+Mono Silicone Soft,,B06,true,false,false
+Poly Silicone Soft,,B07,true,false,false
+String Ribbon Soft,,B08,true,false,false
+Building Integrated Soft,,B09,true,false,false
+Hybrid Soft,,B010,true,false,false
+Contained Hot Water,,B011,true,false,false
+Rapid Hot Water,,B012,true,false,false
+Hybrid Hot Water,,B013,true,false,false
+Mount,,B017,false,false,true
+Shield,,B018,false,false,true
+Bracket,,B019,false,false,true
+紅遍半邊天,,B020,false,false,true
+дёжкэрэ тинкидюнт,,B021,true,false,false

@@ -16,15 +16,16 @@
 
 package com.anaplan.connector.connection;
 
+
+import com.anaplan.client.Service;
+import com.anaplan.connector.exceptions.AnaplanConnectionException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.mule.api.ConnectionException;
 import org.mule.api.ConnectionExceptionCode;
 import org.mule.api.annotations.ConnectionIdentifier;
 import org.mule.api.annotations.Disconnect;
 import org.mule.api.annotations.ValidateConnection;
-
-import com.anaplan.client.Service;
-import com.anaplan.connector.exceptions.AnaplanConnectionException;
-import com.anaplan.connector.utils.LogUtil;
 
 
 /**
@@ -32,6 +33,9 @@ import com.anaplan.connector.utils.LogUtil;
  * @author spondonsaha
  */
 public class BaseConnectionStrategy {
+
+	private static final Logger logger = LogManager.getLogger(
+            BaseConnectionStrategy.class.getName());
 
 	protected AnaplanConnection apiConn;
 
@@ -49,10 +53,11 @@ public class BaseConnectionStrategy {
 	 */
 	@Disconnect
 	public void disconnect() {
-		if (apiConn != null) {
+		if (isConnected()) {
 			apiConn.closeConnection();
+			apiConn = null;
 		} else {
-			LogUtil.error(getClass().toString(), "No connStrategy to disconnect!");
+			logger.error("No connStrategy to disconnect!");
 		}
 	}
 
@@ -69,7 +74,7 @@ public class BaseConnectionStrategy {
 	 */
 	@ConnectionIdentifier
 	public String connectionId() {
-		if (apiConn != null)
+		if (isConnected())
 			return apiConn.getConnectionId();
 		else
 			return "Not connected!";
@@ -98,8 +103,7 @@ public class BaseConnectionStrategy {
 					+ "object acquired after opening connStrategy to Anaplan "
 					+ "API!", null);
 		} else {
-			LogUtil.status(getClass().toString(),
-					"Successfully connected to Anaplan API!");
+			logger.info("Successfully connected to Anaplan API!");
 		}
 	}
 
@@ -116,8 +120,7 @@ public class BaseConnectionStrategy {
 			if (apiConn.getConnection() == null) {
 				apiConn.openConnection();
 			} else {
-				LogUtil.status(apiConn.getLogContext(),
-						"Connection to API exists. Proceeding...");
+				logger.info("Connection to API exists. Proceeding...");
 			}
 		} else {
 			throw new AnaplanConnectionException(
