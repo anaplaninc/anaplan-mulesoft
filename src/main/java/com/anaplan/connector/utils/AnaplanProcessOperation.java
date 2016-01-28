@@ -70,7 +70,7 @@ public class AnaplanProcessOperation extends BaseAnaplanOperation {
 		if (status.getTaskState() == TaskStatus.State.COMPLETE &&
 			status.getResult().isSuccessful()) {
 
-            logger.info("Process ran successfully!");
+			logger.info("Process ran successfully!");
 
 			// Collect all the status details of running the action
 			setRunStatusDetails(collectTaskLogs(status));
@@ -105,10 +105,10 @@ public class AnaplanProcessOperation extends BaseAnaplanOperation {
 		validateInput(workspaceId, modelId);
 
 		try {
-            logger.info("Starting process: {}", processId);
+			logger.info("Starting process: {}", processId);
 			final MulesoftAnaplanResponse anaplanResponse = runProcessTask(model,
 					processId);
-            logger.info("Process ran successfully: {}, Response message: {}",
+			logger.info("Process ran successfully: {}, Response message: {}",
 					anaplanResponse.getStatus(),
 					anaplanResponse.getResponseMessage());
 		} catch (AnaplanAPIException e) {
@@ -118,7 +118,7 @@ public class AnaplanProcessOperation extends BaseAnaplanOperation {
 		}
 
 		String statusMsg = "[" + processId + "] completed successfully!";
-        logger.info(statusMsg);
+		logger.info(statusMsg);
 		return statusMsg + "\n\n" + getRunStatusDetails();
 	}
 }

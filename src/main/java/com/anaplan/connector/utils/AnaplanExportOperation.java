@@ -123,7 +123,7 @@ public class AnaplanExportOperation extends BaseAnaplanOperation {
 	public String runExport(String workspaceId, String modelId, String exportId)
 			throws AnaplanOperationException {
 
-        String exportData, response;
+		String exportData, response;
 
 		logger.info("<< Starting export >>");
 		logger.info("Workspace-ID: {}", workspaceId);
@@ -139,7 +139,7 @@ public class AnaplanExportOperation extends BaseAnaplanOperation {
 			anaplanResponse = doExport(model, exportId);
 			response = createResponse(anaplanResponse);
 			exportData = anaplanResponse.writeExportData(apiConn);
-            logger.info("Query complete: Status: {}, Response message: {}",
+			logger.info("Query complete: Status: {}, Response message: {}",
 					anaplanResponse.getStatus(),
 					anaplanResponse.getResponseMessage());
 
@@ -149,7 +149,7 @@ public class AnaplanExportOperation extends BaseAnaplanOperation {
 			apiConn.closeConnection();
 		}
 
-        logger.info("{}", response);
+		logger.info("{}", response);
 		return exportData;
 	}
 }

@@ -164,7 +164,7 @@ public class AnaplanConnection {
 
 		final String apiUrl = connectionConfig.getStringProperty(URL_FIELD);
 		Service service;
-        logger.debug("API Url: {}", apiUrl);
+		logger.debug("API Url: {}", apiUrl);
 		try {
 			service = new Service(new URI(apiUrl));
 		} catch (URISyntaxException e) {

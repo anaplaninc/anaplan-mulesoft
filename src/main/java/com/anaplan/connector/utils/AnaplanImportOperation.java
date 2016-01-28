@@ -257,16 +257,16 @@ public class AnaplanImportOperation extends BaseAnaplanOperation{
                             String delimiter) throws AnaplanOperationException {
 
 		logger.info("<< Starting import >>");
-        logger.info("Workspace-ID: {}", workspaceId);
-        logger.info("Model-ID: {}", modelId);
-        logger.info("Import-ID: {}", importId);
+		logger.info("Workspace-ID: {}", workspaceId);
+		logger.info("Model-ID: {}", modelId);
+		logger.info("Import-ID: {}", importId);
 
 		// validate workspace-ID and model-ID are valid, else throw exception
 		validateInput(workspaceId, modelId);
 
 		MulesoftAnaplanResponse anaplanResponse = null;
 		try {
-            logger.info("Starting import: {}", importId);
+			logger.info("Starting import: {}", importId);
 
 			anaplanResponse = runImportCsv(data, model, importId, columnSeparator,
 					delimiter);
