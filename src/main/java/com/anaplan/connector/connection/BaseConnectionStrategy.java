@@ -53,8 +53,9 @@ public class BaseConnectionStrategy {
 	 */
 	@Disconnect
 	public void disconnect() {
-		if (apiConn != null) {
+		if (isConnected()) {
 			apiConn.closeConnection();
+			apiConn = null;
 		} else {
 			logger.error("No connStrategy to disconnect!");
 		}
@@ -73,7 +74,7 @@ public class BaseConnectionStrategy {
 	 */
 	@ConnectionIdentifier
 	public String connectionId() {
-		if (apiConn != null)
+		if (isConnected())
 			return apiConn.getConnectionId();
 		else
 			return "Not connected!";

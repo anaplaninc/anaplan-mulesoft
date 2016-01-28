@@ -3,9 +3,13 @@ package com.anaplan.connector.unit;
 import com.anaplan.client.AnaplanAPIException;
 import com.anaplan.client.Service;
 import com.anaplan.client.Workspace;
+import com.anaplan.connector.AnaplanConnectorProperties;
 import com.anaplan.connector.connection.AnaplanConnection;
 import com.anaplan.connector.connection.BasicAuthConnectionStrategy;
 import com.anaplan.connector.connection.CertAuthConnectionStrategy;
+import com.anaplan.connector.exceptions.AnaplanConnectionException;
+import com.anaplan.connector.exceptions.ConnectorPropertiesException;
+import org.hamcrest.CoreMatchers;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.powermock.api.mockito.PowerMockito;
@@ -93,4 +97,56 @@ public class ConnectionUnitTestCases extends BaseUnitTestDriver {
         certAuth.connect(certificatePath, apiUrl, "proxyHost", "proxyUser",
                 "proxyPass");
     }
+
+	@Test
+	public void testConnection() throws Exception {
+		// validate AnaplanConnection is set null before connect()
+		CertAuthConnectionStrategy certAuth = PowerMockito.spy(
+				new CertAuthConnectionStrategy());
+		certAuth.disconnect();
+		assertNull(certAuth.getApiConnection());
+		assertEquals("Not connected!", certAuth.connectionId());
+
+		// validate after connecting, AnaplanConnection object is present
+		certAuth.connect(certificatePath, apiUrl, "proxyHost", "proxyUser",
+				"proxyPass");
+		validateConnection(certAuth.getApiConnection());
+		assertNotNull(certAuth.getApiConnection());
+		assertThat(certAuth.connectionId(), CoreMatchers.containsString(
+				"com.anaplan.connector.connection.AnaplanConnection@"));
+
+		// disconnect and re-validate if the AnaplanConnection object is present
+		certAuth.disconnect();
+		assertNull(certAuth.getApiConnection());
+		assertEquals("Not connected!", certAuth.connectionId());
+	}
+
+	@Test
+	public void testConnectionValidator_NoConnection() throws Exception {
+		CertAuthConnectionStrategy certAuth = PowerMockito.spy(
+				new CertAuthConnectionStrategy());
+		expectedEx.expect(AnaplanConnectionException.class);
+		expectedEx.expectMessage("No connStrategy object: call connect()");
+		certAuth.validateConnection();
+	}
+
+	@Test
+	public void testConnectionValidator_createNewConnection() throws Exception {
+		CertAuthConnectionStrategy certAuth = PowerMockito.spy(
+				new CertAuthConnectionStrategy());
+		certAuth.connect(certificatePath, apiUrl, "proxyHost", "proxyUser",
+				"proxyPass");
+		certAuth.validateConnection();
+		assertNotNull(certAuth.getApiConnection());
+	}
+
+	@Test
+	public void testConnectorProperties() throws Exception {
+		AnaplanConnectorProperties props = new AnaplanConnectorProperties();
+		expectedEx.expect(ConnectorPropertiesException.class);
+		expectedEx.expectMessage("Provided field-values and required " +
+				"property-fields are of different lengths!!");
+		String[] badCreds = new String[]{"cred1", "cred2"};
+		props.setProperties(badCreds, "only_cred");
+	}
 }

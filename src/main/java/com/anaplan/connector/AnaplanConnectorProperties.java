@@ -41,7 +41,7 @@ public class AnaplanConnectorProperties {
 	 * Constructor.
 	 */
 	public AnaplanConnectorProperties() {
-		connectorProperties = new HashMap<String, String>();
+		connectorProperties = new HashMap<>();
 	}
 
     /**

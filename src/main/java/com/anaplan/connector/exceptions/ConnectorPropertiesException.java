@@ -35,13 +35,4 @@ public class ConnectorPropertiesException extends Exception {
 	public ConnectorPropertiesException(String message) {
 		super(message);
 	}
-
-	/**
-	 * Creates an exception with the specified message and cause
-	 * @param message
-	 * @param cause
-	 */
-	public ConnectorPropertiesException(String message, Throwable cause) {
-		super(message, cause);
-	}
 }
