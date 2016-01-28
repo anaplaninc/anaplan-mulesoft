@@ -16,8 +16,12 @@
 
 package com.anaplan.connector.utils;
 
-import com.anaplan.client.*;
+
+import com.anaplan.client.AnaplanAPIException;
+import com.anaplan.client.Model;
 import com.anaplan.client.Process;
+import com.anaplan.client.Task;
+import com.anaplan.client.TaskStatus;
 import com.anaplan.connector.MulesoftAnaplanResponse;
 import com.anaplan.connector.connection.AnaplanConnection;
 import com.anaplan.connector.exceptions.AnaplanOperationException;

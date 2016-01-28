@@ -16,18 +16,21 @@
 
 package com.anaplan.connector;
 
-import com.anaplan.connector.utils.*;
+
+import com.anaplan.connector.connection.BaseConnectionStrategy;
+import com.anaplan.connector.exceptions.AnaplanConnectionException;
+import com.anaplan.connector.exceptions.AnaplanOperationException;
+import com.anaplan.connector.utils.AnaplanDeleteOperation;
+import com.anaplan.connector.utils.AnaplanExportOperation;
+import com.anaplan.connector.utils.AnaplanImportOperation;
+import com.anaplan.connector.utils.AnaplanProcessOperation;
+import com.anaplan.connector.utils.Delimiters;
 import org.mule.api.annotations.Config;
-import org.mule.api.annotations.ConnectionStrategy;
 import org.mule.api.annotations.Connector;
 import org.mule.api.annotations.Processor;
 import org.mule.api.annotations.display.FriendlyName;
 import org.mule.api.annotations.param.Default;
 import org.mule.api.annotations.param.Payload;
-
-import com.anaplan.connector.connection.BaseConnectionStrategy;
-import com.anaplan.connector.exceptions.AnaplanConnectionException;
-import com.anaplan.connector.exceptions.AnaplanOperationException;
 
 
 /**
