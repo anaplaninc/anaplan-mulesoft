@@ -23,7 +23,6 @@ import com.anaplan.client.ServerFile;
 import com.anaplan.connector.connection.AnaplanConnection;
 import com.anaplan.connector.exceptions.AnaplanOperationException;
 import com.anaplan.connector.utils.OperationStatus;
-import com.anaplan.connector.utils.UserMessages;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -144,35 +143,6 @@ public class MulesoftAnaplanResponse implements Serializable {
         }
         final CellReader cellReader = serverFile.getDownloadCellReader();
         return writeResponse(cellReader);
-    }
-
-    /**
-     * Writes the import data to Anaplan using the provided Import-ID and
-     * connStrategy.
-     *
-     * @param connection Anaplan API connection object.
-     * @param importId Import action ID.
-     * @throws AnaplanOperationException When server-file API object fails to import.
-     * @throws IOException When server-file API object fails to import.
-     * @throws AnaplanAPIException When server-file API object fails to import.
-     */
-    public void writeImportData(AnaplanConnection connection, String importId)
-            throws AnaplanOperationException,
-            IOException,
-            AnaplanAPIException {
-        if (getServerFile() != null) {
-            responseServerFile(getServerFile());
-        } else if (getStatus() == OperationStatus.SUCCESS) {
-            logger.info("{}: {}", UserMessages.getMessage(
-					"importSuccess", importId), getResponseMessage());
-        } else {
-            if (getException() == null) {
-                responseFail(connection, getResponseMessage());
-            } else {
-                responseEpicFail(connection, getException(),
-                        getResponseMessage());
-            }
-        }
     }
 
     /**
