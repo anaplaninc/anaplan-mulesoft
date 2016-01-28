@@ -146,7 +146,6 @@
                             <include>com/anaplan/connector/connection/*.class</include>
                             <include>com/anaplan/connector/exceptions/*.class</include>
                             <include>com/anaplan/connector/utils/*.class</include>
-                            <include>com/anaplan/connector/AnaplanConnector.class</include>
                             <include>com/anaplan/connector/AnaplanConnectorProperties.class</include>
                             <include>com/anaplan/connector/MulesoftAnaplanResponse.class</include>
                         </includes>

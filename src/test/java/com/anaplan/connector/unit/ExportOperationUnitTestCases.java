@@ -1,6 +1,7 @@
 package com.anaplan.connector.unit;
 
 import com.anaplan.client.Export;
+import com.anaplan.connector.exceptions.AnaplanOperationException;
 import com.anaplan.connector.utils.AnaplanExportOperation;
 import org.junit.Before;
 import org.junit.Test;
@@ -16,6 +17,7 @@ import static org.junit.Assert.assertEquals;
 @PrepareForTest({Export.class})
 public class ExportOperationUnitTestCases extends BaseUnitTestDriver {
 
+	private AnaplanExportOperation anaplanExportOperation;
     private static final String exportsResponseFile = "exports_response.json";
     private static final String exportFileChunksResponseFile = "fileChunks_response.json";
     private static final String exportUrlPathToken = properties.getString(
@@ -28,6 +30,7 @@ public class ExportOperationUnitTestCases extends BaseUnitTestDriver {
     @Before
     public void setUp() throws Exception {
         setupMockConnection();
+		anaplanExportOperation = new AnaplanExportOperation(mockAnaplanConnection);
     }
 
     private void recordActionsFetchMockExports() throws Exception {
@@ -56,16 +59,100 @@ public class ExportOperationUnitTestCases extends BaseUnitTestDriver {
         // mock out API calls
         recordActionsFetchMockModels();
         recordActionsFetchMockExports();
-        recordActionsFetchMockItems("files", filesResponseFile);
         recordActionsRunServerTask(exportUrlPathToken);
+		recordActionsGetExportMetadata();
         recordActionsTaskResultSuccess();
-        recordActionsGetExportMetadata();
+		recordActionsFetchMockItems("files", filesResponseFile);
         recordActionsGetDownloadStream();
 
-        AnaplanExportOperation exportOp = new AnaplanExportOperation(
-                mockAnaplanConnection);
-        String result = exportOp.runExport(workspaceId, modelId, exportId);
+        String result = anaplanExportOperation.runExport(workspaceId, modelId,
+				exportId);
         assertEquals(sampleDataFile, result);
     }
 
+    @Test
+	public void testErrorFetchingModelExport() throws Exception {
+		// mock out API calls
+		recordActionsFetchMockModels();
+
+		// setup Exception expectations
+		expectedEx.expect(AnaplanOperationException.class);
+		expectedEx.expectMessage("Error fetching Export action:");
+
+		anaplanExportOperation.runExport(workspaceId, modelId, exportId);
+	}
+
+	@Test
+	public void testFetchNullModelExport() throws Exception {
+		// mock out API calls
+		recordActionsFetchMockModels();
+		recordActionsFetchMockExports();
+
+		// setup Exception expectations
+		expectedEx.expect(AnaplanOperationException.class);
+		expectedEx.expectMessage("Invalid export Id: badExportId");
+
+		anaplanExportOperation.runExport(workspaceId, modelId, "badExportId");
+	}
+
+	@Test
+	public void testErrorRunningTask() throws Exception {
+		// mock out API calls
+		recordActionsFetchMockModels();
+		recordActionsFetchMockExports();
+		recordActionsFetchMockItems("files", filesResponseFile);
+
+		// setup Exception expectations
+		expectedEx.expect(AnaplanOperationException.class);
+		expectedEx.expectMessage("Error running Export action:");
+
+		anaplanExportOperation.runExport(workspaceId, modelId, exportId);
+	}
+
+	@Test
+	public void testErrorFetchExportMetadata() throws Exception {
+		// mock out API calls
+		recordActionsFetchMockModels();
+		recordActionsFetchMockExports();
+		recordActionsFetchMockItems("files", filesResponseFile);
+		recordActionsRunServerTask(exportUrlPathToken);
+
+		// setup Exception expectations
+		expectedEx.expect(AnaplanOperationException.class);
+		expectedEx.expectMessage("Error fetching Export-metadata!");
+
+		anaplanExportOperation.runExport(workspaceId, modelId, exportId);
+	}
+
+	@Test
+	public void testFetchNullExportServerFile() throws Exception {
+		// mock out API calls
+		recordActionsFetchMockModels();
+		recordActionsFetchMockExports();
+		recordActionsRunServerTask(exportUrlPathToken);
+		recordActionsGetExportMetadata();
+		recordActionsTaskResultSuccess();
+
+		// setup Exception expectations
+		expectedEx.expect(AnaplanOperationException.class);
+		expectedEx.expectMessage("Error fetching export Server-File:");
+
+		anaplanExportOperation.runExport(workspaceId, modelId, exportId);
+	}
+
+	@Test
+	public void testBadExport() throws Exception {
+		// mock out API calls
+		recordActionsFetchMockModels();
+		recordActionsFetchMockExports();
+		recordActionsRunServerTask(exportUrlPathToken);
+		recordActionsGetExportMetadata();
+		recordActionsTaskResultFailure();
+
+		// setup Exception expectations
+		expectedEx.expect(AnaplanOperationException.class);
+		expectedEx.expectMessage("Operation failed!");
+
+		anaplanExportOperation.runExport(workspaceId, modelId, exportId);
+	}
 }

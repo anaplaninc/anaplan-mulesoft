@@ -55,36 +55,59 @@ public class AnaplanExportOperation extends BaseAnaplanOperation {
 	 *                             running it, or when building the response
 	 */
 	private static MulesoftAnaplanResponse doExport(Model model, String exportId)
-			throws AnaplanAPIException {
+			throws AnaplanOperationException {
 
-		final Export exp = model.getExport(exportId);
+		Export exp;
+		try {
+			exp = model.getExport(exportId);
+		} catch (AnaplanAPIException e) {
+			throw new AnaplanOperationException("Error fetching Export action:", e);
+		}
 		if (exp == null) {
-			final String msg = UserMessages.getMessage("invalidExport", exportId);
-			return MulesoftAnaplanResponse.exportFailure(msg, null, null);
+			throw new AnaplanOperationException(UserMessages.getMessage(
+					"invalidExport", exportId));
 		}
 
-		final Task task = exp.createTask();
-		final TaskStatus status = AnaplanUtil.runServerTask(task);
+		Task task;
+		TaskStatus status;
+		try {
+			task = exp.createTask();
+			status = AnaplanUtil.runServerTask(task);
+		} catch (AnaplanAPIException e) {
+			throw new AnaplanOperationException("Error running Export action:", e);
+		}
 
+		ExportMetadata exportMetadata;
+		try {
+			exportMetadata = exp.getExportMetadata();
+		} catch (AnaplanAPIException e) {
+			throw new AnaplanOperationException("Error fetching Export-metadata!");
+		}
 		if (status.getTaskState() == TaskStatus.State.COMPLETE &&
 			status.getResult().isSuccessful()) {
 			logger.info("Export completed successfully!");
-			final ServerFile serverFile = model.getServerFile(exp.getName());
-			if (serverFile == null) {
-				return MulesoftAnaplanResponse.exportFailure(
-						UserMessages.getMessage("exportRetrieveError",
-								exp.getName()), exp.getExportMetadata(), null);
+
+			ServerFile serverFile;
+			try {
+				serverFile = model.getServerFile(exp.getName());
+				if (serverFile == null) {
+					throw new AnaplanOperationException(UserMessages.getMessage(
+							"exportRetrieveError", exp.getName()));
+				}
+			} catch (AnaplanAPIException e) {
+				throw new AnaplanOperationException("Error fetching export " +
+						"Server-File:", e);
 			}
 			// collect all server messages regarding the export, if any
 			setRunStatusDetails(collectTaskLogs(status));
 			logger.info(getRunStatusDetails());
 
 			return MulesoftAnaplanResponse.exportSuccess(status.getTaskState().name(),
-					serverFile, exp.getExportMetadata());
+					serverFile, exportMetadata);
 		} else {
 			logger.error("Export failed !!!");
 			return MulesoftAnaplanResponse.exportFailure(status.getTaskState().name(),
-					exp.getExportMetadata(), null);
+					exportMetadata, null);
 		}
 	}
 
@@ -100,7 +123,7 @@ public class AnaplanExportOperation extends BaseAnaplanOperation {
 	public String runExport(String workspaceId, String modelId, String exportId)
 			throws AnaplanOperationException {
 
-        String response;
+        String exportData, response;
 
 		logger.info("<< Starting export >>");
 		logger.info("Workspace-ID: {}", workspaceId);
@@ -111,10 +134,11 @@ public class AnaplanExportOperation extends BaseAnaplanOperation {
 		validateInput(workspaceId, modelId);
 
 		// run the export
+		MulesoftAnaplanResponse anaplanResponse = null;
 		try {
-			final MulesoftAnaplanResponse anaplanResponse = doExport(model,
-					exportId);
-			response = anaplanResponse.writeExportData(apiConn);
+			anaplanResponse = doExport(model, exportId);
+			response = createResponse(anaplanResponse);
+			exportData = anaplanResponse.writeExportData(apiConn);
             logger.info("Query complete: Status: {}, Response message: {}",
 					anaplanResponse.getStatus(),
 					anaplanResponse.getResponseMessage());
@@ -125,7 +149,7 @@ public class AnaplanExportOperation extends BaseAnaplanOperation {
 			apiConn.closeConnection();
 		}
 
-        logger.info("[{}] ran successfully!", exportId);
-		return response;
+        logger.info("{}", response);
+		return exportData;
 	}
 }

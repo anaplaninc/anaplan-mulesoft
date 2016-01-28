@@ -18,10 +18,13 @@ package com.anaplan.connector.utils;
 
 
 import com.anaplan.client.*;
+import com.anaplan.connector.MulesoftAnaplanResponse;
 import com.anaplan.connector.connection.AnaplanConnection;
 import com.anaplan.connector.exceptions.AnaplanOperationException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.text.MessageFormat;
 
 
 /**
@@ -168,5 +171,46 @@ public class BaseAnaplanOperation {
 			return taskDetails.toString();
 		}
 		return null;
+	}
+
+	/**
+	 * Creating response based on operation status.
+	 * TODO: Move this to Anaplan-Connect
+	 * @param anaplanResponse Anaplan response containing API response details.
+	 * @throws AnaplanOperationException
+	 */
+	protected String createResponse(MulesoftAnaplanResponse anaplanResponse)
+			throws AnaplanOperationException {
+
+		if (anaplanResponse == null) {
+			throw new AnaplanOperationException("Null response found!");
+		}
+
+		// validate import to Anaplan
+		OperationStatus os = anaplanResponse.getStatus();
+		String responseMessage;
+		switch (os) {
+			case SUCCESS:
+				responseMessage = MessageFormat.format("Import ran " +
+						"successfully: {0}",
+						anaplanResponse.getResponseMessage());
+				break;
+			case APPLICATION_ERROR:
+				responseMessage = MessageFormat.format("Operation ran " +
+						"successfully but with warnings!\nResponse Message:\n" +
+						"{0}\nDump File contents:\n{1}",
+						anaplanResponse.getResponseMessage(),
+						anaplanResponse.getDumpFileContents());
+				break;
+			case FAILURE:
+				throw new AnaplanOperationException(
+						MessageFormat.format("Operation failed!\n{0}",
+								anaplanResponse.getResponseMessage()));
+			default:
+				throw new AnaplanOperationException(
+						"Could not determine run status of " + "Anaplan Import!");
+		}
+		logger.info(responseMessage);
+		return responseMessage;
 	}
 }
