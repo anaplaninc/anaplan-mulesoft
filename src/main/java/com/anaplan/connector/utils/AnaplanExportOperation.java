@@ -16,10 +16,10 @@
 
 package com.anaplan.connector.utils;
 
-import java.io.IOException;
 
 import com.anaplan.client.AnaplanAPIException;
 import com.anaplan.client.Export;
+import com.anaplan.client.ExportMetadata;
 import com.anaplan.client.Model;
 import com.anaplan.client.ServerFile;
 import com.anaplan.client.Task;
@@ -27,6 +27,10 @@ import com.anaplan.client.TaskStatus;
 import com.anaplan.connector.MulesoftAnaplanResponse;
 import com.anaplan.connector.connection.AnaplanConnection;
 import com.anaplan.connector.exceptions.AnaplanOperationException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import java.io.IOException;
 
 
 /**
@@ -36,6 +40,9 @@ import com.anaplan.connector.exceptions.AnaplanOperationException;
  * @author spondonsaha
  */
 public class AnaplanExportOperation extends BaseAnaplanOperation {
+
+    private static Logger logger = LogManager.getLogger(
+            AnaplanExportOperation.class.getName());
 
 	/**
 	 * Constructor
@@ -50,43 +57,64 @@ public class AnaplanExportOperation extends BaseAnaplanOperation {
 	 *
 	 * @param model Anaplan Model object.
 	 * @param exportId Anaplan Export ID
-	 * @param logContext Export log context
 	 * @return <code>AnaplanResponse</code> object.
 	 * @throws AnaplanAPIException Thrown when error creating export task, or
 	 *                             running it, or when building the response
 	 */
-	private static MulesoftAnaplanResponse doExport(Model model, String exportId,
-			String logContext) throws AnaplanAPIException {
+	private static MulesoftAnaplanResponse doExport(Model model, String exportId)
+			throws AnaplanOperationException {
 
-		final Export exp = model.getExport(exportId);
+		Export exp;
+		try {
+			exp = model.getExport(exportId);
+		} catch (AnaplanAPIException e) {
+			throw new AnaplanOperationException("Error fetching Export action:", e);
+		}
 		if (exp == null) {
-			final String msg = UserMessages.getMessage("invalidExport", exportId);
-			return MulesoftAnaplanResponse.exportFailure(msg, null, null, logContext);
+			throw new AnaplanOperationException(UserMessages.getMessage(
+					"invalidExport", exportId));
 		}
 
-		final Task task = exp.createTask();
-		final TaskStatus status = AnaplanUtil.runServerTask(task, logContext);
+		Task task;
+		TaskStatus status;
+		try {
+			task = exp.createTask();
+			status = AnaplanUtil.runServerTask(task);
+		} catch (AnaplanAPIException e) {
+			throw new AnaplanOperationException("Error running Export action:", e);
+		}
 
+		ExportMetadata exportMetadata;
+		try {
+			exportMetadata = exp.getExportMetadata();
+		} catch (AnaplanAPIException e) {
+			throw new AnaplanOperationException("Error fetching Export-metadata!");
+		}
 		if (status.getTaskState() == TaskStatus.State.COMPLETE &&
 			status.getResult().isSuccessful()) {
-			LogUtil.status(logContext, "Export completed successfully!");
-			final ServerFile serverFile = model.getServerFile(exp.getName());
-			if (serverFile == null) {
-				return MulesoftAnaplanResponse.exportFailure(
-						UserMessages.getMessage("exportRetrieveError",
-								exp.getName()), exp.getExportMetadata(), null,
-						logContext);
+			logger.info("Export completed successfully!");
+
+			ServerFile serverFile;
+			try {
+				serverFile = model.getServerFile(exp.getName());
+				if (serverFile == null) {
+					throw new AnaplanOperationException(UserMessages.getMessage(
+							"exportRetrieveError", exp.getName()));
+				}
+			} catch (AnaplanAPIException e) {
+				throw new AnaplanOperationException("Error fetching export " +
+						"Server-File:", e);
 			}
 			// collect all server messages regarding the export, if any
 			setRunStatusDetails(collectTaskLogs(status));
-			LogUtil.status(logContext, getRunStatusDetails());
+			logger.info(getRunStatusDetails());
 
 			return MulesoftAnaplanResponse.exportSuccess(status.getTaskState().name(),
-					serverFile, exp.getExportMetadata(), logContext);
+					serverFile, exportMetadata);
 		} else {
-			LogUtil.error(logContext, "Export failed !!!");
+			logger.error("Export failed !!!");
 			return MulesoftAnaplanResponse.exportFailure(status.getTaskState().name(),
-					exp.getExportMetadata(), null, logContext);
+					exportMetadata, null);
 		}
 	}
 
@@ -101,36 +129,34 @@ public class AnaplanExportOperation extends BaseAnaplanOperation {
 	 */
 	public String runExport(String workspaceId, String modelId, String exportId)
 			throws AnaplanOperationException {
-		final String logContext = apiConn.getLogContext();
-		final String exportLogContext = logContext + " [" + exportId + "]";
-		String response = null;
 
-		LogUtil.status(logContext, "<< Starting export >>");
-		LogUtil.status(logContext, "Workspace-ID: " + workspaceId);
-		LogUtil.status(logContext, "Model-ID: " + modelId);
-		LogUtil.status(logContext, "Export-ID: " + exportId);
+		String exportData, response;
+
+		logger.info("<< Starting export >>");
+		logger.info("Workspace-ID: {}", workspaceId);
+		logger.info("Model-ID: {}", modelId);
+		logger.info("Export-ID: {}", exportId);
 
 		// validate that workspace, model and export-ID are valid.
 		validateInput(workspaceId, modelId);
 
 		// run the export
+		MulesoftAnaplanResponse anaplanResponse = null;
 		try {
-			final MulesoftAnaplanResponse anaplanResponse = doExport(model,
-					exportId, exportLogContext);
-			response = anaplanResponse.writeExportData(apiConn);
-			LogUtil.status(logContext, "Query complete: Status: "
-					+ anaplanResponse.getStatus() + ", Response message: "
-					+ anaplanResponse.getResponseMessage());
+			anaplanResponse = doExport(model, exportId);
+			response = createResponse(anaplanResponse);
+			exportData = anaplanResponse.writeExportData(apiConn);
+			logger.info("Query complete: Status: {}, Response message: {}",
+					anaplanResponse.getStatus(),
+					anaplanResponse.getResponseMessage());
 
-		} catch (IOException e) {
-			throw new AnaplanOperationException(e.getMessage(), e);
-		} catch (AnaplanAPIException e) {
+		} catch (IOException | AnaplanAPIException e) {
 			throw new AnaplanOperationException(e.getMessage(), e);
 		} finally {
 			apiConn.closeConnection();
 		}
 
-		LogUtil.status(exportLogContext, "[" + exportId + "] ran successfully!");
-		return response;
+		logger.info("{}", response);
+		return exportData;
 	}
 }

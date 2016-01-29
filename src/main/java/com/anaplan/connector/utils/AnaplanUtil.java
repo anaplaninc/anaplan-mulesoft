@@ -19,6 +19,8 @@ package com.anaplan.connector.utils;
 import com.anaplan.client.AnaplanAPIException;
 import com.anaplan.client.Task;
 import com.anaplan.client.TaskStatus;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 
 /**
@@ -28,57 +30,57 @@ import com.anaplan.client.TaskStatus;
  */
 public class AnaplanUtil {
 
-	private AnaplanUtil() {
-		// static-only
-	}
+    private static Logger logger = LogManager.getLogger(AnaplanUtil.class.getName());
 
-	/**
-	 * Prints an array of strings as a string, delimited by "||". This is for
-	 * debug logs only.
-	 *
-	 * @param toprint Data array to create debug string with.
-	 * @return Debug output for provided string array.
-	 */
-	public static String debug_output(String[] toprint) {
-		String sb = "";
-		for (String s : toprint) {
-			sb += s + "||";
-		}
-		if (sb.length() > 1) {
-			return sb.substring(0, sb.length() - 1);
-		} else {
-			return "*";
-		}
-	}
+    private AnaplanUtil() {
+        // static-only
+    }
 
-	/**
-	 * Executes an Anaplan task and polls the status until its complete.
-	 *
-	 * @param task Server task object to run.
-	 * @param logContext Log context to be used while running server task.
-	 * @return The status message from the running the task.
-	 * @throws AnaplanAPIException API exception thrown whenever server task
+    /**
+     * Prints an array of strings as a string, delimited by "||". This is for
+     * debug logs only.
+     *
+     * @param toprint Data array to create debug string with.
+     * @return Debug output for provided string array.
+     */
+    public static String debugOutput(String[] toprint) {
+        StringBuilder sb = new StringBuilder();
+        for (String s : toprint) {
+            sb.append(s);
+            sb.append("||");
+        }
+        if (sb.length() > 1) {
+            return sb.toString().substring(0, sb.length() - 1);
+        } else {
+            return "*";
+        }
+    }
+
+    /**
+     * Executes an Anaplan task and polls the status until its complete.
+     *
+     * @param task Server task object to run.
+     * @return The status message from the running the task.
+     * @throws AnaplanAPIException API exception thrown whenever server task
      *      fails.
-	 */
-	public static TaskStatus runServerTask(Task task, String logContext)
-			throws AnaplanAPIException {
-		TaskStatus status = task.getStatus();
-		LogUtil.error(logContext, "TASK STATUS: " + status.getTaskState().toString());
-		while (status.getTaskState() != TaskStatus.State.COMPLETE
-				&& status.getTaskState() != TaskStatus.State.CANCELLED) {
+     */
+    public static TaskStatus runServerTask(Task task)
+            throws AnaplanAPIException {
+        TaskStatus status = task.getStatus();
+        logger.info("TASK STATUS: {}", status.getTaskState());
+        while (status.getTaskState() != TaskStatus.State.COMPLETE
+                && status.getTaskState() != TaskStatus.State.CANCELLED) {
 
-			// if busy, nap and check again after 1 second
-			try {
-				Thread.sleep(1000);
-				LogUtil.debug(logContext, "Running Task = "
-						+ task.getStatus().getProgress());
-			} catch (InterruptedException e) {
-				LogUtil.error(logContext,
-						"Task interrupted!\n" + e.getMessage());
-			}
-			status = task.getStatus();
-		}
+            // if busy, nap and check again after 1 second
+            try {
+                Thread.sleep(1000);
+                logger.debug("Running Task = {}", task.getStatus().getProgress());
+            } catch (InterruptedException e) {
+                logger.error("Task interrupted!\n{}", e.getMessage());
+            }
+            status = task.getStatus();
+        }
 
-		return status;
-	}
+        return status;
+    }
 }

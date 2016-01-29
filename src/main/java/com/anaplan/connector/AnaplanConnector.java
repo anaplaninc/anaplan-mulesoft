@@ -16,13 +16,6 @@
 
 package com.anaplan.connector;
 
-import org.mule.api.annotations.ConnectionStrategy;
-import org.mule.api.annotations.Connector;
-import org.mule.api.annotations.Processor;
-import org.mule.api.annotations.display.FriendlyName;
-import org.mule.api.annotations.display.Icons;
-import org.mule.api.annotations.param.Default;
-import org.mule.api.annotations.param.Payload;
 
 import com.anaplan.connector.connection.BaseConnectionStrategy;
 import com.anaplan.connector.exceptions.AnaplanConnectionException;
@@ -31,6 +24,13 @@ import com.anaplan.connector.utils.AnaplanDeleteOperation;
 import com.anaplan.connector.utils.AnaplanExportOperation;
 import com.anaplan.connector.utils.AnaplanImportOperation;
 import com.anaplan.connector.utils.AnaplanProcessOperation;
+import com.anaplan.connector.utils.Delimiters;
+import org.mule.api.annotations.Config;
+import org.mule.api.annotations.Connector;
+import org.mule.api.annotations.Processor;
+import org.mule.api.annotations.display.FriendlyName;
+import org.mule.api.annotations.param.Default;
+import org.mule.api.annotations.param.Payload;
 
 
 /**
@@ -40,9 +40,8 @@ import com.anaplan.connector.utils.AnaplanProcessOperation;
  * @author MuleSoft, Inc.
  * @author Spondon Saha.
  */
-@Icons(connectorLarge="../../../icons/anaplan-connector-48x32-logo.png",
-	   connectorSmall="../../../icons/anaplan-connector-16x16.png")
-@Connector(name="anaplan", schemaVersion="1.0", friendlyName="Anaplan")
+@Connector(name="anaplan", schemaVersion="3.6", friendlyName="Anaplan",
+           minMuleVersion="3.6")
 public class AnaplanConnector {
 
 	private static AnaplanExportOperation exporter;
@@ -50,7 +49,7 @@ public class AnaplanConnector {
 	private static AnaplanDeleteOperation deleter;
 	private static AnaplanProcessOperation processRunner;
 
-	@ConnectionStrategy
+	@Config
 	private BaseConnectionStrategy connectionStrategy;
 
 	/**
@@ -79,8 +78,8 @@ public class AnaplanConnector {
      * @param workspaceId Anaplan workspace ID.
      * @param modelId Anaplan model ID.
      * @param importId Action ID of the Import operation.
-     * @param columnSeparator Cell escape values defaults to double-quotes.
-     * @param delimiter Column delimiter defaults to comma
+     * @param columnSeparator Column separator, defaults to comma.
+     * @param delimiter Cell escape values, defaults to double-quotes.
      * @return Status message from running the Import operation.
      * @throws AnaplanConnectionException When an error occurs during
      * 									  authentication
@@ -93,8 +92,10 @@ public class AnaplanConnector {
 			@FriendlyName("Workspace name or ID") String workspaceId,
 		    @FriendlyName("Model name or ID") String modelId,
 		    @FriendlyName("Import name or ID") String importId,
-			@FriendlyName("Column separator") @Default(",") String columnSeparator,
-			@FriendlyName("Delimiter") @Default("\"") String delimiter)
+			@FriendlyName("Column separator")
+			@Default(Delimiters.COMMA) String columnSeparator,
+			@FriendlyName("Delimiter")
+			@Default(Delimiters.ESCAPE_CHARACTER) String delimiter)
 		    		throws AnaplanConnectionException,
 		    			   AnaplanOperationException {
 		// validate API connectionStrategy
