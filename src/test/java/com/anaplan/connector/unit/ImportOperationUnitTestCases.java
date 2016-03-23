@@ -71,8 +71,6 @@ public class ImportOperationUnitTestCases extends BaseUnitTestDriver {
 				.thenCallRealMethod();
 		PowerMockito.when(AnaplanUtil.stringChunkReader(Mockito.anyString(),
 				Mockito.anyInt())).thenCallRealMethod();
-		PowerMockito.when(AnaplanUtil.getCarriageReturnCount(
-				Mockito.any(byte[].class))).thenCallRealMethod();
 	}
 
     @Test

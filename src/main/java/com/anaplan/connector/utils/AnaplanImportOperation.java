@@ -88,7 +88,6 @@ public class AnaplanImportOperation extends BaseAnaplanOperation{
 		}
 
 		ServerFile serverFile;
-		int chunkPointer = 0;
         try {
             serverFile = model.getServerFile(imp.getSourceFileId());
             if (serverFile == null) {
@@ -102,19 +101,11 @@ public class AnaplanImportOperation extends BaseAnaplanOperation{
 			OutputStream uploadStream = serverFile.getUploadStream();
 			Iterator<String> iterator = AnaplanUtil.stringChunkReader(data);
 			byte[] dataChunk;
-			int counter = 0;
 			while (iterator.hasNext()) {
 				dataChunk = iterator.next().getBytes("UTF-8");
 				uploadStream.write(dataChunk);
-				// TODO: Gets an almost accurate row-count, using a regex.
-				// Needs to be ultimately replaced with count returned from server.
-				chunkPointer += AnaplanUtil.getCarriageReturnCount(dataChunk);
-				//TODO: Remove later
-				counter++;
 			}
 			uploadStream.close();
-			logger.info("Approx. # of processed rows from stream chunks: {}",
-					chunkPointer);
 
         } catch (AnaplanAPIException | IOException e) {
             throw new AnaplanOperationException("Error encountered while " +
@@ -132,9 +123,8 @@ public class AnaplanImportOperation extends BaseAnaplanOperation{
             throw new AnaplanOperationException("Error running Import action:", e);
         }
 
-        String taskDetailsMsg = collectTaskLogs(status) +
-                "Import completed successfully: (" + chunkPointer +
-                " records processed)";
+		// 3. Get task status details and fetch the row counts
+        String taskDetailsMsg = collectTaskLogs(status);
 		setRunStatusDetails(taskDetailsMsg);
 		logger.info(getRunStatusDetails());
 

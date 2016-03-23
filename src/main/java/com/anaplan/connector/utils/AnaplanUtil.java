@@ -23,7 +23,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.Iterator;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 
@@ -122,24 +121,5 @@ public class AnaplanUtil {
                         "Iterator not fail-safe!");
             }
         };
-    }
-
-
-    // TODO: Gets an almost accurate row-count, using a regex.
-    // Needs to be ultimately replaced with count returned from server.
-    /**
-     * Fetches the number of carriage-returns from each char-array, which can be
-     * cast as string.
-     * @param charArray Byte array of the string that needs to be introspected.
-     * @return number of carriage returns found in provided byte-array.
-     */
-    public static int getCarriageReturnCount(byte[] charArray) {
-
-        Matcher m = crPattern.matcher(new String(charArray));
-        int lines = 0;
-        while (m.find()) {
-            lines++;
-        }
-        return lines;
     }
 }
