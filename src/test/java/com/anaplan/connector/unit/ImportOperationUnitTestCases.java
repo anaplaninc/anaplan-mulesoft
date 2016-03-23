@@ -3,6 +3,7 @@ package com.anaplan.connector.unit;
 import com.anaplan.client.ServerFile;
 import com.anaplan.connector.exceptions.AnaplanOperationException;
 import com.anaplan.connector.utils.AnaplanImportOperation;
+import com.anaplan.connector.utils.AnaplanUtil;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -65,6 +66,15 @@ public class ImportOperationUnitTestCases extends BaseUnitTestDriver {
         PowerMockito.doReturn(true).when(mockTaskResult).isSuccessful();
     }
 
+	private void recordActionsStrinkChunkReader() {
+		PowerMockito.when(AnaplanUtil.stringChunkReader(Mockito.anyString()))
+				.thenCallRealMethod();
+		PowerMockito.when(AnaplanUtil.stringChunkReader(Mockito.anyString(),
+				Mockito.anyInt())).thenCallRealMethod();
+		PowerMockito.when(AnaplanUtil.getCarriageReturnCount(
+				Mockito.any(byte[].class))).thenCallRealMethod();
+	}
+
     @Test
     public void testGoodImportCsv() throws Exception {
         // mock out API calls
@@ -73,6 +83,7 @@ public class ImportOperationUnitTestCases extends BaseUnitTestDriver {
         recordActionsFetchMockItems("files", filesResponseFile);
         recordActionsRunServerTask(importUrlPathToken);
         recordActionsImportTaskResultSuccess();
+		recordActionsStrinkChunkReader();
 
         anaplanImportOperation.runImport(sampleDataFile, workspaceId, modelId,
                 importId, csvColumnSeparator, csvDelimiter);
@@ -98,6 +109,7 @@ public class ImportOperationUnitTestCases extends BaseUnitTestDriver {
 		recordActionsFetchMockImports();
 		recordActionsFetchMockItems("files", filesResponseFile);
 		recordActionsRunServerTask(importUrlPathToken);
+		recordActionsStrinkChunkReader();
 		recordActionsImportTaskResultFailureDump();
 
 		String response = anaplanImportOperation.runImport(sampleDataFile,
@@ -108,50 +120,6 @@ public class ImportOperationUnitTestCases extends BaseUnitTestDriver {
 				"contents:\n" + new String(getFixture(dumpFileResponse));
 		assertEquals(expectedResponseMsg, response);
 	}
-
-    @Test
-    public void testDataParserBadColumnSeparator() throws Exception {
-        // mock out API calls
-        recordActionsFetchMockModels();
-        recordActionsFetchMockImports();
-        recordActionsFetchMockItems("files", filesResponseFile);
-
-        // test for bad column-separator
-        expectedEx.expect(java.lang.IllegalArgumentException.class);
-        expectedEx.expectMessage("Multi-character Column-Separator not supported!");
-        anaplanImportOperation.runImport(sampleDataFile, workspaceId, modelId,
-                importId, "||6y", "\"");
-    }
-
-    @Test
-    public void testDataParserBadDelimiter() throws Exception {
-        // mock out API calls
-        recordActionsFetchMockModels();
-        recordActionsFetchMockImports();
-        recordActionsFetchMockItems("files", filesResponseFile);
-
-        // test for bad delimiter
-        expectedEx.expect(IllegalArgumentException.class);
-        expectedEx.expectMessage("Multi-character Text Delimiter string not supported!");
-        anaplanImportOperation.runImport(sampleDataFile, workspaceId, modelId,
-                importId, ",", "1||1");
-    }
-
-    @Test
-    public void testDataParserWrongColumnSeparator() throws Exception {
-        // mock out API calls
-        recordActionsFetchMockModels();
-        recordActionsFetchMockImports();
-        recordActionsFetchMockItems("files", filesResponseFile);
-
-        // setup Exception expectations
-        expectedEx.expect(AnaplanOperationException.class);
-        expectedEx.expectMessage("Error parsing data:");
-
-        // test for bad column-separator or delimiter
-        anaplanImportOperation.runImport(sampleDataFile, workspaceId, modelId,
-                importId, "\\t", "\"");
-    }
 
     @Test
     public void testErrorFetchingModelImport() throws Exception {
