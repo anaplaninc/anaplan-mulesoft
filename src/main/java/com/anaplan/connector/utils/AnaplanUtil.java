@@ -60,7 +60,7 @@ public class AnaplanUtil {
             // if busy, nap and check again after 1 second
             try {
                 Thread.sleep(1000);
-                logger.debug("Running Task = {}", task.getStatus().getProgress());
+                logger.info("Running Task = {}", task.getStatus().getProgress());
             } catch (InterruptedException e) {
                 logger.error("Task interrupted!\n{}", e.getMessage());
             }
