@@ -23,7 +23,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.Iterator;
-import java.util.regex.Pattern;
+import java.util.NoSuchElementException;
 
 
 /**
@@ -33,9 +33,8 @@ import java.util.regex.Pattern;
  */
 public class AnaplanUtil {
 
-    private static Logger logger = LogManager.getLogger(AnaplanUtil.class.getName());
+    private static final Logger logger = LogManager.getLogger(AnaplanUtil.class.getName());
     public static final int CHUNKSIZE = 2048;
-    public static final Pattern crPattern = Pattern.compile("(.+\r\n)|(.+\r)|(.+\n)");
 
     private AnaplanUtil() {
         // static-only
@@ -97,7 +96,6 @@ public class AnaplanUtil {
         return new Iterator<String>() {
 
             int index = 0;
-            String dataChunk;
 
             @Override
             public boolean hasNext() {
@@ -106,13 +104,14 @@ public class AnaplanUtil {
 
             @Override
             public String next() {
+                String dataChunk;
                 if (hasNext()) {
                     dataChunk = data.substring(index, Math.min(index + chunkSize,
                             data.length()));
                     index += chunkSize;
                     return dataChunk;
                 }
-                return null;
+                throw new NoSuchElementException("No more chunks to fetch!");
             }
 
             @Override
