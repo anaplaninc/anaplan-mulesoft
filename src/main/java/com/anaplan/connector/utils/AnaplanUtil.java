@@ -22,6 +22,9 @@ import com.anaplan.client.TaskStatus;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.util.Iterator;
+import java.util.NoSuchElementException;
+
 
 /**
  * Utilities here handle communication with the Anaplan API
@@ -30,30 +33,11 @@ import org.apache.logging.log4j.Logger;
  */
 public class AnaplanUtil {
 
-    private static Logger logger = LogManager.getLogger(AnaplanUtil.class.getName());
+    private static final Logger logger = LogManager.getLogger(AnaplanUtil.class.getName());
+    public static final int CHUNKSIZE = 2048;
 
     private AnaplanUtil() {
         // static-only
-    }
-
-    /**
-     * Prints an array of strings as a string, delimited by "||". This is for
-     * debug logs only.
-     *
-     * @param toprint Data array to create debug string with.
-     * @return Debug output for provided string array.
-     */
-    public static String debugOutput(String[] toprint) {
-        StringBuilder sb = new StringBuilder();
-        for (String s : toprint) {
-            sb.append(s);
-            sb.append("||");
-        }
-        if (sb.length() > 1) {
-            return sb.toString().substring(0, sb.length() - 1);
-        } else {
-            return "*";
-        }
     }
 
     /**
@@ -74,7 +58,7 @@ public class AnaplanUtil {
             // if busy, nap and check again after 1 second
             try {
                 Thread.sleep(1000);
-                logger.debug("Running Task = {}", task.getStatus().getProgress());
+                logger.info("Running Task = {}", task.getStatus().getProgress());
             } catch (InterruptedException e) {
                 logger.error("Task interrupted!\n{}", e.getMessage());
             }
@@ -82,5 +66,59 @@ public class AnaplanUtil {
         }
 
         return status;
+    }
+
+    /**
+     * Overloading for stringChunkReader(String, Integer).
+     *
+     * @param data
+     *            String data.
+     * @return
+     */
+    public static Iterator<String> stringChunkReader(final String data) {
+        return stringChunkReader(data, CHUNKSIZE);
+    }
+
+    /**
+     * Data splitter to be used in association with arrayToBase64(). Splits up
+     * the data by provided chunkSize value and returns an iterator to iterate
+     * over each chunk.
+     *
+     * @param data
+     *            Data string, base64 friendly.
+     * @param chunkSize
+     *            Chunk size limit, defaults to 2048 characters.
+     * @return Iterator to iterate over each data-chunk.
+     */
+    public static Iterator<String> stringChunkReader(final String data,
+                                                    final int chunkSize) {
+
+        return new Iterator<String>() {
+
+            int index = 0;
+
+            @Override
+            public boolean hasNext() {
+                return index < data.length();
+            }
+
+            @Override
+            public String next() {
+                String dataChunk;
+                if (hasNext()) {
+                    dataChunk = data.substring(index, Math.min(index + chunkSize,
+                            data.length()));
+                    index += chunkSize;
+                    return dataChunk;
+                }
+                throw new NoSuchElementException("No more chunks to fetch!");
+            }
+
+            @Override
+            public void remove() {
+                throw new UnsupportedOperationException(
+                        "Iterator not fail-safe!");
+            }
+        };
     }
 }
