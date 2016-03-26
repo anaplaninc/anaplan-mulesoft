@@ -8,7 +8,7 @@
     "firstDataRow": 2,
     "format": "txt",
     "headerRow": 1,
-    "separator": "\t"
+    "separator": "    "
   },
   {
     "id": "dumpFileIdForImport",

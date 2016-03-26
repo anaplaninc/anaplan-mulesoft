@@ -205,12 +205,12 @@ public abstract class BaseUnitTestDriver {
         PowerMockito.doReturn(true).when(mockTaskResult).isSuccessful();
     }
 
-	protected void recordActionsTaskResultFailure() {
-		PowerMockito.doReturn(TaskStatus.State.COMPLETE).when(mockStatus)
-				.getTaskState();
-		PowerMockito.doReturn(mockTaskResult).when(mockStatus).getResult();
-		PowerMockito.doReturn(false).when(mockTaskResult).isSuccessful();
-	}
+    protected void recordActionsTaskResultFailure() {
+        PowerMockito.doReturn(TaskStatus.State.COMPLETE).when(mockStatus)
+                .getTaskState();
+        PowerMockito.doReturn(mockTaskResult).when(mockStatus).getResult();
+        PowerMockito.doReturn(false).when(mockTaskResult).isSuccessful();
+    }
 
     protected void recordActionsFetchMockItems(String entityName,
                                                String fixtureName)
