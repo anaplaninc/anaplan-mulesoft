@@ -37,40 +37,37 @@ Note: The Anaplan model you are working with does not assume that the data is co
 
 === export demo mule-app.properties file
 
-- anaplan.username=
-- anaplan.password=
-- anaplan.certificatePath=
-- anaplan.apiUrl=https://api.anaplan.com
-- anaplan.workspaceId=
-- anaplan.modelId=
-- anaplan.exportId=
+anaplan.username=
+anaplan.password=
+anaplan.certificatePath=
+anaplan.apiUrl=https://api.anaplan.com
+anaplan.workspaceId=
+anaplan.modelId=
+anaplan.exportId=
 
 === import demo mule-app.properties file
 
-- anaplan.username=
-- anaplan.password=
-- anaplan.certificatePath=
-- anaplan.apiUrl=https://api.anaplan.com
-- anaplan.workspaceId=
-- anaplan.modelId=
-- anaplan.importId=
-- anaplan.columnSeparator=,
-- anaplan.delimiter="
-- file.readFromDir=
-- file.moveToDir=
-
-- Note: For a tab-separated file, use
-anaplan.columSeparator=\\t
+anaplan.username=
+anaplan.password=
+anaplan.certificatePath=
+anaplan.apiUrl=https://api.anaplan.com
+anaplan.workspaceId=
+anaplan.modelId=
+anaplan.importId=
+anaplan.columnSeparator=,
+anaplan.delimiter=\\"
+file.readFromDir=
+file.moveToDir=
 
 === delete demo mule-app.properties file
 
-- anaplan.username=
-- anaplan.password=
-- anaplan.certificatePath=
-- anaplan.apiUrl=https://api.anaplan.com
-- anaplan.workspaceId=
-- anaplan.modelId=
-- anaplan.deleteActionId=
+anaplan.username=
+anaplan.password=
+anaplan.certificatePath=
+anaplan.apiUrl=https://api.anaplan.com
+anaplan.workspaceId=
+anaplan.modelId=
+anaplan.deleteActionId=
 
 == Setting up the Environment
 
@@ -134,17 +131,12 @@ The Demo flows are inside the "Demo" folder that is part of the downloadable zip
 a. demo/anaplan-delete/src/main/app/mule-app.properties/mule-app.properties
 b. demo/anaplan-export/src/main/app/mule-app.properties/mule-app.properties
 c. demo/anaplan-import/src/main/app/mule-app.properties/mule-app.properties
-4. Provide values for the variables in the mule-app.properties file you want to configure, 
-a. anaplan.user=joe.doe@company.com for example
-b. anaplan.password=your-password
-c. anaplan.certificatePath=/path/to/certificate
-d. anaplan.apiURL=https://api.anaplan.com
-e. anaplan.workspaceId=identifier-for-your-workspace
-f. anaplan.modelId=identifier-for-your-model
-g. anaplan.importId=identifier-for-your-import-action
-h. anaplan.columnSeparator=,  or, for a tab-separated file, use anaplan.columnSeparator=\\t
-i. anaplan.delimiter="  or anaplan.delimiter='  or anaplan.delimiter=|
-5. Click File > Save. 
+4. Provide values for the variables in the mule-app.properties file you want to configure, and click File > Save. 
+
+Note:
+The default delimiter is double-quotes, which is specified by anaplan.delimiter= \\"
+-- To specify single quote ('), use anaplan.delimiter=\\'
+-- To specify pipe (|), use anaplan.delimiter=\\|
 
 You are now ready for Configuring Authentication: Basic or Certificate.
 
@@ -191,6 +183,11 @@ Let's start with a simple example.
 2. On the Anypoint Studio Message Flow tab, build your flow by dropping Connectors into the Anypoint Studio Flow area. This example imports a .csv file from a directory you specify, brings the data into a List in Anaplan, and moves the .csv file to another directory that you specify.
 3. Configure the File connector with the following:
 - Path to the directory that holds the .csv file.
+
+IMPORTANT: Important! Make sure the directory contains exactly one (1) import file and no other files because the Flow will attempt to operate on all files in this original directory.
+
+TIP: Note to Macintosh users: To make sure the Path directory contains exactly one (1) import file, use the command-line Terminal to navigate to the directory, then type the ls -a command to see all files, including hidden files. If the Path directory contains a .DS_Store file, remove it by typing rm .DS_Store. (Terminal is available from Applications > Utilities > Terminal. Do not use the Finder because the Finder adds a "hidden" file named .DS_Store to any folder it modifies.)
+
 - Move to Directory that receives the file after the import completes. This empties the original Path directory.
 4. Set the Anaplan Authentication. See Configuring Authentication: Basic or Certificate.
 5. Configure the Anaplan connector for the Import Operation, and specify the Import name or ID, the Model name or ID, and the Workspace name or ID.
