@@ -174,23 +174,21 @@ public class AnaplanImportOperation extends BaseAnaplanOperation{
         // validate workspace-ID and model-ID are valid, else throw exception
         validateInput(workspaceId, modelId);
 
-        MulesoftAnaplanResponse anaplanResponse = null;
+        MulesoftAnaplanResponse anaplanResponse;
+        String importResponse = "";
         try {
             logger.info("Starting import: {}", importId);
-
             anaplanResponse = runImportCsv(data, model, importId, columnSeparator,
                     delimiter);
-
+            importResponse = createResponse(anaplanResponse);
             logger.info("Import complete: Status: {}, Response message: {}",
-                    anaplanResponse.getStatus(),
-                    anaplanResponse.getResponseMessage());
-
+                    anaplanResponse.getStatus(), importResponse);
         } catch (JsonSyntaxException e) {
             MulesoftAnaplanResponse.responseEpicFail(apiConn, e, null);
         } finally {
             apiConn.closeConnection();
         }
 
-        return createResponse(anaplanResponse);
+        return importResponse;
     }
 }
