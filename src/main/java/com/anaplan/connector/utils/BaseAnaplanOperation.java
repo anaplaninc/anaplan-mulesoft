@@ -216,7 +216,6 @@ public class BaseAnaplanOperation {
 				throw new AnaplanOperationException(
 						"Could not determine run status of " + "Anaplan Import!");
 		}
-		logger.info(responseMessage);
 		return responseMessage;
 	}
 }
