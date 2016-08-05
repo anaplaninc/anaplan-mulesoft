@@ -121,6 +121,9 @@ public class AnaplanImportOperation extends BaseAnaplanOperation{
         String taskDetailsMsg = collectTaskLogs(status);
         setRunStatusDetails(taskDetailsMsg);
         logger.info(getRunStatusDetails());
+        if (taskDetailsMsg == null) {
+            logger.warn("NULL task details from API response!");
+        }
 
         // 3. Determine execution status and create response.
 
