@@ -150,6 +150,7 @@
                             <include>com/anaplan/connector/MulesoftAnaplanResponse.class</include>
                         </includes>
                     </instrumentation>
+                    <check/>
                 </configuration>
             </plugin>
         </plugins>

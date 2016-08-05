@@ -24,12 +24,10 @@ import com.anaplan.connector.utils.AnaplanDeleteOperation;
 import com.anaplan.connector.utils.AnaplanExportOperation;
 import com.anaplan.connector.utils.AnaplanImportOperation;
 import com.anaplan.connector.utils.AnaplanProcessOperation;
-import com.anaplan.connector.utils.Delimiters;
 import org.mule.api.annotations.Config;
 import org.mule.api.annotations.Connector;
 import org.mule.api.annotations.Processor;
 import org.mule.api.annotations.display.FriendlyName;
-import org.mule.api.annotations.param.Default;
 import org.mule.api.annotations.param.Payload;
 
 
@@ -78,8 +76,6 @@ public class AnaplanConnector {
      * @param workspaceId Anaplan workspace ID.
      * @param modelId Anaplan model ID.
      * @param importId Action ID of the Import operation.
-     * @param columnSeparator Column separator, defaults to comma.
-     * @param delimiter Cell escape values, defaults to double-quotes.
      * @return Status message from running the Import operation.
      * @throws AnaplanConnectionException When an error occurs during
      * 									  authentication
@@ -91,11 +87,7 @@ public class AnaplanConnector {
 			@Payload String data,
 			@FriendlyName("Workspace name or ID") String workspaceId,
 		    @FriendlyName("Model name or ID") String modelId,
-		    @FriendlyName("Import name or ID") String importId,
-			@FriendlyName("Column separator")
-			@Default(Delimiters.COMMA) String columnSeparator,
-			@FriendlyName("Delimiter")
-			@Default(Delimiters.ESCAPE_CHARACTER) String delimiter)
+		    @FriendlyName("Import name or ID") String importId)
 		    		throws AnaplanConnectionException,
 		    			   AnaplanOperationException {
 		// validate API connectionStrategy
@@ -104,8 +96,7 @@ public class AnaplanConnector {
 		// start the import
 		importer = new AnaplanImportOperation(
 				connectionStrategy.getApiConnection());
-		return importer.runImport(data, workspaceId, modelId, importId,
-				columnSeparator, delimiter);
+		return importer.runImport(data, workspaceId, modelId, importId);
 	}
 
 	/**

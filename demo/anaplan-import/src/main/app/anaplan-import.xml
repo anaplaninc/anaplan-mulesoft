@@ -12,6 +12,6 @@ http://www.mulesoft.org/schema/mule/ee/tracking http://www.mulesoft.org/schema/m
     <file:connector name="File" readFromDirectory="${file.readFromDir}" autoDelete="true" streaming="true" validateConnections="true" doc:name="File"/>
     <flow name="anaplan-importFlow">
         <file:inbound-endpoint path="${file.readFromDir}" moveToDirectory="${file.moveToDir}" connector-ref="File" responseTimeout="10000" doc:name="File"/>
-        <anaplan:import-to-model config-ref="Anaplan__Certificate_Authentication" importId="${anaplan.importId}" modelId="${anaplan.modelId}" workspaceId="${anaplan.workspaceId}" doc:name="Anaplan" columnSeparator="${anaplan.columnSeparator}" delimiter="${anaplan.delimiter}"/>
+        <anaplan:import-to-model config-ref="Anaplan__Certificate_Authentication" importId="${anaplan.importId}" modelId="${anaplan.modelId}" workspaceId="${anaplan.workspaceId}" doc:name="Anaplan"/>
     </flow>
 </mule>
