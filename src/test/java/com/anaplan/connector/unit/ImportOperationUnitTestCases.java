@@ -25,10 +25,6 @@ public class ImportOperationUnitTestCases extends BaseUnitTestDriver {
 
     private static final String importId = properties.getString(
             "anaplan.importId");
-    private static final String csvColumnSeparator = properties.getString(
-            "anaplan.columnSeparatorCOMMA");
-    private static final String csvDelimiter = properties.getString(
-            "anaplan.delimiter");
     private static final String importUrlPathToken = properties.getString(
             "import.urlPathToken");
 	private static final String dumpFileUrlPathToken = properties.getString(
@@ -84,7 +80,7 @@ public class ImportOperationUnitTestCases extends BaseUnitTestDriver {
 		recordActionsStrinkChunkReader();
 
         anaplanImportOperation.runImport(sampleDataFile, workspaceId, modelId,
-                importId, csvColumnSeparator, csvDelimiter);
+                importId);
     }
 
 	private void recordActionsImportTaskResultFailureDump() throws Exception {
@@ -111,7 +107,7 @@ public class ImportOperationUnitTestCases extends BaseUnitTestDriver {
 		recordActionsImportTaskResultFailureDump();
 
 		String response = anaplanImportOperation.runImport(sampleDataFile,
-				workspaceId, modelId, importId, csvColumnSeparator, csvDelimiter);
+				workspaceId, modelId, importId);
 		String expectedResponseMsg = "Operation ran successfully but with warnings!\n" +
 				"Response Message:\nSome records were not imported: check " +
 				"connector output data for details: importId\nDump File " +
@@ -129,7 +125,7 @@ public class ImportOperationUnitTestCases extends BaseUnitTestDriver {
         expectedEx.expectMessage("Error fetching Import action:");
 
         anaplanImportOperation.runImport(sampleDataFile, workspaceId, modelId,
-                importId, csvColumnSeparator, csvDelimiter);
+                importId);
     }
 
     @Test
@@ -143,8 +139,7 @@ public class ImportOperationUnitTestCases extends BaseUnitTestDriver {
         expectedEx.expectMessage("Invalid import ID provided: badImportId");
 
         anaplanImportOperation.runImport(sampleDataFile,
-                workspaceId, modelId, "badImportId", csvColumnSeparator,
-                csvDelimiter);
+                workspaceId, modelId, "badImportId");
     }
 
     @Test
@@ -159,7 +154,7 @@ public class ImportOperationUnitTestCases extends BaseUnitTestDriver {
         expectedEx.expectMessage("Error running Import action:");
 
         anaplanImportOperation.runImport(sampleDataFile, workspaceId, modelId,
-                importId, csvColumnSeparator, csvDelimiter);
+                importId);
     }
 
 }

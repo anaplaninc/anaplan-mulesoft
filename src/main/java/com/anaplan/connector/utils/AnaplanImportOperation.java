@@ -62,16 +62,13 @@ public class AnaplanImportOperation extends BaseAnaplanOperation{
      * @param data Import CSV data
      * @param model Model object to which to import to
      * @param importId Import action ID
-     * @param delimiter Escape character for cell values.
      * @throws AnaplanAPIException Thrown when Anaplan API operation fails or
      *                             error is encountered when writing to
      *                             cell data writer.
      */
     private static MulesoftAnaplanResponse runImportCsv(String data,
                                                         Model model,
-                                                        String importId,
-                                                        String columnSeparator,
-                                                        String delimiter)
+                                                        String importId)
             throws AnaplanOperationException {
 
         // 1. Write the provided CSV data to the data-writer.
@@ -93,9 +90,6 @@ public class AnaplanImportOperation extends BaseAnaplanOperation{
             if (serverFile == null) {
                 throw new AnaplanOperationException("Could not fetch server-file!");
             }
-            // set the column-separator and delimiter for the input
-            serverFile.setSeparator(columnSeparator);
-            serverFile.setDelimiter(delimiter);
 
             // upload the data file as a stream
             OutputStream uploadStream = serverFile.getUploadStream();
@@ -162,9 +156,7 @@ public class AnaplanImportOperation extends BaseAnaplanOperation{
     public String runImport(String data,
                             String workspaceId,
                             String modelId,
-                            String importId,
-                            String columnSeparator,
-                            String delimiter) throws AnaplanOperationException {
+                            String importId) throws AnaplanOperationException {
 
         logger.info("<< Starting import >>");
         logger.info("Workspace-ID: {}", workspaceId);
@@ -178,8 +170,7 @@ public class AnaplanImportOperation extends BaseAnaplanOperation{
         String importResponse = "";
         try {
             logger.info("Starting import: {}", importId);
-            anaplanResponse = runImportCsv(data, model, importId, columnSeparator,
-                    delimiter);
+            anaplanResponse = runImportCsv(data, model, importId);
             importResponse = createResponse(anaplanResponse);
             logger.info("Import complete: Status: {}, Response message: {}",
                     anaplanResponse.getStatus(), importResponse);
