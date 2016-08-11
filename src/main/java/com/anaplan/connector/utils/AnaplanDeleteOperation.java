@@ -57,7 +57,7 @@ public class AnaplanDeleteOperation extends BaseAnaplanOperation {
 	 * @return Response object containing details of executing delete.
 	 * @throws AnaplanAPIException Thrown when errors at talkng to API.
 	 */
-	private static MulesoftAnaplanResponse runDeleteAction(Model model,
+	private MulesoftAnaplanResponse runDeleteAction(Model model,
 			String actionId) throws AnaplanAPIException {
 
 		final Action action = model.getAction(actionId);

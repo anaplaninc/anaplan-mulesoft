@@ -143,6 +143,12 @@ public class AnaplanImportOperation extends BaseAnaplanOperation{
         return this;
     }
 
+    /**
+     * Executes an Import action for the provided Import-ID
+     * @param importId
+     * @return
+     * @throws AnaplanOperationException
+     */
     public AnaplanImportOperation runImportTask(String importId) throws AnaplanOperationException {
 
         Task task;

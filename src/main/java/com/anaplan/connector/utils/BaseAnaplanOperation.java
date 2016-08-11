@@ -167,7 +167,7 @@ public class BaseAnaplanOperation {
 	 * @param status TaskStatus object containing task details
 	 * @return Log string delimited by new-line, fetched from TaskStatus object.
 	 */
-	public static String collectTaskLogs(TaskStatus status) {
+	public String collectTaskLogs(TaskStatus status) {
 		final TaskResult taskResult = status.getResult();
 		final StringBuilder taskDetails = new StringBuilder();
 		if (taskResult.getDetails() != null) {
