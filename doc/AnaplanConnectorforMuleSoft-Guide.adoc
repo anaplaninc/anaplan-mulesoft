@@ -37,52 +37,76 @@ Note: The Anaplan model you are working with does not assume that the data is co
 
 === export demo mule-app.properties file
 
-anaplan.username=
-anaplan.password=
-anaplan.certificatePath=
-anaplan.apiUrl=https://api.anaplan.com
-anaplan.workspaceId=
-anaplan.modelId=
-anaplan.exportId=
+anaplan.username=   
+
+anaplan.password=   
+
+anaplan.certificatePath=  
+
+anaplan.apiUrl=https://api.anaplan.com  
+
+anaplan.workspaceId=  
+
+anaplan.modelId=  
+
+anaplan.exportId=  
+
 
 === import demo mule-app.properties file
 
-anaplan.username=
-anaplan.password=
-anaplan.certificatePath=
-anaplan.apiUrl=https://api.anaplan.com
-anaplan.workspaceId=
-anaplan.modelId=
-anaplan.importId=
-anaplan.columnSeparator=,
-anaplan.delimiter=\\"
-file.readFromDir=
-file.moveToDir=
+anaplan.username=  
+
+anaplan.password=  
+
+anaplan.certificatePath=  
+
+anaplan.apiUrl=https://api.anaplan.com  
+
+anaplan.workspaceId=  
+
+anaplan.modelId=  
+
+anaplan.importId=  
+
+file.readFromDir=  
+
+file.moveToDir=  
+
+Note: The Column Separator and Text Delimiter are set in Data Source definition. If you want to change them, log in to the Anaplan model graphical user interface, and navigate to **Actions > Manage Import Data Sources > Edit**.
 
 === delete demo mule-app.properties file
 
-anaplan.username=
-anaplan.password=
-anaplan.certificatePath=
-anaplan.apiUrl=https://api.anaplan.com
-anaplan.workspaceId=
-anaplan.modelId=
-anaplan.deleteActionId=
+anaplan.username=  
+
+anaplan.password=  
+
+anaplan.certificatePath=  
+
+anaplan.apiUrl=https://api.anaplan.com  
+
+anaplan.workspaceId=  
+
+anaplan.modelId=  
+
+anaplan.deleteActionId=  
+
 
 == Setting up the Environment
 
-1. Install the following:
-- Java 7 
-- Apache Maven
+1. Install a supported Java Standard Development Kit (SDK):
+- If you will be using Anypoint Studio (recommended for most users) to install the Connector from the Mulesoft Connector repository, you can install Java 7 or Java 8.
+- If installing from GitHub (for experienced developers only), install and use Java 7 only.
 
-2. Download Anypoint Studio and install it.
+2. Install Apache Maven.
 
-3. Configure Maven:
+3. Download Anypoint Studio and install it.
+
+4. Configure Maven:
 - Click Anypoint Studio > Preferences > Anypoint Studio > Maven Settings. 
 - Click Browse to locate the folder where you installed Maven. 
 - Click Test Maven Configuration and when you see the green checkmark, click OK. 
 
-4. Install the Anypoint DevKit Plugin: 
+5. Install the Anypoint DevKit Plugin: 
 - From the Anypoint Studio Help menu, click Install New Software.
 - Click Work with > Anypoint Addons Update Site > Anypoint Devkit Plugin.
 - Click Next, Finish, and restart Studio
@@ -115,13 +139,29 @@ Note: Your version of Anypoint Studio might be slightly different than what is d
 6. Right-click the project, Anypoint Connector > Install or Update. 
 7. Follow the wizard to install the connector, ignore the warning about "unsigned content", and restart Anypoint Studio when prompted.  
 
-== Installing the Demo Flows
+== Installing the Demo Flows (Optional)
 
-The Demo flows are inside the "Demo" folder that is part of the downloadable zip described above in "Option 2: From GitHub". 
+There are three demo projects:
 
-1. In Anypoint Studio, on the File menu, click Import, and select Anypoint Studio Project from External Location.
-2. In the Mule Import dialog, navigate to the Project root of one of the demo projects, such as anaplan-export, and make sure that Copy project into workspace is selected.
-3. You can now install another demo project. There are three demo projects, one for delete, one for import, and one for export.
+- anaplan-delete
+- anaplan-export
+- anaplan-import
+
+If you want one or more of them:
+
+1. (Recommended for most users) Download the **demo.zip** file from the link at https://community.anaplan.com/web/guest-staging/anapedia/integrations/third-party-data-integration/anaplan-connector-for-mulesoft   
+
+    Or, if you are a software developer experienced with GitHub, find them inside the "Demo" folder that is part of the zip described above in "Option 2: (for experienced software developers only) From GitHub" 
+    
+2. In Anypoint Studio, on the File menu, click Import, and select Anypoint Studio Project from External Location, and click Next.
+3. In the Mule Import dialog, navigate to the Project root of one of the demo projects, such as anaplan-export, and make sure that **Copy project into workspace** is selected, and click Finished.
+4. You can now install another demo project. There are three demo projects, one for delete, one for import, and one for export.
+5. Configure the Dependencies for the project.
+       a. Click the project (such as anaplan-export), and on the Project menu, click Properties.
+       b. Click Java Build Path, and click Add Library.
+       c. In the Add Library dialog, click Anypoint Connectors Dependencies, and click Next.
+       d. Click Anaplan, and click Finished.
+6. (Optional) If you want, install another demo project by repeating the steps.
 
 == Variables for Authentication and Configuration
 
@@ -132,13 +172,6 @@ a. demo/anaplan-delete/src/main/app/mule-app.properties/mule-app.properties
 b. demo/anaplan-export/src/main/app/mule-app.properties/mule-app.properties
 c. demo/anaplan-import/src/main/app/mule-app.properties/mule-app.properties
 4. Provide values for the variables in the mule-app.properties file you want to configure, and click File > Save. 
-
-Note:
-The default delimiter is double-quotes, which is specified by anaplan.delimiter= \\"
--- To specify single quote ('), use anaplan.delimiter=\\'
--- To specify pipe (|), use anaplan.delimiter=\\|
-
-You are now ready for Configuring Authentication: Basic or Certificate.
 
 == Configuring Authentication: Basic or Certificate
 
