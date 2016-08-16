@@ -116,6 +116,8 @@ public class AnaplanImportOperation extends BaseAnaplanOperation{
                 throw new AnaplanOperationException("Could not fetch server-file!");
             }
 
+            logger.info("Uploading file...");
+
             // upload the data file from one stream to the other, in provided bufferSize
             OutputStream anaplanUploadStream = getServerFile().getUploadStream();
             byte[] buffer = new byte[bufferSize];
@@ -130,10 +132,11 @@ public class AnaplanImportOperation extends BaseAnaplanOperation{
                     totalBytes += bufferSize;
                 }
             }
-            anaplanUploadStream.close();
-            dataStream.close();
 
             logger.info("Uploaded '{}' bytes of data!", totalBytes);
+
+            anaplanUploadStream.close();
+            dataStream.close();  // triggers deletion of source file in Inbound File connector
 
         } catch (AnaplanAPIException | IOException e) {
             throw new AnaplanOperationException("Error encountered while " +

@@ -40,14 +40,8 @@ import java.io.InputStream;
  * @author MuleSoft, Inc.
  * @author Spondon Saha.
  */
-@Connector(name="anaplan", schemaVersion="3.6", friendlyName="Anaplan",
-           minMuleVersion="3.6")
+@Connector(name="anaplan", schemaVersion="3.6", friendlyName="Anaplan", minMuleVersion="3.6")
 public class AnaplanConnector {
-
-	private static AnaplanExportOperation exporter;
-	private static AnaplanImportOperation importer;
-	private static AnaplanDeleteOperation deleter;
-	private static AnaplanProcessOperation processRunner;
 
 	@Config
 	private BaseConnectionStrategy connectionStrategy;
@@ -89,17 +83,16 @@ public class AnaplanConnector {
 		@Payload InputStream data,
 		@FriendlyName("Workspace Name or ID") String workspaceId,
 		@FriendlyName("Model Name or ID") String modelId,
-		@FriendlyName("Import Name or ID") String importId,
-		@FriendlyName("Import Buffer Size:") Integer bufferSize)
+		@FriendlyName("Import Name or ID") String importId)
 			throws AnaplanConnectionException,
 				   AnaplanOperationException {
 		// validate API connectionStrategy
 		connectionStrategy.validateConnection();
 
 		// start the import
-		importer = new AnaplanImportOperation(
-				connectionStrategy.getApiConnection());
-		return importer.runImport(data, workspaceId, modelId, importId, bufferSize);
+		AnaplanImportOperation importer = new AnaplanImportOperation(
+			connectionStrategy.getApiConnection());
+		return importer.runImport(data, workspaceId, modelId, importId, null);
 	}
 
 	/**
@@ -129,8 +122,8 @@ public class AnaplanConnector {
 		connectionStrategy.validateConnection();
 
 		// start the export
-		exporter = new AnaplanExportOperation(
-				connectionStrategy.getApiConnection());
+		AnaplanExportOperation exporter = new AnaplanExportOperation(
+			connectionStrategy.getApiConnection());
 		return exporter.runExport(workspaceId, modelId, exportId);
 	}
 
@@ -158,8 +151,8 @@ public class AnaplanConnector {
 		connectionStrategy.validateConnection();
 
 		// start the delete process
-		deleter = new AnaplanDeleteOperation(
-				connectionStrategy.getApiConnection());
+		AnaplanDeleteOperation deleter = new AnaplanDeleteOperation(
+			connectionStrategy.getApiConnection());
 		return deleter.runDeleteAction(workspaceId, modelId, deleteActionId);
 	}
 
@@ -188,8 +181,8 @@ public class AnaplanConnector {
 		connectionStrategy.validateConnection();
 
 		// run the process
-		processRunner = new AnaplanProcessOperation(
-				connectionStrategy.getApiConnection());
+		AnaplanProcessOperation processRunner = new AnaplanProcessOperation(
+			connectionStrategy.getApiConnection());
 		return processRunner.runProcess(workspaceId, modelId, processId);
 
 	}
