@@ -153,6 +153,18 @@
                     <check/>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-enforcer-plugin</artifactId>
+                <configuration>
+                    <failFast>true</failFast>
+                    <rules>
+                        <requireJavaVersion>
+                            <version>[1.7,)</version>
+                        </requireJavaVersion>
+                    </rules>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 
