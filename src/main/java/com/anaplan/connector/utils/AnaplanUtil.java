@@ -22,9 +22,6 @@ import com.anaplan.client.TaskStatus;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.Iterator;
-import java.util.NoSuchElementException;
-
 
 /**
  * Utilities here handle communication with the Anaplan API
@@ -66,59 +63,5 @@ public class AnaplanUtil {
         }
 
         return status;
-    }
-
-    /**
-     * Overloading for stringChunkReader(String, Integer).
-     *
-     * @param data
-     *            String data.
-     * @return
-     */
-    public static Iterator<String> stringChunkReader(final String data) {
-        return stringChunkReader(data, CHUNKSIZE);
-    }
-
-    /**
-     * Data splitter to be used in association with arrayToBase64(). Splits up
-     * the data by provided chunkSize value and returns an iterator to iterate
-     * over each chunk.
-     *
-     * @param data
-     *            Data string, base64 friendly.
-     * @param chunkSize
-     *            Chunk size limit, defaults to 2048 characters.
-     * @return Iterator to iterate over each data-chunk.
-     */
-    public static Iterator<String> stringChunkReader(final String data,
-                                                    final int chunkSize) {
-
-        return new Iterator<String>() {
-
-            int index = 0;
-
-            @Override
-            public boolean hasNext() {
-                return index < data.length();
-            }
-
-            @Override
-            public String next() {
-                String dataChunk;
-                if (hasNext()) {
-                    dataChunk = data.substring(index, Math.min(index + chunkSize,
-                            data.length()));
-                    index += chunkSize;
-                    return dataChunk;
-                }
-                throw new NoSuchElementException("No more chunks to fetch!");
-            }
-
-            @Override
-            public void remove() {
-                throw new UnsupportedOperationException(
-                        "Iterator not fail-safe!");
-            }
-        };
     }
 }

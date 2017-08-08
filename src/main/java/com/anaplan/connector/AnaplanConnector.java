@@ -30,6 +30,8 @@ import org.mule.api.annotations.Processor;
 import org.mule.api.annotations.display.FriendlyName;
 import org.mule.api.annotations.param.Payload;
 
+import java.io.InputStream;
+
 
 /**
  * Anaplan Connector that supports Anaplan actions such as Import, Export,
@@ -38,14 +40,8 @@ import org.mule.api.annotations.param.Payload;
  * @author MuleSoft, Inc.
  * @author Spondon Saha.
  */
-@Connector(name="anaplan", schemaVersion="3.6", friendlyName="Anaplan",
-           minMuleVersion="3.6")
+@Connector(name="anaplan", schemaVersion="3.6", friendlyName="Anaplan", minMuleVersion="3.6")
 public class AnaplanConnector {
-
-	private static AnaplanExportOperation exporter;
-	private static AnaplanImportOperation importer;
-	private static AnaplanDeleteOperation deleter;
-	private static AnaplanProcessOperation processRunner;
 
 	@Config
 	private BaseConnectionStrategy connectionStrategy;
@@ -84,19 +80,19 @@ public class AnaplanConnector {
      */
 	@Processor(friendlyName = "Import")
 	public String importToModel(
-			@Payload String data,
-			@FriendlyName("Workspace name or ID") String workspaceId,
-		    @FriendlyName("Model name or ID") String modelId,
-		    @FriendlyName("Import name or ID") String importId)
-		    		throws AnaplanConnectionException,
-		    			   AnaplanOperationException {
+		@Payload InputStream data,
+		@FriendlyName("Workspace Name or ID") String workspaceId,
+		@FriendlyName("Model Name or ID") String modelId,
+		@FriendlyName("Import Name or ID") String importId)
+			throws AnaplanConnectionException,
+				   AnaplanOperationException {
 		// validate API connectionStrategy
 		connectionStrategy.validateConnection();
 
 		// start the import
-		importer = new AnaplanImportOperation(
-				connectionStrategy.getApiConnection());
-		return importer.runImport(data, workspaceId, modelId, importId);
+		AnaplanImportOperation importer = new AnaplanImportOperation(
+			connectionStrategy.getApiConnection());
+		return importer.runImport(data, workspaceId, modelId, importId, null);
 	}
 
 	/**
@@ -117,17 +113,17 @@ public class AnaplanConnector {
 	 */
 	@Processor(friendlyName="Export")
 	public String exportFromModel(
-			@FriendlyName("Workspace name or ID") String workspaceId,
-			@FriendlyName("Model name or ID") String modelId,
-			@FriendlyName("Export name or ID") String exportId)
-					throws AnaplanConnectionException,
-						   AnaplanOperationException {
+		@FriendlyName("Workspace name or ID") String workspaceId,
+		@FriendlyName("Model name or ID") String modelId,
+		@FriendlyName("Export name or ID") String exportId)
+			throws AnaplanConnectionException,
+				   AnaplanOperationException {
 		// validate API connectionStrategy
 		connectionStrategy.validateConnection();
 
 		// start the export
-		exporter = new AnaplanExportOperation(
-				connectionStrategy.getApiConnection());
+		AnaplanExportOperation exporter = new AnaplanExportOperation(
+			connectionStrategy.getApiConnection());
 		return exporter.runExport(workspaceId, modelId, exportId);
 	}
 
@@ -146,17 +142,17 @@ public class AnaplanConnector {
 	 */
 	@Processor(friendlyName="Delete")
 	public String deleteFromModel(
-			@FriendlyName("Workspace name or ID") String workspaceId,
-			@FriendlyName("Model name or ID") String modelId,
-			@FriendlyName("Delete action name or ID") String deleteActionId)
-					throws AnaplanConnectionException,
-						   AnaplanOperationException {
+		@FriendlyName("Workspace name or ID") String workspaceId,
+		@FriendlyName("Model name or ID") String modelId,
+		@FriendlyName("Delete action name or ID") String deleteActionId)
+			throws AnaplanConnectionException,
+				   AnaplanOperationException {
 		// validate the API connectionStrategy
 		connectionStrategy.validateConnection();
 
 		// start the delete process
-		deleter = new AnaplanDeleteOperation(
-				connectionStrategy.getApiConnection());
+		AnaplanDeleteOperation deleter = new AnaplanDeleteOperation(
+			connectionStrategy.getApiConnection());
 		return deleter.runDeleteAction(workspaceId, modelId, deleteActionId);
 	}
 
@@ -176,17 +172,17 @@ public class AnaplanConnector {
 	 */
 	@Processor(friendlyName="Process")
 	public String runProcess(
-			@FriendlyName("Workspace name or ID") String workspaceId,
-			@FriendlyName("Model name or ID") String modelId,
-			@FriendlyName("Process name or ID") String processId)
-					throws AnaplanConnectionException,
-						   AnaplanOperationException {
+		@FriendlyName("Workspace name or ID") String workspaceId,
+		@FriendlyName("Model name or ID") String modelId,
+		@FriendlyName("Process name or ID") String processId)
+			throws AnaplanConnectionException,
+				   AnaplanOperationException {
 		// validate the API connectionStrategy
 		connectionStrategy.validateConnection();
 
 		// run the process
-		processRunner = new AnaplanProcessOperation(
-				connectionStrategy.getApiConnection());
+		AnaplanProcessOperation processRunner = new AnaplanProcessOperation(
+			connectionStrategy.getApiConnection());
 		return processRunner.runProcess(workspaceId, modelId, processId);
 
 	}

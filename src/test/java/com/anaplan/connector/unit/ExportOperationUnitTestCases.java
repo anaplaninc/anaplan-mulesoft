@@ -3,6 +3,7 @@ package com.anaplan.connector.unit;
 import com.anaplan.client.Export;
 import com.anaplan.connector.exceptions.AnaplanOperationException;
 import com.anaplan.connector.utils.AnaplanExportOperation;
+import org.apache.commons.compress.utils.IOUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -49,7 +50,8 @@ public class ExportOperationUnitTestCases extends BaseUnitTestDriver {
         PowerMockito.doReturn(getFixture(exportFileChunksResponseFile))
                     .when(mockTransportProvider)
                     .get(filesPathToken + "/chunks", contentType);
-        PowerMockito.doReturn(sampleDataFile.getBytes())
+	    sampleDataStream.reset();
+        PowerMockito.doReturn(IOUtils.toByteArray(sampleDataStream))
                     .when(mockTransportProvider)
                     .get(filesPathToken + "/chunks/0", null);
     }
@@ -67,7 +69,9 @@ public class ExportOperationUnitTestCases extends BaseUnitTestDriver {
 
         String result = anaplanExportOperation.runExport(workspaceId, modelId,
 				exportId);
-        assertEquals(sampleDataFile, result);
+	    sampleDataStream.reset();
+        assertEquals(new String(IOUtils.toByteArray(sampleDataStream), "UTF-8"),
+	        result);
     }
 
     @Test

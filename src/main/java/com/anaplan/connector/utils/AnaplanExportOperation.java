@@ -61,7 +61,7 @@ public class AnaplanExportOperation extends BaseAnaplanOperation {
 	 * @throws AnaplanAPIException Thrown when error creating export task, or
 	 *                             running it, or when building the response
 	 */
-	private static MulesoftAnaplanResponse doExport(Model model, String exportId)
+	private MulesoftAnaplanResponse doExport(Model model, String exportId)
 			throws AnaplanOperationException {
 
 		Export exp;

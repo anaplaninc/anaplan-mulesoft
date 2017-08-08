@@ -32,9 +32,9 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.text.MessageFormat;
-import java.util.Iterator;
 
 
 /**
@@ -47,77 +47,123 @@ public class AnaplanImportOperation extends BaseAnaplanOperation{
     private static Logger logger = LogManager.getLogger(
             AnaplanImportOperation.class.getName());
 
+    private Import importService;
+    private ServerFile serverFile;
+    private MulesoftAnaplanResponse response;
+
     public AnaplanImportOperation(AnaplanConnection apiConn) {
         super(apiConn);
     }
 
+    public MulesoftAnaplanResponse getResponse() {
+        return response;
+    }
+
+    public Import getImportService() {
+        return importService;
+    }
+
+    public ServerFile getServerFile() {
+        return serverFile;
+    }
+
+    public void setImportService(Import importService) {
+        this.importService = importService;
+    }
+
+    public void setServerFile(ServerFile serverFile) {
+        this.serverFile = serverFile;
+    }
+
+    public void setResponse(MulesoftAnaplanResponse response) {
+        this.response = response;
+    }
+
     /**
-     * Core method to run the Import operation. Expects data as a string-ified
-     * CSV, parses the data based on provided column-separator and delimiter,
-     * creates an import action based on Model provided, writes the provided
-     * data to the action object, executes the action on the server and
-     * monitor's the status until the import completes successfully and responds
-     * the status (failed/succeeded) via an AnaplanResponse object.
+     * Uploads contents of dataStream, for the Serverfile for the provided
+     * Import-ID and Model-ID.
      *
-     * @param data Import CSV data
+     * @param dataStream Import data
      * @param model Model object to which to import to
      * @param importId Import action ID
      * @throws AnaplanAPIException Thrown when Anaplan API operation fails or
      *                             error is encountered when writing to
      *                             cell data writer.
      */
-    private static MulesoftAnaplanResponse runImportCsv(String data,
-                                                        Model model,
-                                                        String importId)
+    private AnaplanImportOperation upload(InputStream dataStream,
+                                          Model model, String importId,
+                                          Integer bufferSize)
             throws AnaplanOperationException {
 
-        // 1. Write the provided CSV data to the data-writer.
+        // defaults to 1MB
+        bufferSize = (bufferSize == null) ? 1048576 : bufferSize;
 
-        Import imp;
+        // Get the Import object, then use that to fetch the ServerFile, from
+        // the Model, that will help create the upload-stream
         try {
-            imp = model.getImport(importId);
+            setImportService(model.getImport(importId));
         } catch (AnaplanAPIException e) {
             throw new AnaplanOperationException("Error fetching Import action:", e);
         }
-        if (imp == null) {
+        if (getImportService() == null) {
             throw new AnaplanOperationException(MessageFormat.format("Invalid " +
                     "import ID provided: {0}", importId));
         }
 
-        ServerFile serverFile;
         try {
-            serverFile = model.getServerFile(imp.getSourceFileId());
-            if (serverFile == null) {
+            setServerFile(model.getServerFile(getImportService().getSourceFileId()));
+            if (getServerFile() == null) {
                 throw new AnaplanOperationException("Could not fetch server-file!");
             }
 
-            // upload the data file as a stream
-            OutputStream uploadStream = serverFile.getUploadStream();
-            Iterator<String> iterator = AnaplanUtil.stringChunkReader(data);
-            byte[] dataChunk;
-            while (iterator.hasNext()) {
-                dataChunk = iterator.next().getBytes("UTF-8");
-                uploadStream.write(dataChunk);
+            logger.info("Uploading file...");
+
+            // upload the data file from one stream to the other, in provided bufferSize
+            OutputStream anaplanUploadStream = getServerFile().getUploadStream();
+            byte[] buffer = new byte[bufferSize];
+            int len;
+            int totalBytes = 0;
+            while ((len = dataStream.read(buffer)) != -1) {
+                if (len < bufferSize) {
+                    anaplanUploadStream.write(buffer, 0, len);
+                    totalBytes += len;
+                } else {
+                    anaplanUploadStream.write(buffer);
+                    totalBytes += bufferSize;
+                }
             }
-            uploadStream.close();
+
+            logger.info("Uploaded '{}' bytes of data!", totalBytes);
+
+            anaplanUploadStream.close();
+            dataStream.close();  // triggers deletion of source file in Inbound File connector
 
         } catch (AnaplanAPIException | IOException e) {
             throw new AnaplanOperationException("Error encountered while " +
                     "importing data: ", e);
         }
 
-        // 2. Create the task that will import the data to the server.
+        return this;
+    }
+
+    /**
+     * Executes an Import action for the provided Import-ID
+     * @param importId
+     * @return
+     * @throws AnaplanOperationException
+     */
+    public AnaplanImportOperation runImportTask(String importId) throws AnaplanOperationException {
 
         Task task;
         TaskStatus status;
         try {
-            task = imp.createTask();
+            task = getImportService().createTask();
             status = AnaplanUtil.runServerTask(task);
         } catch (AnaplanAPIException e) {
             throw new AnaplanOperationException("Error running Import action:", e);
         }
 
-        // 3. Get task status details and fetch the row counts
+        // Get task status details and fetch the row counts
         String taskDetailsMsg = collectTaskLogs(status);
         setRunStatusDetails(taskDetailsMsg);
         logger.info(getRunStatusDetails());
@@ -125,26 +171,27 @@ public class AnaplanImportOperation extends BaseAnaplanOperation{
             logger.warn("NULL task details from API response!");
         }
 
-        // 3. Determine execution status and create response.
-
+        // Determine execution status and create response.
         final TaskResult taskResult = status.getResult();
         if (taskResult.isFailureDumpAvailable()) {
             logger.info(UserMessages.getMessage("failureDump"));
             final ServerFile failDump = taskResult.getFailureDump();
-            return MulesoftAnaplanResponse.importWithFailureDump(
-                    UserMessages.getMessage("importBadData", importId),
-                    failDump);
+            setResponse(MulesoftAnaplanResponse.importWithFailureDump(
+                UserMessages.getMessage("importBadData", importId),
+                failDump));
         } else {
             logger.info(UserMessages.getMessage("noFailureDump"));
 
             if (taskResult.isSuccessful()) {
-                return MulesoftAnaplanResponse.importSuccess(getRunStatusDetails(),
-                        serverFile);
+                setResponse(MulesoftAnaplanResponse.importSuccess(getRunStatusDetails(),
+                    getServerFile()));
             } else {
-                return MulesoftAnaplanResponse.importFailure(getRunStatusDetails(),
-                        null);
+                setResponse(MulesoftAnaplanResponse.importFailure(getRunStatusDetails(),
+                    null));
             }
         }
+
+        return this;
     }
 
     /**
@@ -156,10 +203,11 @@ public class AnaplanImportOperation extends BaseAnaplanOperation{
      * @throws AnaplanOperationException Internal operation exception thrown to
      *     capture any IOException, JsonSyntaxException or AnaplanAPIException.
      */
-    public String runImport(String data,
+    public String runImport(InputStream data,
                             String workspaceId,
                             String modelId,
-                            String importId) throws AnaplanOperationException {
+                            String importId,
+                            Integer bufferSize) throws AnaplanOperationException {
 
         logger.info("<< Starting import >>");
         logger.info("Workspace-ID: {}", workspaceId);
@@ -173,7 +221,9 @@ public class AnaplanImportOperation extends BaseAnaplanOperation{
         String importResponse = "";
         try {
             logger.info("Starting import: {}", importId);
-            anaplanResponse = runImportCsv(data, model, importId);
+            anaplanResponse = upload(data, model, importId, bufferSize)
+                .runImportTask(importId)
+                .getResponse();
             importResponse = createResponse(anaplanResponse);
             logger.info("Import complete: Status: {}, Response message: {}",
                     anaplanResponse.getStatus(), importResponse);

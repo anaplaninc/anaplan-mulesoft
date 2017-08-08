@@ -3,7 +3,6 @@ package com.anaplan.connector.unit;
 import com.anaplan.client.ServerFile;
 import com.anaplan.connector.exceptions.AnaplanOperationException;
 import com.anaplan.connector.utils.AnaplanImportOperation;
-import com.anaplan.connector.utils.AnaplanUtil;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -13,7 +12,10 @@ import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.FilterOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
 
 import static org.junit.Assert.assertEquals;
 
@@ -62,13 +64,6 @@ public class ImportOperationUnitTestCases extends BaseUnitTestDriver {
         PowerMockito.doReturn(true).when(mockTaskResult).isSuccessful();
     }
 
-	private void recordActionsStrinkChunkReader() {
-		PowerMockito.when(AnaplanUtil.stringChunkReader(Mockito.anyString()))
-				.thenCallRealMethod();
-		PowerMockito.when(AnaplanUtil.stringChunkReader(Mockito.anyString(),
-				Mockito.anyInt())).thenCallRealMethod();
-	}
-
     @Test
     public void testGoodImportCsv() throws Exception {
         // mock out API calls
@@ -77,10 +72,9 @@ public class ImportOperationUnitTestCases extends BaseUnitTestDriver {
         recordActionsFetchMockItems("files", filesResponseFile);
         recordActionsRunServerTask(importUrlPathToken);
         recordActionsImportTaskResultSuccess();
-		recordActionsStrinkChunkReader();
 
-        anaplanImportOperation.runImport(sampleDataFile, workspaceId, modelId,
-                importId);
+        anaplanImportOperation.runImport(sampleDataStream, workspaceId, modelId,
+                importId, null);
     }
 
 	private void recordActionsImportTaskResultFailureDump() throws Exception {
@@ -103,11 +97,10 @@ public class ImportOperationUnitTestCases extends BaseUnitTestDriver {
 		recordActionsFetchMockImports();
 		recordActionsFetchMockItems("files", filesResponseFile);
 		recordActionsRunServerTask(importUrlPathToken);
-		recordActionsStrinkChunkReader();
 		recordActionsImportTaskResultFailureDump();
 
-		String response = anaplanImportOperation.runImport(sampleDataFile,
-				workspaceId, modelId, importId);
+		String response = anaplanImportOperation.runImport(sampleDataStream,
+				workspaceId, modelId, importId, null);
 		String expectedResponseMsg = "Operation ran successfully but with warnings!\n" +
 				"Response Message:\nSome records were not imported: check " +
 				"connector output data for details: importId\nDump File " +
@@ -124,8 +117,8 @@ public class ImportOperationUnitTestCases extends BaseUnitTestDriver {
         expectedEx.expect(AnaplanOperationException.class);
         expectedEx.expectMessage("Error fetching Import action:");
 
-        anaplanImportOperation.runImport(sampleDataFile, workspaceId, modelId,
-                importId);
+        anaplanImportOperation.runImport(sampleDataStream, workspaceId, modelId,
+                importId, null);
     }
 
     @Test
@@ -138,8 +131,8 @@ public class ImportOperationUnitTestCases extends BaseUnitTestDriver {
         expectedEx.expect(AnaplanOperationException.class);
         expectedEx.expectMessage("Invalid import ID provided: badImportId");
 
-        anaplanImportOperation.runImport(sampleDataFile,
-                workspaceId, modelId, "badImportId");
+        anaplanImportOperation.runImport(sampleDataStream,
+                workspaceId, modelId, "badImportId", null);
     }
 
     @Test
@@ -153,8 +146,8 @@ public class ImportOperationUnitTestCases extends BaseUnitTestDriver {
         expectedEx.expect(AnaplanOperationException.class);
         expectedEx.expectMessage("Error running Import action:");
 
-        anaplanImportOperation.runImport(sampleDataFile, workspaceId, modelId,
-                importId);
+        anaplanImportOperation.runImport(sampleDataStream, workspaceId, modelId,
+                importId, null);
     }
 
 }

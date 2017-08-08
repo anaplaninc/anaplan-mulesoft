@@ -19,6 +19,7 @@ import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
@@ -57,7 +58,7 @@ public abstract class BaseUnitTestDriver {
     protected static final String workspacesResponseFile = "workspaces_response.json";
     protected static final String modelsResponseFile = "models_response.json";
     protected static final String sampleDataFilePath = "sample_data.csv";
-    protected String sampleDataFile;
+    protected InputStream sampleDataStream;
     protected byte[] workspacesResponse;
     protected String apiUrl;
     protected static final String contentType = "application/json";
@@ -96,7 +97,7 @@ public abstract class BaseUnitTestDriver {
     @Before
     public void setUpBase() {
         try {
-            sampleDataFile = new String(getFixture(sampleDataFilePath));
+            sampleDataStream = new ByteArrayInputStream(getFixture(sampleDataFilePath));
             mockAnaplanConnection = Mockito.mock(AnaplanConnection.class);
             apiUrl = properties.getString("anaplan.apiUrl");
             serviceUri = new URI(apiUrl);
