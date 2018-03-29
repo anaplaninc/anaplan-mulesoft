@@ -4,14 +4,14 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.mule.modules</groupId>
     <artifactId>anaplan-connector</artifactId>
-    <version>1.1.4</version>
+    <version>1.1.5</version>
     <packaging>mule-module</packaging>
-    <name>Mulesoft Anaplan Connector</name>
+    <name>Mulesoft Anaplan Connector - JT Updates</name>
 
     <parent>
         <groupId>org.mule.tools.devkit</groupId>
         <artifactId>mule-devkit-parent</artifactId>
-        <version>3.7.1</version>
+        <version>3.9.1</version>
     </parent>
 
     <url>http://anaplaninc.github.io/mvn-repos</url>
@@ -34,6 +34,7 @@
         <maven.compiler.plugin.version>3.5</maven.compiler.plugin.version>
         <coveralls.io.version>4.1.0</coveralls.io.version>
         <cobertura.maven.plugin.version>2.7</cobertura.maven.plugin.version>
+        <jdk.version>1.8</jdk.version>
     </properties>
 
     <dependencies>
