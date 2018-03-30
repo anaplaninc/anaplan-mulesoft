@@ -11,7 +11,7 @@
     <parent>
         <groupId>org.mule.tools.devkit</groupId>
         <artifactId>mule-devkit-parent</artifactId>
-        <version>3.9.1</version>
+        <version>3.9.4</version>
     </parent>
 
     <url>http://anaplaninc.github.io/mvn-repos</url>
